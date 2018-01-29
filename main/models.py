@@ -60,6 +60,7 @@ class Membership(models.Model):
     role = models.CharField(
         choices=ROLE_CHOICES,
         max_length=50,
+        default=MEMBER,
     )
 
     def __str__(self):

@@ -71,8 +71,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'opencult.wsgi.application'
 
 LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/?login=true'
-LOGOUT_REDIRECT_URL = '/?logout=true'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 AUTH_TOKEN_DURATION = 30 * 60  # = 1800 = 30 min in seconds
 

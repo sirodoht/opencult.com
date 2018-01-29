@@ -21,14 +21,14 @@ class EmailTokenBackend:
         """Authenticate a user given a signed token."""
         try:
             data = Signer().unsign(token)
-        except:
+        except BadSignature:
             return
 
         data = json.loads(base64.b64decode(data).decode('utf8'))
-        if data['t'] < time.time() - ta_settings.TOKEN_DURATION:
+        if data['t'] < time.time() - settings.AUTH_TOKEN_DURATION:
             return
 
         User = get_user_model()
 
-        user, created = User.objects.get_or_create(email=data['e'])
+        user, created = User.objects.get_or_create(email=data['e'], username=data['e'])
         return user

@@ -1,14 +1,31 @@
+import time
+import json
+import base64
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.core.signing import Signer
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+
+from opencult import settings
+from .forms import EmailForm
 
 
 def index(request):
     return HttpResponse('Hello, world.')
+
+
+def get_login(request):
+    if request.user.is_authenticated:
+        return redirect('main:index')
+    return render(request, 'main/login.html', {
+        'next': request.GET.get('next'),
+    })
 
 
 def token_post(request):

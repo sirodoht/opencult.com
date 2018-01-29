@@ -1,0 +1,14 @@
+Hello,
+
+This email contains your secret opencult.com login link. Click it to continue.
+
+You can also share it with anyone you want to access your account.
+
+This link will expire in 30 minutes.
+
+Click to log in:
+
+https://{{ current_site.domain }}{% url 'main:auth' %}?d={{ data }}
+
+<3,
+The Open Cult Team

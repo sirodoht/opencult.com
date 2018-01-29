@@ -11,10 +11,6 @@ def index(request):
     return HttpResponse('Hello, world.')
 
 
-class EmailForm(forms.Form):
-    email = forms.EmailField(label='Your email address')
-
-
 def token_post(request):
     if request.user.is_authenticated:
         messages.error(request, 'You are already logged in.')

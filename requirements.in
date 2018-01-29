@@ -1,2 +1,4 @@
 django
 isort
+pytest
+pytest-django

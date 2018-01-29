@@ -1,0 +1,39 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p>
+                Your account doesn't have access to this page.
+                To proceed please login with an account that has access.
+            </p>
+        {% endif %}
+    {% endif %}
+
+    <p>
+        Enter your email and we'll send a session link to login in fashion
+        with no useless passwords.
+    </p>
+
+    <p>
+        You will stay logged in until you choose to log out.
+    </p>
+
+    <form method="post" action="{% url 'main:auth' %}">
+        {% csrf_token %}
+
+        <input name="email" type="email" placeholder="Email">
+
+        <input type="submit" value="Send link">
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+
+    {% if messages %}
+        <p class="alert">
+            {% for message in messages %}
+                {{ message }}
+                <br>
+            {% endfor %}
+        </p>
+    {% endif %}
+{% endblock %}

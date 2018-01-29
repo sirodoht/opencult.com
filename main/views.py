@@ -1,18 +1,19 @@
-import time
-import json
 import base64
+import json
+import time
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect, render
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.core.signing import Signer
-from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 
 from opencult import settings
+
 from .forms import EmailForm
 
 

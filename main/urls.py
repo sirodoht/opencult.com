@@ -1,8 +1,7 @@
-from django.urls import path
 from django.contrib import admin
+from django.urls import path
 
 from . import views
-
 
 admin.site.site_header = 'Open Cult administration'
 app_name = 'main'

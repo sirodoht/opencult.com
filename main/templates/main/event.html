@@ -12,32 +12,29 @@
         {% endif %}
 
         <div class="section-title">
-            Ethereum Contracts &lt;
-            <a href="#">PyThess</a>
+            {{ event.title }} &lt;
+            <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a>
         </div>
 
         <div class="section-label">Details</div>
         <div class="section-body">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            {{ event.details }}
         </div>
 
         <div class="section-label">Date & Time</div>
-        <div class="section-body">Saturday, February 28, 2018, 18:00</div>
+        <div class="section-body">{{ event.date|date:"l, N j, Y" }} at {{ event.time|time:"H:i" }} local time.</div>
 
         <div class="section-label">Venue</div>
         <div class="section-body">
-            OK!Thess
-            <a href="#">Komotinis 2, 55337</a>
+            {{ event.venue }},
+            <a href="{{ event.maps_url }}">{{ event.address }}</a>
         </div>
 
-        <div class="section-label">Leaders</div>
-        <div class="section-body">kkarasav, kmparios</div>
-
-        <div class="section-label">Attendees</div>
+        <div class="section-label">Attendees ({{ event.attendees_count }})</div>
         <div class="section-body">
-            <a href="#">sirodoht</a><br>
-            <a href="#">stavros</a><br>
-            <a href="#">sophie</a><br>
+            {% for person in event.attendees_list %}
+                <a href="#">{{ person.username }}</a><br>
+            {% endfor %}
         </div>
 
     </div>

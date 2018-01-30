@@ -19,8 +19,8 @@ urlpatterns = [
     # /logout/
     path('logout/', views.get_logout, name='logout'),
 
-    # /cult/
-    path('cult/', views.get_cult, name='cult'),
+    # e.g. /some-cult-slug/
+    path('<cult_slug>/', views.get_cult, name='cult'),
 
     # /event/
     path('event/', views.get_event, name='event'),

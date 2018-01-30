@@ -30,7 +30,7 @@
             <a href="{{ event.maps_url }}">{{ event.address }}</a>
         </div>
 
-        <div class="section-label">Attendees ({{ event.attendees_count }})</div>
+        <div class="section-label" id="attendees">Attendees ({{ event.attendees_count }})</div>
         <div class="section-body">
             {% for person in event.attendees_list %}
                 <a href="#">{{ person.username }}</a><br>

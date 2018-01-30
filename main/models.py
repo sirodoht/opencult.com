@@ -74,4 +74,4 @@ class Attendance(models.Model):
     date_rsvped = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.event.user + ' :: ' + self.user.username
+        return self.user.username + ' :: ' + self.event.title

@@ -35,7 +35,7 @@
         {% regroup events_list by date as events_by_date %}
 
         {% for date in events_by_date %}
-            <div class="home-label">{{ date.grouper|date:"l, N j, Y " }}</div>
+            <div class="home-label">{{ date.grouper|date:"l, N j, Y" }}</div>
 
             {% for event in date.list %}
                 <div class="home-event">
@@ -45,7 +45,7 @@
                         {% endif %}
                         <a href="#">{{ event.cult.city }}</a> >
                         <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a> >
-                        <a href="#">{{ event.title }}</a></div>
+                        <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
                     <div class="item-event-subtext">
                         <a href="#" class="item-event-subtext-link">{{ event.date }}</a>
                         | {{ event.venue }} -

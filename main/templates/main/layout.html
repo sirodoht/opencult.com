@@ -13,13 +13,13 @@
 
     <link rel="stylesheet" href="{% static '/main/styles/main.css' %}">
 </head>
-<body>
+<body class="{{ color_class }}">
     <header>
         <a href="{% url 'main:index' %}" class="header-brand">Open Cult</a>
         <a href="{% url 'main:profile' request.user.username %}" class="header-user">sirodoht</a>
     </header>
 
-    <nav>
+    <nav class="{{ dark_color_class }}">
         <a href="#">new cult</a>
         | <a href="#">new event</a>
         | <a href="#">my cults</a>

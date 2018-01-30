@@ -60,6 +60,14 @@ class Event(models.Model):
     address = models.CharField(max_length=100)
     maps_url = models.URLField()
 
+    @property
+    def attendees_count(self):
+        return self.attendees.count()
+
+    @property
+    def attendees_list(self):
+        return self.attendees.order_by('attendance__date_rsvped')
+
     def __str__(self):
         return self.title
 

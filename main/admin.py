@@ -19,7 +19,7 @@ admin.site.register(Profile)
 
 # Cult
 class CultAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location',)
+    list_display = ('name', 'city', 'country',)
 
 admin.site.register(Cult, CultAdmin)
 

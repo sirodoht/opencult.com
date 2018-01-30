@@ -28,7 +28,8 @@ class Cult(models.Model):
     members = models.ManyToManyField(User, through='Membership')
     name = models.CharField(max_length=100)
     doctrine = models.TextField(blank=True, null=True)
-    location = models.CharField(max_length=100, blank=True, null=True)
+    city = models.CharField(max_length=100)
+    country = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.name

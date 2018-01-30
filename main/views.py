@@ -112,3 +112,7 @@ def get_event(request, cult_slug, event_slug):
     return render(request, 'main/event.html', {
         'event': event,
     })
+
+
+def about(request):
+    return render(request, 'main/about.html')

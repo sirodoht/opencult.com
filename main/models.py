@@ -9,6 +9,18 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     about = models.TextField(blank=True, null=True)
 
+    @property
+    def leader_of_list(self):
+        return self.user.cult_set.filter(membership__role=Membership.LEADER)
+
+    @property
+    def member_of_count(self):
+        return self.user.cult_set.filter(membership__role=Membership.MEMBER).count()
+
+    @property
+    def member_of_list(self):
+        return self.user.cult_set.filter(membership__role=Membership.MEMBER)
+
     def __str__(self):
         return self.user.username
 

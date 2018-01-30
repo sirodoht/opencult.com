@@ -5,6 +5,7 @@ import time
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.core.signing import Signer
@@ -22,6 +23,8 @@ def index(request):
     events_list = Event.objects.order_by('-date')
     attending_events_list = Event.objects.filter(attendees__username=request.user.username).order_by('-date', 'time')
     return render(request, 'main/index.html', {
+        'color_class': 'purple-mixin',
+        'dark_color_class': 'purple-dark-mixin',
         'events_list': events_list,
         'attending_events_list': attending_events_list,
     })
@@ -101,6 +104,8 @@ def cult(request, cult_slug):
         membership = None
 
     return render(request, 'main/cult.html', {
+        'color_class': 'green-mixin',
+        'dark_color_class': 'green-dark-mixin',
         'cult': cult,
         'membership': membership,
         'events_list': events_list,
@@ -110,9 +115,14 @@ def cult(request, cult_slug):
 def event(request, cult_slug, event_slug):
     event = Event.objects.get(slug=event_slug)
     return render(request, 'main/event.html', {
+        'color_class': 'blue-mixin',
+        'dark_color_class': 'blue-dark-mixin',
         'event': event,
     })
 
 
 def about(request):
-    return render(request, 'main/about.html')
+    return render(request, 'main/about.html', {
+        'color_class': 'purple-mixin',
+        'dark_color_class': 'purple-dark-mixin',
+    })

@@ -11,12 +11,28 @@
 
     <title>{% block title %}Open Cult{% endblock %}</title>
 
-    <!-- <link rel="stylesheet" href="{% static '/main/styles/main.css' %}"> -->
+    <link rel="stylesheet" href="{% static '/main/styles/main.css' %}">
 </head>
 <body>
+    <header>
+        <a href="/" class="header-brand">Open Cult</a>
+        <a href="#" class="header-user">sirodoht</a>
+    </header>
+
+    <nav>
+        <a href="#">new cult</a>
+        | <a href="#">new event</a>
+        | <a href="#">my cults</a>
+        | <a href="#">attending</a>
+    </nav>
 
     {% block content %}
     {% endblock %}
 
+    <footer>
+        <a href="#">About</a>
+        | <a href="#">API</a>
+        | <a href="#">Contact</a>
+    </footer>
 </body>
 </html>

@@ -11,20 +11,20 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     # /login/
-    path('login/', views.get_login, name='login'),
+    path('login/', views.login, name='login'),
 
     # /auth/
     path('auth/', views.token_post, name='auth'),
 
     # /logout/
-    path('logout/', views.get_logout, name='logout'),
+    path('logout/', views.logout, name='logout'),
 
     # /about/
     path('about/', views.about, name='about'),
 
     # e.g. /some-cult-slug/some-event-slug/
-    path('<cult_slug>/<event_slug>/', views.get_event, name='event'),
+    path('<cult_slug>/<event_slug>/', views.event, name='event'),
 
     # e.g. /some-cult-slug/
-    path('<cult_slug>/', views.get_cult, name='cult'),
+    path('<cult_slug>/', views.cult, name='cult'),
 ]

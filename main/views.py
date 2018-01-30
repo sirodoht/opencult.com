@@ -27,7 +27,7 @@ def index(request):
     })
 
 
-def get_login(request):
+def login(request):
     if request.user.is_authenticated:
         return redirect('main:index')
     return render(request, 'main/login.html', {
@@ -85,13 +85,13 @@ def email_login_link(request, email):
 
 
 @login_required
-def get_logout(request):
+def logout(request):
     logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect(settings.LOGOUT_REDIRECT_URL)
 
 
-def get_cult(request, cult_slug):
+def cult(request, cult_slug):
     cult = Cult.objects.get(slug=cult_slug)
     events_list = Event.objects.filter(cult=cult).order_by('-date', 'time')
 
@@ -107,7 +107,7 @@ def get_cult(request, cult_slug):
     })
 
 
-def get_event(request, cult_slug, event_slug):
+def event(request, cult_slug, event_slug):
     event = Event.objects.get(slug=event_slug)
     return render(request, 'main/event.html', {
         'event': event,

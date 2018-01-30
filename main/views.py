@@ -105,5 +105,8 @@ def get_cult(request, cult_slug):
     })
 
 
-def get_event(request):
-    return render(request, 'main/event.html')
+def get_event(request, cult_slug, event_slug):
+    event = Event.objects.get(slug=event_slug)
+    return render(request, 'main/event.html', {
+        'event': event,
+    })

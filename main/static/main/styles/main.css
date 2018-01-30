@@ -244,6 +244,10 @@ a {
   color: #000;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
 header {
   background: #5c5b5b;
   font-size: 14px;
@@ -254,6 +258,10 @@ header {
   font-weight: bold;
   color: #fff;
   text-transform: uppercase;
+}
+
+a.header-brand {
+  text-decoration: none;
 }
 
 .header-user {
@@ -298,10 +306,6 @@ nav {
   color: #828282;
 }
 
-a.item-event-subtext-link:hover {
-  text-decoration: underline;
-}
-
 .section-title {
   font-size: 14px;
   font-weight: bold;
@@ -321,11 +325,7 @@ a.item-event-subtext-link:hover {
   width: 360px;
 }
 
-.section-body > a:hover {
-  text-decoration: underline;
-}
-
-.cult-event {
+.section-event {
   margin-top: 6px;
 }
 

@@ -1,0 +1,55 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+    <div class="section">
+        {% if messages %}
+            <p class="alert">
+                {% for message in messages %}
+                    {{ message }}
+                    <br>
+                {% endfor %}
+            </p>
+        {% endif %}
+
+        <div class="section-title">PyThess</div>
+
+        <div class="section-label">Doctrine</div>
+        <div class="section-body">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </div>
+
+        <div class="section-label">Location</div>
+        <div class="section-body">Thessaloniki, Greece</div>
+
+        <div class="section-label">Members</div>
+        <div class="section-body">445</div>
+
+        <div class="section-label">Organizers</div>
+        <div class="section-body">kkarasav, kmparios</div>
+
+        <div class="section-label">Role</div>
+        <div class="section-body">Member</div>
+
+        <div class="section-label">Past events</div>
+        <div class="cult-event">
+            <a href="#" class="item-event-title">Greece > Thessaloniki > PyThess > Ethereum Contracts</a>
+            <div class="item-event-subtext">
+                <a href="#" class="item-event-subtext-link">Feb 6, 2017 - 18:00</a>
+                | OK!Thess -
+                <a href="#" class="item-event-subtext-link">Komotinis 2, 55337</a>
+                | <a href="#attendees" class="item-event-subtext-link">22 attendees</a>
+            </div>
+        </div>
+        <div class="cult-event">
+            <a href="#" class="item-event-title">Greece > Thessaloniki > PyThess > Ethereum Contracts</a>
+            <div class="item-event-subtext">
+                <a href="#" class="item-event-subtext-link">Feb 6, 2017 - 18:00</a>
+                | OK!Thess -
+                <a href="#" class="item-event-subtext-link">Komotinis 2, 55337</a>
+                | <a href="#attendees" class="item-event-subtext-link">22 attendees</a>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

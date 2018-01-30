@@ -126,3 +126,12 @@ def about(request):
         'color_class': 'purple-mixin',
         'dark_color_class': 'purple-dark-mixin',
     })
+
+
+def profile(request, username):
+    user = User.objects.get(username=username)
+    return render(request, 'main/profile.html', {
+        'color_class': 'yellow-mixin',
+        'dark_color_class': 'yellow-dark-mixin',
+        'user': user,
+    })

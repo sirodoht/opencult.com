@@ -52,10 +52,10 @@ class Membership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_joined = models.DateTimeField(default=timezone.now)
 
-    ADMIN = 'admin'
+    LEADER = 'leader'
     MEMBER = 'member'
     ROLE_CHOICES = (
-        (ADMIN, 'Admin'),
+        (LEADER, 'Leader'),
         (MEMBER, 'Member'),
     )
     role = models.CharField(

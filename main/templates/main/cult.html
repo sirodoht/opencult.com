@@ -29,7 +29,7 @@
         <div class="section-label">Leaders</div>
         <div class="section-body">
             {% for person in cult.leaders_list %}
-                <a href="#">{{ person.username }}</a><br>
+                <a href="{% url 'main:profile' person.username %}">{{ person.username }}</a><br>
             {% endfor %}
         </div>
 
@@ -40,12 +40,7 @@
         {% for event in events_list %}
             <div class="section-event">
                 <div class="item-event-title">
-                    {% if event.cult.country %}
-                        {{ event.cult.country }} >
-                    {% endif %}
-                    <a href="#">{{ event.cult.city }}</a> >
-                    <a href="#">{{ event.cult.name }}</a> >
-                    <a href="#">{{ event.title }}</a></div>
+                    <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
                 <div class="item-event-subtext">
                     <a href="{% url 'main:event' event.cult.slug event.slug %}" class="item-event-subtext-link">{{ event.date|date:"l, N j, Y" }} - {{ event.time|time:"H:i" }}</a>
                     | {{ event.venue }} -
@@ -58,7 +53,7 @@
         <div class="section-label">Members</div>
         {% for member in cult.members_list %}
             <div class="section-body">
-                <a href="#">{{ member.username }}</a><br>
+                <a href="{% url 'main:profile' member.username %}">{{ member.username }}</a><br>
             </div>
         {% endfor %}
 

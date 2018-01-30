@@ -27,9 +27,22 @@ def save_user_profile(sender, instance, **kwargs):
 class Cult(models.Model):
     members = models.ManyToManyField(User, through='Membership')
     name = models.CharField(max_length=100)
+    slug = models.CharField(max_length=100, unique=True)
     doctrine = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100, blank=True, null=True)
+
+    @property
+    def leaders_list(self):
+        return self.members.filter(membership__role=Membership.LEADER)
+
+    @property
+    def members_count(self):
+        return self.members.count()
+
+    @property
+    def members_list(self):
+        return self.members.filter(membership__role=Membership.MEMBER)
 
     def __str__(self):
         return self.name
@@ -39,9 +52,13 @@ class Event(models.Model):
     cult = models.ForeignKey(Cult, on_delete=models.CASCADE)
     attendees = models.ManyToManyField(User, through='Attendance')
     title = models.CharField(max_length=100)
+    slug = models.CharField(max_length=100, unique=True)
     details = models.TextField(blank=True, null=True)
-    when = models.DateTimeField(default=timezone.now)
+    date = models.DateField(default=timezone.now)
+    time = models.TimeField(default=timezone.now)
     venue = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
+    maps_url = models.URLField()
 
     def __str__(self):
         return self.title

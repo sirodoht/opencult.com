@@ -26,7 +26,7 @@ admin.site.register(Cult, CultAdmin)
 
 # Event
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'cult', 'when', 'venue',)
+    list_display = ('title', 'cult', 'date', 'time', 'venue',)
 
 admin.site.register(Event, EventAdmin)
 

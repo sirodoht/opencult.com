@@ -18,7 +18,7 @@ from .forms import EmailForm
 
 
 def index(request):
-    return HttpResponse('Hello, world.')
+    return render(request, 'main/index.html')
 
 
 def get_login(request):

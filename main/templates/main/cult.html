@@ -11,45 +11,56 @@
             </p>
         {% endif %}
 
-        <div class="section-title">PyThess</div>
+        <div class="section-title">{{ cult.name }}</div>
 
         <div class="section-label">Doctrine</div>
         <div class="section-body">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            {{ cult.doctrine }}
         </div>
 
         <div class="section-label">Location</div>
-        <div class="section-body">Thessaloniki, Greece</div>
+        <div class="section-body">
+            {{ cult.city }}{% if cult.country %}, {{ cult.country}}{% endif %}
+        </div>
 
         <div class="section-label">Members</div>
-        <div class="section-body">445</div>
+        <div class="section-body">{{ cult.members_count }}</div>
 
-        <div class="section-label">Organizers</div>
-        <div class="section-body">kkarasav, kmparios</div>
+        <div class="section-label">Leaders</div>
+        <div class="section-body">
+            {% for person in cult.leaders_list %}
+                <a href="#">{{ person.username }}</a><br>
+            {% endfor %}
+        </div>
 
         <div class="section-label">Role</div>
-        <div class="section-body">Member</div>
+        <div class="section-body">{{ membership.get_role_display|default:"Non-member" }}</div>
 
         <div class="section-label">Past events</div>
-        <div class="cult-event">
-            <a href="#" class="item-event-title">Greece > Thessaloniki > PyThess > Ethereum Contracts</a>
-            <div class="item-event-subtext">
-                <a href="#" class="item-event-subtext-link">Feb 6, 2017 - 18:00</a>
-                | OK!Thess -
-                <a href="#" class="item-event-subtext-link">Komotinis 2, 55337</a>
-                | <a href="#attendees" class="item-event-subtext-link">22 attendees</a>
+        {% for event in events_list %}
+            <div class="section-event">
+                <div class="item-event-title">
+                    {% if event.cult.country %}
+                        {{ event.cult.country }} >
+                    {% endif %}
+                    <a href="#">{{ event.cult.city }}</a> >
+                    <a href="#">{{ event.cult.name }}</a> >
+                    <a href="#">{{ event.title }}</a></div>
+                <div class="item-event-subtext">
+                    <a href="#" class="item-event-subtext-link">{{ event.date }}</a>
+                    | {{ event.venue }} -
+                    <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
+                    | <a href="#attendees" class="item-event-subtext-link">22 attendees</a>
+                </div>
             </div>
-        </div>
-        <div class="cult-event">
-            <a href="#" class="item-event-title">Greece > Thessaloniki > PyThess > Ethereum Contracts</a>
-            <div class="item-event-subtext">
-                <a href="#" class="item-event-subtext-link">Feb 6, 2017 - 18:00</a>
-                | OK!Thess -
-                <a href="#" class="item-event-subtext-link">Komotinis 2, 55337</a>
-                | <a href="#attendees" class="item-event-subtext-link">22 attendees</a>
-            </div>
-        </div>
+        {% endfor %}
 
+        <div class="section-label">Members</div>
+        {% for member in cult.members_list %}
+            <div class="section-body">
+                <a href="#">{{ member.username }}</a><br>
+            </div>
+        {% endfor %}
 
     </div>
 {% endblock %}

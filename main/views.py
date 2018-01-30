@@ -20,8 +20,10 @@ from .models import Cult, Event, Membership
 
 def index(request):
     events_list = Event.objects.order_by('-date')
+    attending_events_list = Event.objects.filter(attendees__username=request.user.username).order_by('-date', 'time')
     return render(request, 'main/index.html', {
         'events_list': events_list,
+        'attending_events_list': attending_events_list,
     })
 
 

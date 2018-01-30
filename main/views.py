@@ -15,10 +15,14 @@ from django.template.loader import render_to_string
 from opencult import settings
 
 from .forms import EmailForm
+from .models import Cult, Event, Membership
 
 
 def index(request):
-    return render(request, 'main/index.html')
+    events_list = Event.objects.order_by('-date')
+    return render(request, 'main/index.html', {
+        'events_list': events_list,
+    })
 
 
 def get_login(request):
@@ -85,8 +89,20 @@ def get_logout(request):
     return redirect(settings.LOGOUT_REDIRECT_URL)
 
 
-def get_cult(request):
-    return render(request, 'main/cult.html')
+def get_cult(request, cult_slug):
+    cult = Cult.objects.get(slug=cult_slug)
+    events_list = Event.objects.filter(cult=cult).order_by('-date', 'time')
+
+    try:
+        membership = Membership.objects.get(user=request.user, cult=cult)
+    except Membership.DoesNotExist:
+        membership = None
+
+    return render(request, 'main/cult.html', {
+        'cult': cult,
+        'membership': membership,
+        'events_list': events_list,
+    })
 
 
 def get_event(request):

@@ -83,3 +83,11 @@ def get_logout(request):
     logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect(settings.LOGOUT_REDIRECT_URL)
+
+
+def get_cult(request):
+    return render(request, 'main/cult.html')
+
+
+def get_event(request):
+    return render(request, 'main/event.html')

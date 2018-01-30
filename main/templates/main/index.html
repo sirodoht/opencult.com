@@ -39,7 +39,7 @@
                 <div class="home-event">
                     <div class="item-event-title">
                         {% if event.cult.country %}
-                            {{ event.cult.country }} >
+                            <a href="#">{{ event.cult.country }}</a> >
                         {% endif %}
                         <a href="#">{{ event.cult.city }}</a> >
                         <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a> >

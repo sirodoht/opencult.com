@@ -15,8 +15,8 @@
 </head>
 <body>
     <header>
-        <a href="/" class="header-brand">Open Cult</a>
-        <a href="#" class="header-user">sirodoht</a>
+        <a href="{% url 'main:index' %}" class="header-brand">Open Cult</a>
+        <a href="{% url 'main:profile' request.user.username %}" class="header-user">sirodoht</a>
     </header>
 
     <nav>

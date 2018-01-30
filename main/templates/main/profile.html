@@ -1,0 +1,41 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+    <div class="section">
+        {% if messages %}
+            <p class="alert">
+                {% for message in messages %}
+                    {{ message }}
+                    <br>
+                {% endfor %}
+            </p>
+        {% endif %}
+
+        <div class="section-title">{{ user.username }}</div>
+
+        <div class="section-label">About</div>
+        <div class="section-body">
+            {{ user.profile.about }}
+        </div>
+
+        <div class="section-label">Email</div>
+        <div class="section-body">
+            {{ user.email }}
+        </div>
+
+        <div class="section-label">Leader of</div>
+        <div class="section-body">
+            {% for cult in user.profile.leader_of_list %}
+                <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a><br>
+            {% endfor %}
+        </div>
+
+        <div class="section-label">Member of ({{ user.profile.member_of_count }})</div>
+        <div class="section-body">
+            {% for cult in user.profile.member_of_list %}
+                <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a><br>
+            {% endfor %}
+        </div>
+
+    </div>
+{% endblock %}

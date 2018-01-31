@@ -25,8 +25,11 @@
 
     <nav class="{{ dark_color_class }}">
         <a href="{% url 'main:new_cult' %}">new cult</a>
-        | <a href="#">my cults</a>
-        {% if cult %}
+        {% for cult in my_cults %}
+            | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
+        {% endfor %}
+        {% if cult and membership.role == 'leader' %}
+            | <a href="{% url 'main:edit_cult' cult.slug %}">edit {{ cult.name }}</a>
             | <a href="{% url 'main:new_event' cult.slug %}">new event for {{ cult.name }}</a>
         {% endif %}
         {% if '@' in request.path %}

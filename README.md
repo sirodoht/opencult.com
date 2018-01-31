@@ -5,6 +5,8 @@
 
 ## Setup
 
+This is a Django application.
+
 Create virtualenv, enable it and then install requirements:
 ```
 virtualenv -p python3 venv
@@ -19,7 +21,7 @@ Migrate your database:
 python manage.py migrate
 ```
 
-Run the Django server
+Run the Django server:
 ```
 python manage.py runserver
 ```

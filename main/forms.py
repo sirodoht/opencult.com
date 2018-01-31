@@ -23,3 +23,9 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ['title', 'details', 'date', 'time', 'venue', 'address', 'maps_url']
+
+
+class EditEventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['title', 'slug', 'details', 'date', 'time', 'venue', 'address', 'maps_url']

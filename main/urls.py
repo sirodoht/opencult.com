@@ -28,9 +28,12 @@ urlpatterns = [
     # e.g. /some-username/
     path('@<username>/', views.profile, name='profile'),
 
+    # e.g. /some-cult-slug/new/
+    path('<slug:cult_slug>/new/', views.new_event, name='new_event'),
+
     # e.g. /some-cult-slug/some-event-slug/
-    path('<cult_slug>/<event_slug>/', views.event, name='event'),
+    path('<slug:cult_slug>/<slug:event_slug>/', views.event, name='event'),
 
     # e.g. /some-cult-slug/
-    path('<cult_slug>/', views.cult, name='cult'),
+    path('<slug:cult_slug>/', views.cult, name='cult'),
 ]

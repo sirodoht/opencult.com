@@ -38,12 +38,10 @@
             {% for event in date.list %}
                 <div class="home-event">
                     <div class="item-event-title">
-                        {% if event.cult.country %}
-                            <a href="#">{{ event.cult.country }}</a> >
-                        {% endif %}
                         <a href="#">{{ event.cult.city }}</a> >
                         <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a> >
-                        <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
+                        <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a>
+                    </div>
                     <div class="item-event-subtext">
                         <a href="{% url 'main:event' event.cult.slug event.slug %}" class="item-event-subtext-link">{{ event.time|time:"H:i" }}</a>
                         |

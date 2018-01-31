@@ -10,7 +10,7 @@ class EmailForm(forms.Form):
 class CultForm(forms.ModelForm):
     class Meta:
         model = Cult
-        fields = ['name', 'doctrine', 'city', 'country']
+        fields = ['name', 'doctrine', 'city']
 
 
 class EventForm(forms.ModelForm):

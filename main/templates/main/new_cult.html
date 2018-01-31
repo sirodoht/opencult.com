@@ -40,14 +40,6 @@
             {% endif %}
             <input type="text" name="city" maxlength="100" required id="id_city">
 
-            <label for="id_country" class="section-label">Country</label>
-            {% if form.country.errors %}
-                {% for error in form.country.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="text" name="country" maxlength="100" id="id_country">
-
             {% csrf_token %}
 
             <input type="submit" value="create">

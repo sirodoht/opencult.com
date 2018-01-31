@@ -42,7 +42,6 @@ class Cult(models.Model):
     slug = models.CharField(max_length=100, unique=True)
     doctrine = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100)
-    country = models.CharField(max_length=100, blank=True, null=True)
 
     @property
     def leaders_list(self):

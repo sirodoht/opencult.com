@@ -2,7 +2,7 @@ import pytest
 from django.test import Client
 
 from main.models import Attendance, Cult, Event, Membership
-from main.forms import EventForm
+from main.forms import EventForm, EditEventForm
 
 @pytest.mark.django_db()
 def test_event_no_attendees():
@@ -256,3 +256,264 @@ def test_event_new_anon(django_user_model):
     c = Client()
     response = c.get('/' + cult.slug + '/new/')
     assert response.status_code == 302
+
+
+@pytest.mark.django_db()
+def test_event_edit_anon():
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    event = Event.objects.create(
+        cult=cult,
+        title='Westworld marathon',
+        slug='westworld-marathon',
+        details='Season 2 coming!',
+        date='2018-02-02',
+        time='18:00',
+        venue='OK!Thess',
+        address='Komotinis 2, 553 77',
+        maps_url='https://goo.gl/maps/sample-link',
+    )
+    c = Client()
+    response = c.get('/' + cult.slug + '/' + event.slug + '/edit/')
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db()
+def test_event_get_edit_form_nonmember(django_user_model):
+    user = django_user_model.objects.create(username='mother')
+    user.set_password('takeajacket')
+    user.save()
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    event = Event.objects.create(
+        cult=cult,
+        title='Westworld marathon',
+        slug='westworld-marathon',
+        details='Season 2 coming!',
+        date='2018-02-02',
+        time='18:00',
+        venue='OK!Thess',
+        address='Komotinis 2, 553 77',
+        maps_url='https://goo.gl/maps/sample-link',
+    )
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    response = c.get('/' + cult.slug + '/' + event.slug + '/edit/')
+    assert logged_in
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db()
+def test_event_get_edit_form_member(django_user_model):
+    user = django_user_model.objects.create(username='mother')
+    user.set_password('takeajacket')
+    user.save()
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    event = Event.objects.create(
+        cult=cult,
+        title='Westworld marathon',
+        slug='westworld-marathon',
+        details='Season 2 coming!',
+        date='2018-02-02',
+        time='18:00',
+        venue='OK!Thess',
+        address='Komotinis 2, 553 77',
+        maps_url='https://goo.gl/maps/sample-link',
+    )
+    Membership.objects.create(
+        cult=cult,
+        user=user,
+        role=Membership.MEMBER,
+    )
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    response = c.get('/' + cult.slug + '/' + event.slug + '/edit/')
+    assert logged_in
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db()
+def test_event_get_edit_form_leader(django_user_model):
+    user = django_user_model.objects.create(username='mother')
+    user.set_password('takeajacket')
+    user.save()
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    event = Event.objects.create(
+        cult=cult,
+        title='Westworld marathon',
+        slug='westworld-marathon',
+        details='Season 2 coming!',
+        date='2018-02-02',
+        time='18:00',
+        venue='OK!Thess',
+        address='Komotinis 2, 553 77',
+        maps_url='https://goo.gl/maps/sample-link',
+    )
+    Membership.objects.create(
+        cult=cult,
+        user=user,
+        role=Membership.LEADER,
+    )
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    response = c.get('/' + cult.slug + '/' + event.slug + '/edit/')
+    assert logged_in
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db()
+def test_event_post_edit_form_nonmember(django_user_model):
+    user = django_user_model.objects.create(username='mother')
+    user.set_password('takeajacket')
+    user.save()
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    event = Event.objects.create(
+        cult=cult,
+        title='Westworld marathon',
+        slug='westworld-marathon',
+        details='Season 2 coming!',
+        date='2018-02-02',
+        time='18:00',
+        venue='OK!Thess',
+        address='Komotinis 2, 553 77',
+        maps_url='https://goo.gl/maps/sample-link',
+    )
+    form_data = {
+        'title': 'Atomic Blonde Screening',
+        'slug': 'atomic-blonde-screening',
+        'details': 'Charlize Theron as a spy.',
+        'date': '2018-04-04',
+        'time': '21:00',
+        'venue': 'Coho',
+        'address': 'Sofouli 4, 523 11',
+        'maps_url': 'https://goo.gl/maps/coho-link',
+    }
+    form = EditEventForm(data=form_data)
+    assert form.is_valid()
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    response = c.get('/' + cult.slug + '/' + event.slug + '/edit/')
+    assert logged_in
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db()
+def test_event_post_edit_form_member(django_user_model):
+    user = django_user_model.objects.create(username='mother')
+    user.set_password('takeajacket')
+    user.save()
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    Membership.objects.create(
+        cult=cult,
+        user=user,
+        role=Membership.MEMBER,
+    )
+    event = Event.objects.create(
+        cult=cult,
+        title='Westworld marathon',
+        slug='westworld-marathon',
+        details='Season 2 coming!',
+        date='2018-02-02',
+        time='18:00',
+        venue='OK!Thess',
+        address='Komotinis 2, 553 77',
+        maps_url='https://goo.gl/maps/sample-link',
+    )
+    form_data = {
+        'title': 'Atomic Blonde Screening',
+        'slug': 'atomic-blonde-screening',
+        'details': 'Charlize Theron as a spy.',
+        'date': '2018-04-04',
+        'time': '21:00',
+        'venue': 'Coho',
+        'address': 'Sofouli 4, 523 11',
+        'maps_url': 'https://goo.gl/maps/coho-link',
+    }
+    form = EditEventForm(data=form_data)
+    assert form.is_valid()
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    response = c.get('/' + cult.slug + '/' + event.slug + '/edit/')
+    assert logged_in
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db()
+def test_event_post_edit_form_leader(django_user_model):
+    user = django_user_model.objects.create(username='mother')
+    user.set_password('takeajacket')
+    user.save()
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    Membership.objects.create(
+        cult=cult,
+        user=user,
+        role=Membership.LEADER,
+    )
+    event = Event.objects.create(
+        cult=cult,
+        title='Westworld marathon',
+        slug='westworld-marathon',
+        details='Season 2 coming!',
+        date='2018-02-02',
+        time='18:00',
+        venue='OK!Thess',
+        address='Komotinis 2, 553 77',
+        maps_url='https://goo.gl/maps/sample-link',
+    )
+    form_data = {
+        'title': 'Atomic Blonde Screening',
+        'slug': 'atomic-blonde-screening',
+        'details': 'Charlize Theron as a spy.',
+        'date': '2018-04-04',
+        'time': '21:00',
+        'venue': 'Coho',
+        'address': 'Sofouli 4, 523 11',
+        'maps_url': 'https://goo.gl/maps/coho-link',
+    }
+    form = EditEventForm(data=form_data)
+    assert form.is_valid()
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    assert logged_in
+    response = c.post('/' + cult.slug + '/' + event.slug + '/edit/', form_data, follow=True)
+    assert response.status_code == 200
+    assert form_data['title'].encode() in response.content
+    assert form_data['slug'].encode() in response.content
+    assert form_data['details'].encode() in response.content
+    assert b'Wednesday, April 4, 2018 at 21:00 local time.' in response.content
+    assert form_data['venue'].encode() in response.content
+    assert form_data['address'].encode() in response.content
+    assert form_data['maps_url'].encode() in response.content

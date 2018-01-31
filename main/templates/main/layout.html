@@ -21,8 +21,10 @@
 
     <nav class="{{ dark_color_class }}">
         <a href="{% url 'main:new_cult' %}">new cult</a>
-        | <a href="#">new event</a>
         | <a href="#">my cults</a>
+        {% if cult %}
+            | <a href="{% url 'main:new_event' cult.slug %}">new event for {{ cult.name }}</a>
+        {% endif %}
     </nav>
 
     {% block content %}

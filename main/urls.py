@@ -22,6 +22,9 @@ urlpatterns = [
     # /about/
     path('about/', views.about, name='about'),
 
+    # /new/
+    path('new/', views.new_cult, name='new_cult'),
+
     # e.g. /some-username/
     path('@<username>/', views.profile, name='profile'),
 

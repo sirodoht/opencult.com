@@ -11,6 +11,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.core.signing import Signer
 from django.db.utils import IntegrityError
+from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
@@ -18,18 +19,23 @@ from django.utils.text import slugify
 
 from opencult import settings
 
-from .forms import CultForm, EmailForm, EventForm
+from .forms import CultForm, EditCultForm, EmailForm, EventForm
 from .models import Attendance, Cult, Event, Membership
 
 
 def index(request):
     events_list = Event.objects.order_by('-date')
     attending_events_list = Event.objects.filter(attendees__username=request.user.username).order_by('-date', 'time')
+
+    my_cults = None
+    if request.user.is_authenticated:
+        my_cults = Cult.objects.filter(membership__user=request.user)
     return render(request, 'main/index.html', {
         'color_class': 'purple-mixin',
         'dark_color_class': 'purple-dark-mixin',
         'events_list': events_list,
         'attending_events_list': attending_events_list,
+        'my_cults': my_cults,
     })
 
 
@@ -144,6 +150,7 @@ def profile(request, username):
     })
 
 
+@login_required
 def new_cult(request):
     if request.method == 'POST':
         form = CultForm(request.POST)
@@ -167,10 +174,13 @@ def new_cult(request):
     })
 
 
+@login_required
 def new_event(request, cult_slug):
+    cult = Cult.objects.get(slug=cult_slug)
+    if request.user not in cult.leaders_list:
+        return HttpResponse(status=403)
     if request.method == 'POST':
         form = EventForm(request.POST)
-        cult = Cult.objects.get(slug=cult_slug)
         if form.is_valid():
             new_event = form.save(commit=False)
             new_event.slug = slugify(new_event.title)
@@ -188,7 +198,6 @@ def new_event(request, cult_slug):
             return redirect('main:event', cult_slug=cult.slug, event_slug=new_event.slug)
     else:
         form = EventForm()
-        cult = Cult.objects.get(slug=cult_slug)
 
     return render(request, 'main/new_event.html', {
         'color_class': 'blue-mixin',

@@ -274,6 +274,23 @@ nav {
   padding: 8px 20px;
 }
 
+input[type="text"],
+textarea {
+  display: block;
+  width: 360px;
+}
+
+input[type="submit"] {
+  margin-top: 22px;
+  margin-bottom: 8px;
+}
+
+.form-error {
+  color: #eb2f2f;
+  font-size: 11px;
+  line-height: 18px;
+}
+
 .purple-mixin {
   background: #f6eff6;
 }
@@ -345,6 +362,7 @@ nav {
 }
 
 .section-label {
+  display: block;
   color: #828282;
   width: 360px;
   margin-top: 18px;

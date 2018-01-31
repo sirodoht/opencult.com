@@ -13,6 +13,12 @@ class CultForm(forms.ModelForm):
         fields = ['name', 'doctrine', 'city']
 
 
+class EditCultForm(forms.ModelForm):
+    class Meta:
+        model = Cult
+        fields = ['name', 'slug', 'doctrine', 'city']
+
+
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event

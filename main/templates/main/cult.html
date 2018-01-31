@@ -33,8 +33,10 @@
             {% endfor %}
         </div>
 
-        <div class="section-label">Role</div>
-        <div class="section-body">{{ membership.get_role_display|default:"Non-member" }}</div>
+        {% if request.user.is_authenticated %}
+            <div class="section-label">Role</div>
+            <div class="section-body">{{ membership.get_role_display|default:"Non-member" }}</div>
+        {% endif %}
 
         <div class="section-label">Past events</div>
         {% for event in events_list %}

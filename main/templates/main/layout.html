@@ -16,7 +16,11 @@
 <body class="{{ color_class }}">
     <header>
         <a href="{% url 'main:index' %}" class="header-brand">Open Cult</a>
-        <a href="{% url 'main:profile' request.user.username %}" class="header-user">sirodoht</a>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'main:profile' request.user.username %}" class="header-user">sirodoht</a>
+        {% else %}
+            <a href="{% url 'main:login' %}" class="header-user">login</a>
+        {% endif %}
     </header>
 
     <nav class="{{ dark_color_class }}">

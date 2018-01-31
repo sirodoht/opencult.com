@@ -68,9 +68,9 @@ class Event(models.Model):
     details = models.TextField(blank=True, null=True)
     date = models.DateField(default=timezone.now)
     time = models.TimeField(default=timezone.now)
-    venue = models.CharField(max_length=100)
+    venue = models.CharField(max_length=100, blank=True, null=True)
     address = models.CharField(max_length=100)
-    maps_url = models.URLField()
+    maps_url = models.URLField(blank=True, null=True)
 
     @property
     def attendees_count(self):

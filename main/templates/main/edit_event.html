@@ -1,0 +1,89 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+    <div class="section">
+        {% if messages %}
+            <p class="alert">
+                {% for message in messages %}
+                    {{ message }}
+                    <br>
+                {% endfor %}
+            </p>
+        {% endif %}
+
+        <div class="section-title">Edit {{ event.title }} event</div>
+
+        <form action="{% url 'main:edit_event' event.cult.slug event.slug %}" method="post">
+            {{ form.non_field_errors }}
+
+            <label for="id_title" class="section-label">Title</label>
+            {% if form.title.errors %}
+                {% for error in form.title.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <input type="text" name="title" value="{{ form.title.value }}" maxlength="100" required id="id_title">
+
+            <label for="id_slug" class="section-label">Slug</label>
+            {% if form.slug.errors %}
+                {% for error in form.slug.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <input type="text" name="slug" value="{{ form.slug.value }}" maxlength="100" required id="id_slug">
+
+            <label for="id_details" class="section-label">Details</label>
+            {% if form.details.errors %}
+                {% for error in form.details.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <textarea name="details" rows="6" id="id_details">{{ form.details.value }}</textarea>
+
+            <label for="id_date" class="section-label">Date</label>
+            {% if form.date.errors %}
+                {% for error in form.date.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <input type="date" name="date" value="{{ form.date.value|date:"c" }}" required id="id_date">
+
+            <label for="id_time" class="section-label">Time</label>
+            {% if form.time.errors %}
+                {% for error in form.time.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <input type="time" name="time" value="{{ form.time.value|time:"H:i" }}" required id="id_time">
+
+            <label for="id_venue" class="section-label">Venue</label>
+            {% if form.venue.errors %}
+                {% for error in form.venue.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <input type="text" name="venue" value="{{ form.venue.value }}" maxlength="100" id="id_venue">
+
+            <label for="id_address" class="section-label">Address</label>
+            {% if form.address.errors %}
+                {% for error in form.address.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <input type="text" name="address" value="{{ form.address.value }}" placeholder="eg. 37 Sunshine Avenue, 542 31" maxlength="100" required id="id_address">
+
+            <label for="id_maps_url" class="section-label">Maps url</label>
+            {% if form.maps.errors %}
+                {% for error in form.maps.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <input type="url" name="maps_url" value="{{ form.maps_url.value }}" placeholder="eg. https://goo.gl/maps/rhMbTatoPCP2" maxlength="200" id="id_maps_url">
+
+            {% csrf_token %}
+
+            <input type="submit" value="update">
+        </form>
+
+    </div>
+{% endblock %}

@@ -18,11 +18,6 @@
             {{ user.profile.about }}
         </div>
 
-        <div class="section-label">Email</div>
-        <div class="section-body">
-            {{ user.email }}
-        </div>
-
         <div class="section-label">Leader of</div>
         <div class="section-body">
             {% for cult in user.profile.leader_of_list %}

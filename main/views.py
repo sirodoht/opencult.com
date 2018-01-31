@@ -227,3 +227,28 @@ def edit_cult(request, cult_slug):
         'cult': cult,
         'form': form,
     })
+
+
+@login_required
+def edit_event(request, cult_slug, event_slug):
+    cult = Cult.objects.get(slug=cult_slug)
+    event = Event.objects.get(slug=event_slug)
+
+    if request.user not in cult.leaders_list:
+        return HttpResponse(status=403)
+
+    if request.method == 'POST':
+        form = EditEventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('main:event', cult_slug=cult.slug, event_slug=event.slug)
+    else:
+        form = EditEventForm(instance=event)
+
+    return render(request, 'main/edit_event.html', {
+        'color_class': 'blue-mixin',
+        'dark_color_class': 'blue-dark-mixin',
+        'cult': cult,
+        'event': event,
+        'form': form,
+    })

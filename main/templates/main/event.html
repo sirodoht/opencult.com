@@ -16,10 +16,12 @@
             <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a>
         </div>
 
-        <div class="section-label">Details</div>
-        <div class="section-body">
-            {{ event.details }}
-        </div>
+        {% if event.details %}
+            <div class="section-label">Details</div>
+            <div class="section-body">
+                {{ event.details }}
+            </div>
+        {% endif %}
 
         <div class="section-label">Date & Time</div>
         <div class="section-body">{{ event.date|date:"l, N j, Y" }} at {{ event.time|time:"H:i" }} local time.</div>
@@ -40,6 +42,8 @@
         <div class="section-body">
             {% for person in event.attendees_list %}
                 <a href="{% url 'main:profile' person.username %}">{{ person.username }}</a><br>
+            {% empty %}
+                No one is attending yet.
             {% endfor %}
         </div>
 

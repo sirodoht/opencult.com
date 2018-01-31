@@ -2,6 +2,7 @@ import base64
 import json
 import time
 
+import shortuuid
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.core.signing import Signer
+from django.db.utils import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
@@ -16,8 +18,8 @@ from django.utils.text import slugify
 
 from opencult import settings
 
-from .forms import CultForm, EmailForm
-from .models import Cult, Event, Membership
+from .forms import CultForm, EmailForm, EventForm
+from .models import Attendance, Cult, Event, Membership
 
 
 def index(request):
@@ -115,10 +117,12 @@ def cult(request, cult_slug):
 
 def event(request, cult_slug, event_slug):
     event = Event.objects.get(slug=event_slug)
+    cult = Cult.objects.get(slug=cult_slug)
     return render(request, 'main/event.html', {
         'color_class': 'blue-mixin',
         'dark_color_class': 'blue-dark-mixin',
         'event': event,
+        'cult': cult,
     })
 
 
@@ -145,7 +149,7 @@ def new_cult(request):
             new_cult = form.save(commit=False)
             new_cult.slug = slugify(new_cult.name)
             new_cult.save()
-            new_membership = Membership.objects.create(
+            Membership.objects.create(
                 cult=new_cult,
                 user=request.user,
                 role=Membership.LEADER,
@@ -157,5 +161,36 @@ def new_cult(request):
     return render(request, 'main/new_cult.html', {
         'color_class': 'green-mixin',
         'dark_color_class': 'green-dark-mixin',
+        'form': form,
+    })
+
+
+def new_event(request, cult_slug):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        cult = Cult.objects.get(slug=cult_slug)
+        if form.is_valid():
+            new_event = form.save(commit=False)
+            new_event.slug = slugify(new_event.title)
+            new_event.cult = cult
+            try:
+                new_event.save()
+            except IntegrityError:
+                uuid = shortuuid.ShortUUID('abdcefghkmnpqrstuvwxyzABDCEFGHKMNPQRSTUVWXYZ23456789').random(length=12)
+                new_event.slug = slugify(new_event.title) + '-' + uuid
+                new_event.save()
+            Attendance.objects.create(
+                event=new_event,
+                user=request.user,
+            )
+            return redirect('main:event', cult_slug=cult.slug, event_slug=new_event.slug)
+    else:
+        form = EventForm()
+        cult = Cult.objects.get(slug=cult_slug)
+
+    return render(request, 'main/new_event.html', {
+        'color_class': 'blue-mixin',
+        'dark_color_class': 'blue-dark-mixin',
+        'cult': cult,
         'form': form,
     })

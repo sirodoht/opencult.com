@@ -131,7 +131,7 @@ def test_cult_member(django_user_model):
 
 
 @pytest.mark.django_db()
-def test_cult_anonymous(django_user_model):
+def test_cult_anon(django_user_model):
     user = django_user_model.objects.create(username='mother')
     user.set_password('takeajacket')
     user.save()
@@ -177,6 +177,13 @@ def test_cult_anonymous(django_user_model):
 
 
 @pytest.mark.django_db()
+def test_cult_new_anon():
+    c = Client()
+    response = c.get('/new/')
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db()
 def test_cult_form(django_user_model):
     user = django_user_model.objects.create(username='mother')
     user.set_password('takeajacket')
@@ -185,7 +192,6 @@ def test_cult_form(django_user_model):
         'name': 'Turn around now',
         'doctrine': 'Did you think I\'d crumble?',
         'city': 'Berlin',
-        'country': 'Germany',
     }
     form = CultForm(data=form_data)
     assert form.is_valid()
@@ -198,4 +204,3 @@ def test_cult_form(django_user_model):
     assert Cult.objects.first().name == form_data['name']
     assert Cult.objects.first().doctrine == form_data['doctrine']
     assert Cult.objects.first().city == form_data['city']
-    assert Cult.objects.first().country == form_data['country']

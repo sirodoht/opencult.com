@@ -29,6 +29,9 @@
         {% if cult %}
             | <a href="{% url 'main:new_event' cult.slug %}">new event for {{ cult.name }}</a>
         {% endif %}
+        {% if '@' in request.path %}
+            | <a href="{% url 'main:logout' %}">logout</a>
+        {% endif %}
     </nav>
 
     {% block content %}

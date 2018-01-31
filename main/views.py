@@ -101,10 +101,12 @@ def cult(request, cult_slug):
     cult = Cult.objects.get(slug=cult_slug)
     events_list = Event.objects.filter(cult=cult).order_by('-date', 'time')
 
-    try:
-        membership = Membership.objects.get(user=request.user, cult=cult)
-    except Membership.DoesNotExist:
-        membership = None
+    membership = None  # not authed
+    if request.user.is_authenticated:
+        try:
+            membership = Membership.objects.get(user=request.user, cult=cult)
+        except Membership.DoesNotExist:  # user is not member
+            membership = None
 
     return render(request, 'main/cult.html', {
         'color_class': 'green-mixin',

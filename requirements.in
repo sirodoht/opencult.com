@@ -2,3 +2,4 @@ django
 isort
 pytest
 pytest-django
+shortuuid

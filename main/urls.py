@@ -31,6 +31,9 @@ urlpatterns = [
     # e.g. /some-cult-slug/new/
     path('<slug:cult_slug>/new/', views.new_event, name='new_event'),
 
+    # e.g. /some-cult-slug/edit/
+    path('<slug:cult_slug>/edit/', views.edit_cult, name='edit_cult'),
+
     # e.g. /some-cult-slug/some-event-slug/
     path('<slug:cult_slug>/<slug:event_slug>/', views.event, name='event'),
 

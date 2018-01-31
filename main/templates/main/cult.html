@@ -48,6 +48,8 @@
                     | <a href="#attendees" class="item-event-subtext-link">22 attendees</a>
                 </div>
             </div>
+        {% empty %}
+            No events have taken place yet.
         {% endfor %}
 
         <div class="section-label">Members</div>
@@ -55,6 +57,8 @@
             <div class="section-body">
                 <a href="{% url 'main:profile' member.username %}">{{ member.username }}</a><br>
             </div>
+        {% empty %}
+            No one has joined yet.
         {% endfor %}
 
     </div>

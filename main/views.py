@@ -19,7 +19,7 @@ from django.utils.text import slugify
 
 from opencult import settings
 
-from .forms import CultForm, EditCultForm, EmailForm, EventForm
+from .forms import CultForm, EditCultForm, EditEventForm, EmailForm, EventForm
 from .models import Attendance, Cult, Event, Membership
 
 
@@ -126,11 +126,28 @@ def cult(request, cult_slug):
 def event(request, cult_slug, event_slug):
     event = Event.objects.get(slug=event_slug)
     cult = Cult.objects.get(slug=cult_slug)
+
+    membership = None  # not authed
+    if request.user.is_authenticated:
+        try:
+            membership = Membership.objects.get(user=request.user, cult=cult)
+        except Membership.DoesNotExist:  # user is not member
+            membership = None
+
+    attendance = None  # not authed
+    if request.user.is_authenticated:
+        try:
+            attendance = Attendance.objects.get(user=request.user, event=event)
+        except Attendance.DoesNotExist:  # user is not attending
+            attendance = None
+
     return render(request, 'main/event.html', {
         'color_class': 'blue-mixin',
         'dark_color_class': 'blue-dark-mixin',
         'event': event,
         'cult': cult,
+        'membership': membership,
+        'attendance': attendance,
     })
 
 
@@ -210,8 +227,10 @@ def new_event(request, cult_slug):
 @login_required
 def edit_cult(request, cult_slug):
     cult = Cult.objects.get(slug=cult_slug)
+
     if request.user not in cult.leaders_list:
         return HttpResponse(status=403)
+
     if request.method == 'POST':
         form = EditCultForm(request.POST, instance=cult)
         if form.is_valid():

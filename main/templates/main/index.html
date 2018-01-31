@@ -11,25 +11,24 @@
             </p>
         {% endif %}
 
-        <div class="home-label">Attending</div>
+        {% if request.user.is_authenticated %}
+            <div class="home-label">Attending</div>
 
-        {% for event in attending_events_list %}
-            <div class="home-event">
-                <div class="item-event-title">
-                    {% if event.cult.country %}
-                        {{ event.cult.country }} >
-                    {% endif %}
-                    <a href="#">{{ event.cult.city }}</a> >
-                    <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a> >
-                    <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
-                <div class="item-event-subtext">
-                    <a href="{% url 'main:event' event.cult.slug event.slug %}" class="item-event-subtext-link">{{ event.date|date:"l, N j, Y" }} - {{ event.time|time:"H:i" }}</a>
-                    | {{ event.venue }} -
-                    <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
-                    | <a href="{% url 'main:event' event.cult.slug event.slug %}#attendees" class="item-event-subtext-link">22 attendees</a>
+            {% for event in attending_events_list %}
+                <div class="home-event">
+                    <div class="item-event-title">
+                        <a href="#">{{ event.cult.city }}</a> >
+                        <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a> >
+                        <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
+                    <div class="item-event-subtext">
+                        <a href="{% url 'main:event' event.cult.slug event.slug %}" class="item-event-subtext-link">{{ event.date|date:"l, N j, Y" }} - {{ event.time|time:"H:i" }}</a>
+                        | {{ event.venue }} -
+                        <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
+                        | <a href="{% url 'main:event' event.cult.slug event.slug %}#attendees" class="item-event-subtext-link">22 attendees</a>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        {% endif %}
 
         {% regroup events_list by date as events_by_date %}
         {% for date in events_by_date %}

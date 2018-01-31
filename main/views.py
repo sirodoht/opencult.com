@@ -12,10 +12,11 @@ from django.core.signing import Signer
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
+from django.utils.text import slugify
 
 from opencult import settings
 
-from .forms import EmailForm
+from .forms import CultForm, EmailForm
 from .models import Cult, Event, Membership
 
 
@@ -134,4 +135,27 @@ def profile(request, username):
         'color_class': 'yellow-mixin',
         'dark_color_class': 'yellow-dark-mixin',
         'user': user,
+    })
+
+
+def new_cult(request):
+    if request.method == 'POST':
+        form = CultForm(request.POST)
+        if form.is_valid():
+            new_cult = form.save(commit=False)
+            new_cult.slug = slugify(new_cult.name)
+            new_cult.save()
+            new_membership = Membership.objects.create(
+                cult=new_cult,
+                user=request.user,
+                role=Membership.LEADER,
+            )
+            return redirect('main:new_cult')
+    else:
+        form = CultForm()
+
+    return render(request, 'main/new_cult.html', {
+        'color_class': 'green-mixin',
+        'dark_color_class': 'green-dark-mixin',
+        'form': form,
     })

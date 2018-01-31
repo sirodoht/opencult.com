@@ -275,6 +275,9 @@ nav {
 }
 
 input[type="text"],
+input[type="url"],
+input[type="date"],
+input[type="time"],
 textarea {
   display: block;
   width: 360px;

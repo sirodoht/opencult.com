@@ -26,8 +26,14 @@
 
         <div class="section-label">Venue</div>
         <div class="section-body">
-            {{ event.venue }},
-            <a href="{{ event.maps_url }}">{{ event.address }}</a>
+            {% if event.venue %}
+                {{ event.venue }},
+            {% endif %}
+            {% if event.maps_url %}
+                <a href="{{ event.maps_url }}">{{ event.address }}, {{ event.cult.city }}</a>
+            {% else %}
+                {{ event.address }}, {{ event.cult.city }}
+            {% endif %}
         </div>
 
         <div class="section-label" id="attendees">Attendees ({{ event.attendees_count }})</div>

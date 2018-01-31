@@ -46,8 +46,15 @@
                         <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
                     <div class="item-event-subtext">
                         <a href="{% url 'main:event' event.cult.slug event.slug %}" class="item-event-subtext-link">{{ event.time|time:"H:i" }}</a>
-                        | {{ event.venue }} -
-                        <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
+                        |
+                        {% if event.venue %}
+                            {{ event.venue }} -
+                        {% endif %}
+                        {% if event.maps_url %}
+                            <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
+                        {% else %}
+                            {{ event.address }}
+                        {% endif %}
                         | <a href="{% url 'main:event' event.cult.slug event.slug %}#attendees" class="item-event-subtext-link">22 attendees</a>
                     </div>
                 </div>

@@ -5,8 +5,7 @@
 
 ## Setup
 
-This is a Django application. The Django project is `opencult`. There is one 
-Django app, `main`, which includes all business logic.
+The Django project is `opencult`. There is one Django app, [`main`](/main).
 
 Create virtualenv, enable it and then install requirements:
 ```sh

@@ -271,3 +271,23 @@ def edit_event(request, cult_slug, event_slug):
         'event': event,
         'form': form,
     })
+
+
+@login_required
+def membership(request, cult_slug):
+    if request.method == 'POST':
+        cult = Cult.objects.get(slug=cult_slug)
+        Membership.objects.create(
+            user=request.user,
+            cult=cult,
+            role=Membership.MEMBER,
+        )
+        return redirect('main:cult', cult_slug=cult.slug)
+
+
+@login_required
+def delete_membership(request, cult_slug):
+    if request.method == 'POST':
+        cult = Cult.objects.get(slug=cult_slug)
+        Membership.objects.get(user=request.user, cult=cult).delete()
+        return redirect('main:cult', cult_slug=cult.slug)

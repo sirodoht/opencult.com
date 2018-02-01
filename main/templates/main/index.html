@@ -2,15 +2,6 @@
 
 {% block content %}
     <div class="section">
-        {% if messages %}
-            <p class="alert">
-                {% for message in messages %}
-                    {{ message }}
-                    <br>
-                {% endfor %}
-            </p>
-        {% endif %}
-
         {% if request.user.is_authenticated %}
             <div class="home-label">Attending</div>
 

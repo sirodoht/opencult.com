@@ -11,7 +11,7 @@
             </p>
         {% endif %}
 
-        <div class="section-title">Create event for {{ cult.name }}</div>
+        <div class="section-title">Create event for <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a></div>
 
         <form action="{% url 'main:new_event' cult.slug %}" method="post">
             {{ form.non_field_errors }}

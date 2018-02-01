@@ -17,13 +17,11 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
-from django.views.decorators.http import (require_http_methods, require_POST,
-                                          require_safe)
+from django.views.decorators.http import require_http_methods, require_POST, require_safe
 
 from opencult import settings
 
-from .forms import (CultForm, EditCultForm, EditEventForm, EmailForm,
-                    EventForm, UserForm)
+from .forms import CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
 from .models import Attendance, Cult, Event, Membership
 
 

@@ -3,11 +3,10 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/python:3.6.4-browsers
-      - image: circleci/postgres:9.6.2
-
     working_directory: ~/repo
+    docker:
+      - image: circleci/python:3.6.4
+      - image: circleci/postgres:9.6.2
 
     branches:
       ignore:
@@ -15,14 +14,11 @@ jobs:
 
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "requirements.txt" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-
       - run:
           name: install dependencies
           command: |
@@ -33,7 +29,6 @@ jobs:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
-
       - run:
           name: run tests
           command: |

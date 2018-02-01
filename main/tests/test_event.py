@@ -4,6 +4,7 @@ from django.test import Client
 from main.models import Attendance, Cult, Event, Membership
 from main.forms import EventForm, EditEventForm
 
+
 @pytest.mark.django_db()
 def test_event_no_attendees():
     cult = Cult.objects.create(

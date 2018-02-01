@@ -16,6 +16,7 @@ from django.db.utils import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods, require_POST, require_safe
 
@@ -27,8 +28,18 @@ from .models import Attendance, Cult, Event, Membership
 
 @require_safe
 def index(request):
-    events_list = Event.objects.order_by('-date')
-    attending_events_list = Event.objects.filter(attendees__username=request.user.username).order_by('-date', 'time')
+    now = timezone.now()
+    events_list = Event.objects.filter(
+        date__year__gte=now.year,
+        date__month__gte=now.month,
+        date__day__gte=now.day,
+    ).order_by('date', 'time')
+    attending_events_list = Event.objects.filter(
+        attendees__username=request.user.username,
+        date__year__gte=now.year,
+        date__month__gte=now.month,
+        date__day__gte=now.day,
+    ).order_by('date', 'time')
 
     own_cults = None
     if request.user.is_authenticated:

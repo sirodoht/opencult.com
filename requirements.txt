@@ -5,6 +5,7 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 attrs==17.4.0             # via pytest
+dj-database-url==0.4.2
 django==2.0.1
 isort==4.2.15
 pluggy==0.6.0             # via pytest
@@ -15,3 +16,5 @@ pytest==3.3.2
 pytz==2017.3              # via django
 shortuuid==0.5.0
 six==1.11.0               # via pytest
+uwsgi==2.0.15
+whitenoise==3.3.1

@@ -151,7 +151,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'email-smtp.us-west-1.amazonaws.com'
+EMAIL_HOST = 'email-smtp.eu-west-1.amazonaws.com'
 EMAIL_HOST_USER = os.getenv('OPENCULT_EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('OPENCULT_EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587

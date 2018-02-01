@@ -80,7 +80,7 @@ def test_logout(django_user_model):
     assert logged_in
     response = c.get('/logout/', follow=True)
     assert response.status_code == 200
-    assert b'You have been logged out.' in response.content
+    assert b'You have been logged out' in response.content
 
 
 @pytest.mark.django_db()

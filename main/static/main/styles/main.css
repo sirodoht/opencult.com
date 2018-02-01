@@ -288,6 +288,14 @@ input[type="submit"] {
   margin-bottom: 8px;
 }
 
+form.inline {
+  display: inline;
+}
+
+.inline > input[type="submit"] {
+  margin: 0;
+}
+
 .form-error {
   color: #eb2f2f;
   font-size: 11px;

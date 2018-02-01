@@ -17,7 +17,7 @@
     <header>
         <a href="{% url 'main:index' %}" class="header-brand">Open Cult</a>
         {% if request.user.is_authenticated %}
-            <a href="{% url 'main:profile' request.user.username %}" class="header-user">{{ request.user.username }}</a>
+            <a href="{% url 'main:edit_profile' request.user.username %}" class="header-user">{{ request.user.username }}</a>
         {% else %}
             <a href="{% url 'main:login' %}" class="header-user">login</a>
         {% endif %}
@@ -25,6 +25,9 @@
 
     <nav class="{{ dark_color_class }}">
         <a href="{% url 'main:new_cult' %}">new cult</a>
+        {% if request.user.is_authenticated %}
+            | <a href="{% url 'main:profile' request.user.username %}">my cults</a>
+        {% endif %}
         {% for cult in my_cults %}
             | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
         {% endfor %}
@@ -63,6 +66,13 @@
         {% endif %}
         {% if '@' in request.path %}
             | <a href="{% url 'main:logout' %}">logout</a>
+        {% endif %}
+        {% if messages %}
+            | <span class="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </span>
         {% endif %}
     </nav>
 

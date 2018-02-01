@@ -15,3 +15,9 @@ dependencies:
 test:
   override:
     - pytest
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - ./deploy.sh

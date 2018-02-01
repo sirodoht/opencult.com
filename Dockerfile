@@ -7,7 +7,7 @@ RUN pip install -U pip
 ADD requirements.txt /code/
 RUN pip install -Ur /code/requirements.txt
 
-ADD CHECKS /app/
+# ADD CHECKS /app/
 ADD * /code/
 
 WORKDIR /code

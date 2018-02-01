@@ -30,7 +30,6 @@ DEBUG = True if os.getenv('NODEBUG') is None else False
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '34.244.157.144',
     'opencult.com',
 ]
 

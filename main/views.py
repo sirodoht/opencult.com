@@ -127,7 +127,7 @@ def logout(request):
 @require_safe
 def cult(request, cult_slug):
     cult = Cult.objects.get(slug=cult_slug)
-    events_list = Event.objects.filter(cult=cult).order_by('-date', 'time')
+    events_list = Event.objects.filter(cult=cult).order_by('-date', '-time')
 
     membership = None  # not authed
     if request.user.is_authenticated:
@@ -170,8 +170,10 @@ def event(request, cult_slug, event_slug):
     return render(request, 'main/event.html', {
         'color_class': 'blue-mixin',
         'dark_color_class': 'blue-dark-mixin',
+        'nav_show_cult': True,
         'nav_show_edit_event': True,
         'nav_show_rsvp_event': True,
+        'now': timezone.now(),
         'event': event,
         'cult': cult,
         'membership': membership,
@@ -284,7 +286,7 @@ def new_event(request, cult_slug):
         'color_class': 'blue-mixin',
         'dark_color_class': 'blue-dark-mixin',
         'nav_show_own_cults': True,
-        'nav_show_edit_cult': True,
+        'nav_show_cult': True,
         'nav_show_new_event': True,
         'cult': cult,
         'form': form,
@@ -311,8 +313,8 @@ def edit_cult(request, cult_slug):
     return render(request, 'main/edit_cult.html', {
         'color_class': 'green-mixin',
         'dark_color_class': 'green-dark-mixin',
+        'nav_show_cult': True,
         'nav_show_new_event': True,
-        'nav_show_edit_cult': True,
         'cult': cult,
         'form': form,
     })
@@ -338,7 +340,7 @@ def edit_event(request, cult_slug, event_slug):
     return render(request, 'main/edit_event.html', {
         'color_class': 'blue-mixin',
         'dark_color_class': 'blue-dark-mixin',
-        'nav_show_edit_event': True,
+        'nav_show_cult': True,
         'nav_show_new_event': True,
         'cult': cult,
         'event': event,
@@ -362,6 +364,11 @@ def membership(request, cult_slug):
 @login_required
 def delete_membership(request, cult_slug):
     cult = Cult.objects.get(slug=cult_slug)
+
+    # solo cult leader cannot unjoin
+    if request.user in cult.leaders_list and cult.leaders_count == 1:
+        return HttpResponse(status=403)
+
     Membership.objects.get(user=request.user, cult=cult).delete()
     return redirect('main:cult', cult_slug=cult.slug)
 
@@ -370,6 +377,12 @@ def delete_membership(request, cult_slug):
 @login_required
 def attendance(request, cult_slug, event_slug):
     event = Event.objects.get(slug=event_slug)
+
+    # attendance cannot change on past events
+    now = timezone.now()
+    if event.date > now.date():
+        return HttpResponse(status=403)
+
     Attendance.objects.create(
         user=request.user,
         event=event,
@@ -381,5 +394,11 @@ def attendance(request, cult_slug, event_slug):
 @login_required
 def delete_attendance(request, cult_slug, event_slug):
     event = Event.objects.get(slug=event_slug)
+
+    # attendance cannot change on past events
+    now = timezone.now()
+    if event.date > now.date():
+        return HttpResponse(status=403)
+
     Attendance.objects.get(user=request.user, event=event).delete()
     return redirect('main:event', cult_slug=cult_slug, event_slug=event.slug)

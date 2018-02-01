@@ -167,3 +167,15 @@ AUTHENTICATION_BACKENDS = (
     'main.auth_backends.EmailTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+
+# Security middleware
+# https://docs.djangoproject.com/en/1.11/ref/middleware/#module-django.middleware.security
+
+if not DEBUG:
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True

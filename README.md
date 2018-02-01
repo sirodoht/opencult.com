@@ -66,5 +66,5 @@ isort
 
 `flake8` is used to lint the Python code:
 ```sh
-flake8
+flake8 main/
 ```

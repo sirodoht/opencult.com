@@ -1,8 +1,8 @@
 import pytest
 from django.test import Client
 
+from main.forms import EditEventForm, EventForm
 from main.models import Attendance, Cult, Event, Membership
-from main.forms import EventForm, EditEventForm
 
 
 @pytest.mark.django_db()

@@ -1,6 +1,7 @@
 import shortuuid
 from django.contrib.auth.models import User
 
+
 def generate_username(email):
     username = email.split('@')[0]
 

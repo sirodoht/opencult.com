@@ -29,7 +29,7 @@
                     <div class="form-error">{{ error|escape }}</div>
                 {% endfor %}
             {% endif %}
-            <textarea name="about" rows="6" id="id_about">{{ form.about.value }}</textarea>
+            <textarea name="about" rows="6" id="id_about">{{ form.about.value|default:"" }}</textarea>
 
             {% csrf_token %}
 

@@ -15,7 +15,7 @@
 
         <div class="section-label">About</div>
         <div class="section-body">
-            {{ user.profile.about }}
+            {{ user.profile.about|default:"" }}
         </div>
 
         <div class="section-label">Leader of</div>

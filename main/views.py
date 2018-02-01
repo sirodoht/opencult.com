@@ -231,7 +231,7 @@ def new_cult(request):
                 user=request.user,
                 role=Membership.LEADER,
             )
-            return redirect('main:new_cult')
+            return redirect('main:cult', cult_slug=new_cult.slug)
     else:
         form = CultForm()
 

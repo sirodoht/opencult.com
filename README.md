@@ -61,7 +61,7 @@ pytest
 
 `isort` is used to sort imports:
 ```sh
-isort -rc main/ -s main/migrations/
+isort
 ```
 
 `flake8` is used to lint the Python code:

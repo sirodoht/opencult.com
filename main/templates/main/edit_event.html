@@ -62,7 +62,7 @@
                     <div class="form-error">{{ error|escape }}</div>
                 {% endfor %}
             {% endif %}
-            <input type="text" name="venue" value="{{ form.venue.value }}" maxlength="100" id="id_venue">
+            <input type="text" name="venue" value="{{ form.venue.value|default:"" }}" maxlength="100" id="id_venue">
 
             <label for="id_address" class="section-label">Address</label>
             {% if form.address.errors %}
@@ -70,7 +70,7 @@
                     <div class="form-error">{{ error|escape }}</div>
                 {% endfor %}
             {% endif %}
-            <input type="text" name="address" value="{{ form.address.value }}" placeholder="eg. 37 Sunshine Avenue, 542 31" maxlength="100" required id="id_address">
+            <input type="text" name="address" value="{{ form.address.value|default:"" }}" placeholder="eg. 37 Sunshine Avenue, 542 31" maxlength="100" required id="id_address">
 
             <label for="id_maps_url" class="section-label">Maps url</label>
             {% if form.maps.errors %}
@@ -78,7 +78,7 @@
                     <div class="form-error">{{ error|escape }}</div>
                 {% endfor %}
             {% endif %}
-            <input type="url" name="maps_url" value="{{ form.maps_url.value }}" placeholder="eg. https://goo.gl/maps/rhMbTatoPCP2" maxlength="200" id="id_maps_url">
+            <input type="url" name="maps_url" value="{{ form.maps_url.value|default:"" }}" placeholder="eg. https://goo.gl/maps/rhMbTatoPCP2" maxlength="200" id="id_maps_url">
 
             {% csrf_token %}
 

@@ -153,13 +153,6 @@ def event(request, cult_slug, event_slug):
     event = Event.objects.get(slug=event_slug)
     cult = Cult.objects.get(slug=cult_slug)
 
-    membership = None  # not authed
-    if request.user.is_authenticated:
-        try:
-            membership = Membership.objects.get(user=request.user, cult=cult)
-        except Membership.DoesNotExist:  # user is not member
-            membership = None
-
     attendance = None  # not authed
     if request.user.is_authenticated:
         try:
@@ -176,7 +169,6 @@ def event(request, cult_slug, event_slug):
         'now': timezone.now(),
         'event': event,
         'cult': cult,
-        'membership': membership,
         'attendance': attendance,
     })
 
@@ -380,7 +372,7 @@ def attendance(request, cult_slug, event_slug):
 
     # attendance cannot change on past events
     now = timezone.now()
-    if event.date > now.date():
+    if event.date < now.date():
         return HttpResponse(status=403)
 
     Attendance.objects.create(
@@ -397,7 +389,7 @@ def delete_attendance(request, cult_slug, event_slug):
 
     # attendance cannot change on past events
     now = timezone.now()
-    if event.date > now.date():
+    if event.date < now.date():
         return HttpResponse(status=403)
 
     Attendance.objects.get(user=request.user, event=event).delete()

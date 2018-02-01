@@ -272,6 +272,7 @@ nav {
   background: #dcd3e0;
   color: #000;
   padding: 8px 20px;
+  line-height: 20px;
 }
 
 input[type="text"],

@@ -28,10 +28,24 @@
         {% if request.user.is_authenticated %}
             | <a href="{% url 'main:profile' request.user.username %}">my cults</a>
         {% endif %}
-        {% for cult in my_cults %}
-            | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
-        {% endfor %}
-        {% if cult and events_list %}
+        {% if nav_show_own_cults %}
+            {% for cult in own_cults %}
+                | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
+            {% endfor %}
+        {% endif %}
+        {% if nav_show_edit_cult and request.user in cult.leaders %}
+            | <a href="{% url 'main:edit_cult' cult.slug %}">edit {{ cult.name }}</a>
+        {% endif %}
+        {% if nav_show_new_event and request.user in cult.leaders %}
+            | <a href="{% url 'main:new_event' cult.slug %}">new event for {{ cult.name }}</a>
+        {% endif %}
+        {% if nav_show_edit_event and request.user in event.cult.leaders %}
+            | <a href="{% url 'main:edit_event' event.cult.slug event.slug %}">edit {{ event.title }} event</a>
+        {% endif %}
+        {% if nav_show_logout %}
+            | <a href="{% url 'main:logout' %}">logout</a>
+        {% endif %}
+        {% if nav_show_join_cult %}
             {% if membership %}
                 <form action="{% url 'main:delete_membership' cult.slug %}" method="post" class="inline">
                     {% csrf_token %}
@@ -43,13 +57,6 @@
                     | <input type="submit" value="join">
                 </form>
             {% endif %}
-        {% endif %}
-        {% if cult and membership.role == 'leader' %}
-            | <a href="{% url 'main:edit_cult' cult.slug %}">edit {{ cult.name }}</a>
-            | <a href="{% url 'main:new_event' cult.slug %}">new event for {{ cult.name }}</a>
-        {% endif %}
-        {% if event and membership.role == 'leader' %}
-            | <a href="{% url 'main:edit_event' event.cult.slug event.slug %}">edit {{ event.title }} event</a>
         {% endif %}
         {% if event and membership %}
             {% if attendance %}
@@ -63,9 +70,6 @@
                     | <input type="submit" value="rsvp">
                 </form>
             {% endif %}
-        {% endif %}
-        {% if '@' in request.path %}
-            | <a href="{% url 'main:logout' %}">logout</a>
         {% endif %}
         {% if messages %}
             | <span class="alert">

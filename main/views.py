@@ -32,16 +32,17 @@ def index(request):
     events_list = Event.objects.order_by('-date')
     attending_events_list = Event.objects.filter(attendees__username=request.user.username).order_by('-date', 'time')
 
-    my_cults = None
+    own_cults = None
     if request.user.is_authenticated:
-        my_cults = Cult.objects.filter(membership__user=request.user, membership__role=Membership.LEADER)
+        own_cults = Cult.objects.filter(membership__user=request.user, membership__role=Membership.LEADER)
 
     return render(request, 'main/index.html', {
         'color_class': 'purple-mixin',
         'dark_color_class': 'purple-dark-mixin',
+        'nav_show_own_cults': True,
         'events_list': events_list,
         'attending_events_list': attending_events_list,
-        'my_cults': my_cults,
+        'own_cults': own_cults,
     })
 
 
@@ -50,6 +51,8 @@ def login(request):
     if request.user.is_authenticated:
         return redirect('main:index')
     return render(request, 'main/login.html', {
+        'color_class': 'yellow-mixin',
+        'dark_color_class': 'yellow-dark-mixin',
         'next': request.GET.get('next'),
     })
 
@@ -57,7 +60,7 @@ def login(request):
 @require_http_methods(['HEAD', 'GET', 'POST'])
 def token_post(request):
     if request.user.is_authenticated:
-        messages.error(request, 'You are already logged in.')
+        messages.error(request, 'You are already logged in')
         return redirect(settings.LOGIN_REDIRECT_URL)
 
     if request.GET.get('d'):
@@ -65,7 +68,7 @@ def token_post(request):
         user = authenticate(token=request.GET['d'])
         if user is not None:
             dj_login(request, user)
-            messages.success(request, 'Login successful.')
+            messages.success(request, 'Login successful')
             return redirect(settings.LOGIN_REDIRECT_URL)
         else:
             messages.error(request, 'The login link was invalid or has expired. Please try to log in again.')
@@ -127,6 +130,9 @@ def cult(request, cult_slug):
     return render(request, 'main/cult.html', {
         'color_class': 'green-mixin',
         'dark_color_class': 'green-dark-mixin',
+        'nav_show_edit_cult': True,
+        'nav_show_new_event': True,
+        'nav_show_join_cult': True,
         'cult': cult,
         'membership': membership,
         'events_list': events_list,
@@ -155,6 +161,8 @@ def event(request, cult_slug, event_slug):
     return render(request, 'main/event.html', {
         'color_class': 'blue-mixin',
         'dark_color_class': 'blue-dark-mixin',
+        'nav_show_edit_event': True,
+        'nav_show_rsvp_event': True,
         'event': event,
         'cult': cult,
         'membership': membership,
@@ -167,15 +175,23 @@ def about(request):
     return render(request, 'main/about.html', {
         'color_class': 'purple-mixin',
         'dark_color_class': 'purple-dark-mixin',
+        'nav_show_own_cults': True,
     })
 
 
 @require_safe
 def profile(request, username):
     user = User.objects.get(username=username)
+
+    own_cults = None
+    if request.user.is_authenticated:
+        own_cults = Cult.objects.filter(membership__user=request.user, membership__role=Membership.LEADER)
+
     return render(request, 'main/profile.html', {
         'color_class': 'yellow-mixin',
         'dark_color_class': 'yellow-dark-mixin',
+        'nav_show_own_cults': True,
+        'own_cults': own_cults,
         'user': user,
     })
 
@@ -197,6 +213,8 @@ def edit_profile(request, username):
     return render(request, 'main/edit_profile.html', {
         'color_class': 'yellow-mixin',
         'dark_color_class': 'yellow-dark-mixin',
+        'nav_show_own_cults': True,
+        'nav_show_logout': True,
         'form': form,
     })
 
@@ -222,6 +240,7 @@ def new_cult(request):
     return render(request, 'main/new_cult.html', {
         'color_class': 'green-mixin',
         'dark_color_class': 'green-dark-mixin',
+        'nav_show_own_cults': True,
         'form': form,
     })
 
@@ -255,6 +274,9 @@ def new_event(request, cult_slug):
     return render(request, 'main/new_event.html', {
         'color_class': 'blue-mixin',
         'dark_color_class': 'blue-dark-mixin',
+        'nav_show_own_cults': True,
+        'nav_show_edit_cult': True,
+        'nav_show_new_event': True,
         'cult': cult,
         'form': form,
     })
@@ -280,6 +302,8 @@ def edit_cult(request, cult_slug):
     return render(request, 'main/edit_cult.html', {
         'color_class': 'green-mixin',
         'dark_color_class': 'green-dark-mixin',
+        'nav_show_new_event': True,
+        'nav_show_edit_cult': True,
         'cult': cult,
         'form': form,
     })
@@ -305,6 +329,8 @@ def edit_event(request, cult_slug, event_slug):
     return render(request, 'main/edit_event.html', {
         'color_class': 'blue-mixin',
         'dark_color_class': 'blue-dark-mixin',
+        'nav_show_edit_event': True,
+        'nav_show_new_event': True,
         'cult': cult,
         'event': event,
         'form': form,

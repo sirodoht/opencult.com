@@ -27,6 +27,10 @@
                         | <a href="{% url 'main:event' event.cult.slug event.slug %}#attendees" class="item-event-subtext-link">22 attendees</a>
                     </div>
                 </div>
+            {% empty %}
+                <div class="home-event">
+                    You are not attending any events.
+                </div>
             {% endfor %}
         {% endif %}
 

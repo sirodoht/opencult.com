@@ -28,6 +28,12 @@ urlpatterns = [
     # e.g. /some-username/
     path('@<username>/', views.profile, name='profile'),
 
+    # e.g. /membership/some-cult-slug/delete/
+    path('membership/<slug:cult_slug>/delete/', views.delete_membership, name='delete_membership'),
+
+    # e.g. /membership/some-cult-slug/
+    path('membership/<slug:cult_slug>/', views.membership, name='membership'),
+
     # e.g. /some-cult-slug/new/
     path('<slug:cult_slug>/new/', views.new_event, name='new_event'),
 

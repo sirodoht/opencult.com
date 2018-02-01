@@ -44,6 +44,10 @@ class Cult(models.Model):
     city = models.CharField(max_length=100)
 
     @property
+    def leaders_count(self):
+        return self.members.filter(membership__role=Membership.LEADER).count()
+
+    @property
     def leaders_list(self):
         return self.members.filter(membership__role=Membership.LEADER)
 

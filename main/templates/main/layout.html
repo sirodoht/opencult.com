@@ -46,16 +46,18 @@
             | <a href="{% url 'main:logout' %}">logout</a>
         {% endif %}
         {% if nav_show_join_cult %}
-            {% if membership %}
-                <form action="{% url 'main:delete_membership' cult.slug %}" method="post" class="inline">
-                    {% csrf_token %}
-                    | <input type="submit" value="un-join">
-                </form>
-            {% else %}
-                <form action="{% url 'main:membership' cult.slug %}" method="post" class="inline">
-                    {% csrf_token %}
-                    | <input type="submit" value="join">
-                </form>
+            {% if request.user not in cult.leaders_list or cult.leaders_count != 1 %}
+                {% if membership %}
+                    <form action="{% url 'main:delete_membership' cult.slug %}" method="post" class="inline">
+                        {% csrf_token %}
+                        | <input type="submit" value="un-join">
+                    </form>
+                {% else %}
+                    <form action="{% url 'main:membership' cult.slug %}" method="post" class="inline">
+                        {% csrf_token %}
+                        | <input type="submit" value="join">
+                    </form>
+                {% endif %}
             {% endif %}
         {% endif %}
         {% if event and membership %}

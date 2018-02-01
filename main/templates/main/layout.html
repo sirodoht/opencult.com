@@ -48,6 +48,19 @@
         {% if event and membership.role == 'leader' %}
             | <a href="{% url 'main:edit_event' event.cult.slug event.slug %}">edit {{ event.title }} event</a>
         {% endif %}
+        {% if event and membership %}
+            {% if attendance %}
+                <form action="{% url 'main:delete_attendance' event.cult.slug event.slug %}" method="post" class="inline">
+                    {% csrf_token %}
+                    | <input type="submit" value="un-rsvp">
+                </form>
+            {% else %}
+                <form action="{% url 'main:attendance' event.cult.slug event.slug %}" method="post" class="inline">
+                    {% csrf_token %}
+                    | <input type="submit" value="rsvp">
+                </form>
+            {% endif %}
+        {% endif %}
         {% if '@' in request.path %}
             | <a href="{% url 'main:logout' %}">logout</a>
         {% endif %}

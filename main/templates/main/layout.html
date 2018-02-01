@@ -33,13 +33,13 @@
                 | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
             {% endfor %}
         {% endif %}
-        {% if nav_show_edit_cult and request.user in cult.leaders %}
+        {% if nav_show_edit_cult and request.user in cult.leaders_list %}
             | <a href="{% url 'main:edit_cult' cult.slug %}">edit {{ cult.name }}</a>
         {% endif %}
-        {% if nav_show_new_event and request.user in cult.leaders %}
+        {% if nav_show_new_event and request.user in cult.leaders_list %}
             | <a href="{% url 'main:new_event' cult.slug %}">new event for {{ cult.name }}</a>
         {% endif %}
-        {% if nav_show_edit_event and request.user in event.cult.leaders %}
+        {% if nav_show_edit_event and request.user in event.cult.leaders_list %}
             | <a href="{% url 'main:edit_event' event.cult.slug event.slug %}">edit {{ event.title }} event</a>
         {% endif %}
         {% if nav_show_logout %}

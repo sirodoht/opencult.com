@@ -151,12 +151,12 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'
-EMAIL_HOST_USER = os.getenv('AVOCADO_EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('AVOCADO_EMAIL_HOST_PASSWORD')
+EMAIL_HOST = 'email-smtp.us-west-1.amazonaws.com'
+EMAIL_HOST_USER = os.getenv('OPENCULT_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('OPENCULT_EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 
-DEFAULT_FROM_EMAIL = 'hi@avocadojobs.com'
+DEFAULT_FROM_EMAIL = 'hi@opencult.com'
 EMAIL_ALERT = 'theodorekeloglou@gmail.com'
 
 

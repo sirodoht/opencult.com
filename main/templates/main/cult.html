@@ -54,7 +54,7 @@
                     {% else %}
                         {{ event.address }}
                     {% endif %}
-                    | <a href="#attendees" class="item-event-subtext-link">22 attendees</a>
+                    | <a href="#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
                 </div>
             </div>
         {% empty %}

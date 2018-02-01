@@ -33,7 +33,7 @@ class EditEventForm(forms.ModelForm):
 
 
 class UserForm(forms.ModelForm):
-    about = forms.CharField(widget=forms.Textarea)
+    about = forms.CharField(widget=forms.Textarea, required=False)
 
     class Meta:
         model = User

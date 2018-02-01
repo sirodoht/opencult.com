@@ -12,3 +12,4 @@ ADD * /code/
 
 WORKDIR /code
 COPY . /code/
+RUN /code/manage.py collectstatic --noinput

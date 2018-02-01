@@ -4,7 +4,7 @@ import time
 
 import shortuuid
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
@@ -61,7 +61,7 @@ def token_post(request):
         # The user has clicked a login link.
         user = authenticate(token=request.GET['d'])
         if user is not None:
-            login(request, user)
+            dj_login(request, user)
             messages.success(request, 'Login successful.')
             return redirect(settings.LOGIN_REDIRECT_URL)
         else:
@@ -104,7 +104,7 @@ def email_login_link(request, email):
 @require_safe
 @login_required
 def logout(request):
-    logout(request)
+    dj_logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect(settings.LOGOUT_REDIRECT_URL)
 

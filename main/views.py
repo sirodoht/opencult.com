@@ -292,3 +292,22 @@ def delete_membership(request, cult_slug):
         cult = Cult.objects.get(slug=cult_slug)
         Membership.objects.get(user=request.user, cult=cult).delete()
         return redirect('main:cult', cult_slug=cult.slug)
+
+
+@login_required
+def attendance(request, cult_slug, event_slug):
+    if request.method == 'POST':
+        event = Event.objects.get(slug=event_slug)
+        Attendance.objects.create(
+            user=request.user,
+            event=event,
+        )
+        return redirect('main:event', cult_slug=cult_slug, event_slug=event.slug)
+
+
+@login_required
+def delete_attendance(request, cult_slug, event_slug):
+    if request.method == 'POST':
+        event = Event.objects.get(slug=event_slug)
+        Attendance.objects.get(user=request.user, event=event).delete()
+        return redirect('main:event', cult_slug=cult_slug, event_slug=event.slug)

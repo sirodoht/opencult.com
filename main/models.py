@@ -72,7 +72,7 @@ class Event(models.Model):
     date = models.DateField(default=timezone.now)
     time = models.TimeField(default=timezone.now)
     venue = models.CharField(max_length=100, blank=True, null=True)
-    address = models.CharField(max_length=100)
+    address = models.CharField(max_length=100, blank=True, null=True)
     maps_url = models.URLField(blank=True, null=True)
 
     @property

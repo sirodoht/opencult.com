@@ -70,7 +70,7 @@
                     <div class="form-error">{{ error|escape }}</div>
                 {% endfor %}
             {% endif %}
-            <input type="text" name="address" value="{{ form.address.value|default:"" }}" placeholder="eg. 37 Sunshine Avenue, 542 31" maxlength="100" required id="id_address">
+            <input type="text" name="address" value="{{ form.address.value|default:"" }}" placeholder="eg. 37 Sunshine Avenue, 542 31" maxlength="100" id="id_address">
 
             <label for="id_maps_url" class="section-label">Maps url</label>
             {% if form.maps.errors %}

@@ -275,6 +275,7 @@ nav {
 }
 
 input[type="text"],
+input[type="email"],
 input[type="url"],
 input[type="date"],
 input[type="time"],
@@ -300,6 +301,10 @@ form.inline {
   color: #eb2f2f;
   font-size: 11px;
   line-height: 18px;
+}
+
+p {
+  width: 360px;
 }
 
 .purple-mixin {
@@ -332,6 +337,10 @@ form.inline {
 
 .yellow-dark-mixin {
   background: #e0ded3;
+}
+
+.alert {
+  color: #eb2f2f;
 }
 
 .section {

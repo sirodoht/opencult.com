@@ -120,7 +120,7 @@ def email_login_link(request, email):
 @login_required
 def logout(request):
     dj_logout(request)
-    messages.success(request, 'You have been logged out.')
+    messages.success(request, 'You have been logged out')
     return redirect(settings.LOGOUT_REDIRECT_URL)
 
 

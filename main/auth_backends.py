@@ -7,6 +7,8 @@ from django.core.signing import BadSignature, Signer
 
 from opencult import settings
 
+from .helpers import generate_username
+
 
 class EmailTokenBackend:
     def get_user(self, user_id):
@@ -16,6 +18,7 @@ class EmailTokenBackend:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+
 
     def authenticate(self, token=None):
         """Authenticate a user given a signed token."""
@@ -30,5 +33,9 @@ class EmailTokenBackend:
 
         User = get_user_model()
 
-        user, created = User.objects.get_or_create(email=data['e'], username=data['e'])
+        user, created = User.objects.get_or_create(email=data['e'])
+        if created:
+            user.username = generate_username(data['e'])
+            user.save()
+
         return user

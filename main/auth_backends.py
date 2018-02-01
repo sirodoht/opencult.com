@@ -19,7 +19,6 @@ class EmailTokenBackend:
         except User.DoesNotExist:
             return None
 
-
     def authenticate(self, token=None):
         """Authenticate a user given a signed token."""
         try:

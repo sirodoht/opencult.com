@@ -13,7 +13,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.core.signing import Signer
 from django.db.utils import IntegrityError
-from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
@@ -185,7 +184,7 @@ def profile(request, username):
 def edit_profile(request, username):
     user = User.objects.get(username=username)
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=user, initial={ 'about': user.profile.about })
+        form = UserForm(request.POST, instance=user, initial={'about': user.profile.about})
         if form.is_valid():
             updated_user = form.save(commit=False)
             updated_user.profile.about = form.cleaned_data['about']
@@ -193,7 +192,7 @@ def edit_profile(request, username):
             messages.success(request, 'Profile updated')
             return redirect('main:edit_profile', updated_user.username)
     else:
-        form = UserForm(instance=user, initial={ 'about': user.profile.about })
+        form = UserForm(instance=user, initial={'about': user.profile.about})
 
     return render(request, 'main/edit_profile.html', {
         'color_class': 'yellow-mixin',

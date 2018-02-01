@@ -9,6 +9,7 @@ from .models import Attendance, Cult, Event, Membership, Profile
 class OpCuAdmin(UserAdmin):
     list_display = ('id', 'username', 'date_joined', 'last_login',)
 
+
 admin.site.unregister(User)
 admin.site.register(User, OpCuAdmin)
 
@@ -21,12 +22,14 @@ admin.site.register(Profile)
 class CultAdmin(admin.ModelAdmin):
     list_display = ('name', 'city',)
 
+
 admin.site.register(Cult, CultAdmin)
 
 
 # Event
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'cult', 'date', 'time', 'venue',)
+
 
 admin.site.register(Event, EventAdmin)
 
@@ -35,11 +38,13 @@ admin.site.register(Event, EventAdmin)
 class MembershipAdmin(admin.ModelAdmin):
     list_display = ('cult', 'user', 'role', 'date_joined',)
 
+
 admin.site.register(Membership, MembershipAdmin)
 
 
 # Attendance
 class AttendanceAdmin(admin.ModelAdmin):
     list_display = ('event', 'user', 'date_rsvped',)
+
 
 admin.site.register(Attendance, AttendanceAdmin)

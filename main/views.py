@@ -20,7 +20,7 @@ from django.views.decorators.http import require_POST, require_safe, require_htt
 
 from opencult import settings
 
-from .forms import CultForm, EditCultForm, EditEventForm, EmailForm, EventForm
+from .forms import CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
 from .models import Attendance, Cult, Event, Membership
 
 
@@ -174,6 +174,27 @@ def profile(request, username):
         'color_class': 'yellow-mixin',
         'dark_color_class': 'yellow-dark-mixin',
         'user': user,
+    })
+
+
+@require_http_methods(['HEAD', 'GET', 'POST'])
+def edit_profile(request, username):
+    user = User.objects.get(username=username)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user, initial={ 'about': user.profile.about })
+        if form.is_valid():
+            updated_user = form.save(commit=False)
+            updated_user.profile.about = form.cleaned_data['about']
+            updated_user.save()
+            messages.success(request, 'Profile updated')
+            return redirect('main:edit_profile', updated_user.username)
+    else:
+        form = UserForm(instance=user, initial={ 'about': user.profile.about })
+
+    return render(request, 'main/edit_profile.html', {
+        'color_class': 'yellow-mixin',
+        'dark_color_class': 'yellow-dark-mixin',
+        'form': form,
     })
 
 

@@ -29,7 +29,8 @@ def index(request):
 
     my_cults = None
     if request.user.is_authenticated:
-        my_cults = Cult.objects.filter(membership__user=request.user)
+        my_cults = Cult.objects.filter(membership__user=request.user, membership__role=Membership.LEADER)
+
     return render(request, 'main/index.html', {
         'color_class': 'purple-mixin',
         'dark_color_class': 'purple-dark-mixin',

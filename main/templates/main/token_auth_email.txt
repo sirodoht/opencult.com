@@ -7,8 +7,11 @@ You can also share it with anyone you want to access your account.
 This link will expire in 30 minutes.
 
 Click to log in:
-
+{% if 'localhost' in current_site.domain %}
+http://{{ current_site.domain }}{% url 'main:auth' %}?d={{ data }}
+{% else %}
 https://{{ current_site.domain }}{% url 'main:auth' %}?d={{ data }}
+{% endif %}
 
 <3,
 The Open Cult Team

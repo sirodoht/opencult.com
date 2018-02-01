@@ -5,7 +5,7 @@
 
 ## Setup
 
-The Django project is `opencult`. There is one Django app, [`main`](/main).
+The Django project is [`opencult`](/opencult). There is one Django app, [`main`](/main).
 
 Create virtualenv, enable it and then install requirements:
 ```sh

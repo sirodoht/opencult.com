@@ -22,11 +22,11 @@ pip install -r requirements.txt
 
 This project uses PostgreSQL.
 
-```sh
-name: 'opencult'
-user: 'opencult'
-password: 'opencult'
-port: '5432'
+```
+name: opencult
+user: opencult
+password: opencult
+port: 5432
 ```
 
 > [How to: Create PostgreSQL DB](https://gist.github.com/sirodoht/0666e232e1baf76f76bac43eb2600e2b).

@@ -29,7 +29,7 @@ password: opencult
 port: 5432
 ```
 
-> [How to: Create PostgreSQL DB](https://gist.github.com/sirodoht/0666e232e1baf76f76bac43eb2600e2b).
+> [How to: Create PostgreSQL DB](https://gist.github.com/sirodoht/0666e232e1baf76f76bac43eb2600e2b)
 
 Credentials [here](https://github.com/sirodoht/opencult.com/blob/master/opencult/settings.py),
 or alternatively set `DATABASE_URL` in your shell environment with the database URL. Eg:

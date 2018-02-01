@@ -23,6 +23,6 @@ def test_email_form(django_user_model):
     c = Client()
     response = c.post('/auth/', form_data)
     assert response.status_code == 302
-    response = c.post('/login/')
+    response = c.get('/login/')
     assert response.status_code == 200
     assert b'Login email sent! Please check your inbox and click on the link.' in response.content

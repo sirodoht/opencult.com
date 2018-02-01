@@ -28,6 +28,19 @@
         {% for cult in my_cults %}
             | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
         {% endfor %}
+        {% if cult and events_list %}
+            {% if membership %}
+                <form action="{% url 'main:delete_membership' cult.slug %}" method="post" class="inline">
+                    {% csrf_token %}
+                    | <input type="submit" value="un-join">
+                </form>
+            {% else %}
+                <form action="{% url 'main:membership' cult.slug %}" method="post" class="inline">
+                    {% csrf_token %}
+                    | <input type="submit" value="join">
+                </form>
+            {% endif %}
+        {% endif %}
         {% if cult and membership.role == 'leader' %}
             | <a href="{% url 'main:edit_cult' cult.slug %}">edit {{ cult.name }}</a>
             | <a href="{% url 'main:new_event' cult.slug %}">new event for {{ cult.name }}</a>

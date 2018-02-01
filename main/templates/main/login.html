@@ -39,13 +39,5 @@
             <input type="submit" value="login">
         </form>
 
-        {% if messages %}
-            <p class="alert">
-                {% for message in messages %}
-                    {{ message }}
-                    <br>
-                {% endfor %}
-            </p>
-        {% endif %}
     </div>
 {% endblock %}

@@ -16,6 +16,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils.text import slugify
+from django.views.decorators.http import require_POST, require_safe, require_http_methods
 
 from opencult import settings
 
@@ -23,6 +24,7 @@ from .forms import CultForm, EditCultForm, EditEventForm, EmailForm, EventForm
 from .models import Attendance, Cult, Event, Membership
 
 
+@require_safe
 def index(request):
     events_list = Event.objects.order_by('-date')
     attending_events_list = Event.objects.filter(attendees__username=request.user.username).order_by('-date', 'time')
@@ -40,6 +42,7 @@ def index(request):
     })
 
 
+@require_safe
 def login(request):
     if request.user.is_authenticated:
         return redirect('main:index')
@@ -48,6 +51,7 @@ def login(request):
     })
 
 
+@require_http_methods(['HEAD', 'GET', 'POST'])
 def token_post(request):
     if request.user.is_authenticated:
         messages.error(request, 'You are already logged in.')
@@ -97,6 +101,7 @@ def email_login_link(request, email):
     )
 
 
+@require_safe
 @login_required
 def logout(request):
     logout(request)
@@ -104,6 +109,7 @@ def logout(request):
     return redirect(settings.LOGOUT_REDIRECT_URL)
 
 
+@require_safe
 def cult(request, cult_slug):
     cult = Cult.objects.get(slug=cult_slug)
     events_list = Event.objects.filter(cult=cult).order_by('-date', 'time')
@@ -124,6 +130,7 @@ def cult(request, cult_slug):
     })
 
 
+@require_safe
 def event(request, cult_slug, event_slug):
     event = Event.objects.get(slug=event_slug)
     cult = Cult.objects.get(slug=cult_slug)
@@ -152,6 +159,7 @@ def event(request, cult_slug, event_slug):
     })
 
 
+@require_safe
 def about(request):
     return render(request, 'main/about.html', {
         'color_class': 'purple-mixin',
@@ -159,6 +167,7 @@ def about(request):
     })
 
 
+@require_safe
 def profile(request, username):
     user = User.objects.get(username=username)
     return render(request, 'main/profile.html', {
@@ -168,6 +177,7 @@ def profile(request, username):
     })
 
 
+@require_http_methods(['HEAD', 'GET', 'POST'])
 @login_required
 def new_cult(request):
     if request.method == 'POST':
@@ -192,6 +202,7 @@ def new_cult(request):
     })
 
 
+@require_http_methods(['HEAD', 'GET', 'POST'])
 @login_required
 def new_event(request, cult_slug):
     cult = Cult.objects.get(slug=cult_slug)
@@ -225,6 +236,7 @@ def new_event(request, cult_slug):
     })
 
 
+@require_http_methods(['HEAD', 'GET', 'POST'])
 @login_required
 def edit_cult(request, cult_slug):
     cult = Cult.objects.get(slug=cult_slug)
@@ -249,6 +261,7 @@ def edit_cult(request, cult_slug):
     })
 
 
+@require_http_methods(['HEAD', 'GET', 'POST'])
 @login_required
 def edit_event(request, cult_slug, event_slug):
     cult = Cult.objects.get(slug=cult_slug)
@@ -274,40 +287,40 @@ def edit_event(request, cult_slug, event_slug):
     })
 
 
+@require_POST
 @login_required
 def membership(request, cult_slug):
-    if request.method == 'POST':
-        cult = Cult.objects.get(slug=cult_slug)
-        Membership.objects.create(
-            user=request.user,
-            cult=cult,
-            role=Membership.MEMBER,
-        )
-        return redirect('main:cult', cult_slug=cult.slug)
+    cult = Cult.objects.get(slug=cult_slug)
+    Membership.objects.create(
+        user=request.user,
+        cult=cult,
+        role=Membership.MEMBER,
+    )
+    return redirect('main:cult', cult_slug=cult.slug)
 
 
+@require_POST
 @login_required
 def delete_membership(request, cult_slug):
-    if request.method == 'POST':
-        cult = Cult.objects.get(slug=cult_slug)
-        Membership.objects.get(user=request.user, cult=cult).delete()
-        return redirect('main:cult', cult_slug=cult.slug)
+    cult = Cult.objects.get(slug=cult_slug)
+    Membership.objects.get(user=request.user, cult=cult).delete()
+    return redirect('main:cult', cult_slug=cult.slug)
 
 
+@require_POST
 @login_required
 def attendance(request, cult_slug, event_slug):
-    if request.method == 'POST':
-        event = Event.objects.get(slug=event_slug)
-        Attendance.objects.create(
-            user=request.user,
-            event=event,
-        )
-        return redirect('main:event', cult_slug=cult_slug, event_slug=event.slug)
+    event = Event.objects.get(slug=event_slug)
+    Attendance.objects.create(
+        user=request.user,
+        event=event,
+    )
+    return redirect('main:event', cult_slug=cult_slug, event_slug=event.slug)
 
 
+@require_POST
 @login_required
 def delete_attendance(request, cult_slug, event_slug):
-    if request.method == 'POST':
-        event = Event.objects.get(slug=event_slug)
-        Attendance.objects.get(user=request.user, event=event).delete()
-        return redirect('main:event', cult_slug=cult_slug, event_slug=event.slug)
+    event = Event.objects.get(slug=event_slug)
+    Attendance.objects.get(user=request.user, event=event).delete()
+    return redirect('main:event', cult_slug=cult_slug, event_slug=event.slug)

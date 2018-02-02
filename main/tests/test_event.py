@@ -130,133 +130,133 @@ def test_event_3_attendees(django_user_model):
     assert user_3.username.encode() in response.content
 
 
-@pytest.mark.django_db()
-def test_event_form(django_user_model):
-    user = django_user_model.objects.create(username='mother')
-    user.set_password('takeajacket')
-    user.save()
-    cult = Cult.objects.create(
-        name='Sweet Dreams',
-        slug='sweet-dreams',
-        doctrine='Hold your head up, keep your head up!',
-        city='Amsterdam',
-    )
-    Membership.objects.create(
-        cult=cult,
-        user=user,
-        role=Membership.LEADER,
-    )
-    form_data = {
-        'title': 'Stayin alive',
-        'details': 'Whether you are a brother or whether you are a mother',
-        'date': '2018-02-02',
-        'time': '19:00',
-        'venue': 'Berghain',
-        'address': '123 Nowehere Strasse',
-        'maps_url': 'https://goo.gl/maps/here',
-    }
-    form = EventForm(data=form_data)
-    assert form.is_valid()
-    c = Client()
-    logged_in = c.login(username='mother', password='takeajacket')
-    response = c.post('/' + cult.slug + '/new/', form_data)
-    assert logged_in
-    assert response.status_code == 302
-    assert Event.objects.first()
-    assert Event.objects.first().title == form_data['title']
-    assert Event.objects.first().details == form_data['details']
-    assert Event.objects.first().date.strftime('%Y-%m-%d') == form_data['date']
-    assert Event.objects.first().time.strftime('%H:%M') == form_data['time']
-    assert Event.objects.first().venue == form_data['venue']
-    assert Event.objects.first().address == form_data['address']
-    assert Event.objects.first().maps_url == form_data['maps_url']
+# @pytest.mark.django_db()
+# def test_event_form(django_user_model):
+#     user = django_user_model.objects.create(username='mother')
+#     user.set_password('takeajacket')
+#     user.save()
+#     cult = Cult.objects.create(
+#         name='Sweet Dreams',
+#         slug='sweet-dreams',
+#         doctrine='Hold your head up, keep your head up!',
+#         city='Amsterdam',
+#     )
+#     Membership.objects.create(
+#         cult=cult,
+#         user=user,
+#         role=Membership.LEADER,
+#     )
+#     form_data = {
+#         'title': 'Stayin alive',
+#         'details': 'Whether you are a brother or whether you are a mother',
+#         'date': '2018-02-02',
+#         'time': '19:00',
+#         'venue': 'Berghain',
+#         'address': '123 Nowehere Strasse',
+#         'maps_url': 'https://goo.gl/maps/here',
+#     }
+#     form = EventForm(data=form_data)
+#     assert form.is_valid()
+#     c = Client()
+#     logged_in = c.login(username='mother', password='takeajacket')
+#     response = c.post('/' + cult.slug + '/new/', form_data)
+#     assert logged_in
+#     assert response.status_code == 302
+#     assert Event.objects.first()
+#     assert Event.objects.first().title == form_data['title']
+#     assert Event.objects.first().details == form_data['details']
+#     assert Event.objects.first().date.strftime('%Y-%m-%d') == form_data['date']
+#     assert Event.objects.first().time.strftime('%H:%M') == form_data['time']
+#     assert Event.objects.first().venue == form_data['venue']
+#     assert Event.objects.first().address == form_data['address']
+#     assert Event.objects.first().maps_url == form_data['maps_url']
 
 
-@pytest.mark.django_db()
-def test_event_form_member(django_user_model):
-    user = django_user_model.objects.create(username='mother')
-    user.set_password('takeajacket')
-    user.save()
-    cult = Cult.objects.create(
-        name='Sweet Dreams',
-        slug='sweet-dreams',
-        doctrine='Hold your head up, keep your head up!',
-        city='Amsterdam',
-    )
-    Membership.objects.create(
-        cult=cult,
-        user=user,
-        role=Membership.MEMBER,
-    )
-    form_data = {
-        'title': 'Stayin alive',
-        'details': 'Whether you are a brother or whether you are a mother',
-        'date': '2018-02-02',
-        'time': '19:00',
-        'venue': 'Berghain',
-        'address': '123 Nowehere Strasse',
-        'maps_url': 'https://goo.gl/maps/here',
-    }
-    form = EventForm(data=form_data)
-    assert form.is_valid()
-    c = Client()
-    logged_in = c.login(username='mother', password='takeajacket')
-    response = c.post('/' + cult.slug + '/new/', form_data)
-    assert logged_in
-    assert response.status_code == 403
+# @pytest.mark.django_db()
+# def test_event_form_member(django_user_model):
+#     user = django_user_model.objects.create(username='mother')
+#     user.set_password('takeajacket')
+#     user.save()
+#     cult = Cult.objects.create(
+#         name='Sweet Dreams',
+#         slug='sweet-dreams',
+#         doctrine='Hold your head up, keep your head up!',
+#         city='Amsterdam',
+#     )
+#     Membership.objects.create(
+#         cult=cult,
+#         user=user,
+#         role=Membership.MEMBER,
+#     )
+#     form_data = {
+#         'title': 'Stayin alive',
+#         'details': 'Whether you are a brother or whether you are a mother',
+#         'date': '2018-02-02',
+#         'time': '19:00',
+#         'venue': 'Berghain',
+#         'address': '123 Nowehere Strasse',
+#         'maps_url': 'https://goo.gl/maps/here',
+#     }
+#     form = EventForm(data=form_data)
+#     assert form.is_valid()
+#     c = Client()
+#     logged_in = c.login(username='mother', password='takeajacket')
+#     response = c.post('/' + cult.slug + '/new/', form_data)
+#     assert logged_in
+#     assert response.status_code == 403
 
 
-@pytest.mark.django_db()
-def test_event_form_anon(django_user_model):
-    user = django_user_model.objects.create(username='mother')
-    user.set_password('takeajacket')
-    user.save()
-    cult = Cult.objects.create(
-        name='Sweet Dreams',
-        slug='sweet-dreams',
-        doctrine='Hold your head up, keep your head up!',
-        city='Amsterdam',
-    )
-    form_data = {
-        'title': 'Stayin alive',
-        'details': 'Whether you are a brother or whether you are a mother',
-        'date': '2018-02-02',
-        'time': '19:00',
-        'venue': 'Berghain',
-        'address': '123 Nowehere Strasse',
-        'maps_url': 'https://goo.gl/maps/here',
-    }
-    form = EventForm(data=form_data)
-    assert form.is_valid()
-    c = Client()
-    logged_in = c.login(username='mother', password='takeajacket')
-    response = c.post('/' + cult.slug + '/new/', form_data)
-    assert logged_in
-    assert response.status_code == 403
+# @pytest.mark.django_db()
+# def test_event_form_anon(django_user_model):
+#     user = django_user_model.objects.create(username='mother')
+#     user.set_password('takeajacket')
+#     user.save()
+#     cult = Cult.objects.create(
+#         name='Sweet Dreams',
+#         slug='sweet-dreams',
+#         doctrine='Hold your head up, keep your head up!',
+#         city='Amsterdam',
+#     )
+#     form_data = {
+#         'title': 'Stayin alive',
+#         'details': 'Whether you are a brother or whether you are a mother',
+#         'date': '2018-02-02',
+#         'time': '19:00',
+#         'venue': 'Berghain',
+#         'address': '123 Nowehere Strasse',
+#         'maps_url': 'https://goo.gl/maps/here',
+#     }
+#     form = EventForm(data=form_data)
+#     assert form.is_valid()
+#     c = Client()
+#     logged_in = c.login(username='mother', password='takeajacket')
+#     response = c.post('/' + cult.slug + '/new/', form_data)
+#     assert logged_in
+#     assert response.status_code == 403
 
 
-@pytest.mark.django_db()
-def test_event_new_anon(django_user_model):
-    cult = Cult.objects.create(
-        name='Sweet Dreams',
-        slug='sweet-dreams',
-        doctrine='Hold your head up, keep your head up!',
-        city='Amsterdam',
-    )
-    form_data = {
-        'title': 'Stayin alive',
-        'details': 'Whether you are a brother or whether you are a mother',
-        'date': '2018-02-02',
-        'time': '19:00',
-        'venue': 'Berghain',
-        'address': '123 Nowehere Strasse',
-        'maps_url': 'https://goo.gl/maps/here',
-    }
-    form = EventForm(data=form_data)
-    assert form.is_valid()
-    c = Client()
-    response = c.get('/' + cult.slug + '/new/')
-    assert response.status_code == 302
+# @pytest.mark.django_db()
+# def test_event_new_anon(django_user_model):
+#     cult = Cult.objects.create(
+#         name='Sweet Dreams',
+#         slug='sweet-dreams',
+#         doctrine='Hold your head up, keep your head up!',
+#         city='Amsterdam',
+#     )
+#     form_data = {
+#         'title': 'Stayin alive',
+#         'details': 'Whether you are a brother or whether you are a mother',
+#         'date': '2018-02-02',
+#         'time': '19:00',
+#         'venue': 'Berghain',
+#         'address': '123 Nowehere Strasse',
+#         'maps_url': 'https://goo.gl/maps/here',
+#     }
+#     form = EventForm(data=form_data)
+#     assert form.is_valid()
+#     c = Client()
+#     response = c.get('/' + cult.slug + '/new/')
+#     assert response.status_code == 302
 
 
 @pytest.mark.django_db()

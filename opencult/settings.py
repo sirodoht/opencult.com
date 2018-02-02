@@ -179,3 +179,9 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
+
+
+# Celery settings
+# http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
+
+CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://@localhost:6379/1')

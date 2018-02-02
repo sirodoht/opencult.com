@@ -1,7 +1,3 @@
-import base64
-import json
-import time
-
 import shortuuid
 from django.contrib import messages
 from django.contrib.auth import login as dj_login
@@ -9,13 +5,9 @@ from django.contrib.auth import logout as dj_logout
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail
-from django.core.signing import Signer
 from django.db.utils import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods, require_POST, require_safe
@@ -23,6 +15,7 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 from opencult import settings
 
 from .forms import CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
+from .helpers import email_login_link
 from .models import Attendance, Cult, Event, Membership
 
 
@@ -93,27 +86,6 @@ def token_post(request):
         messages.error(request, 'The login link was invalid or has expired. Please try to log in again.')
 
     return redirect(settings.LOGIN_URL)
-
-
-def email_login_link(request, email):
-    current_site = get_current_site(request)
-
-    # Create the signed structure containing the time and email address.
-    email = email.lower().strip()
-    data = {
-        't': int(time.time()),
-        'e': email,
-    }
-    data = json.dumps(data).encode('utf8')
-    data = Signer().sign(base64.b64encode(data).decode('utf8'))
-
-    # Send the link by email.
-    send_mail(
-        'Login link for Open Cult',
-        render_to_string('main/token_auth_email.txt', {'current_site': current_site, 'data': data}, request=request),
-        settings.DEFAULT_FROM_EMAIL,
-        [email],
-    )
 
 
 @require_safe

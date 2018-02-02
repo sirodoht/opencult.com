@@ -5,6 +5,7 @@ from django.contrib.auth import logout as dj_logout
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.db.utils import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -17,6 +18,7 @@ from opencult import settings
 from .forms import CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
 from .helpers import email_login_link
 from .models import Attendance, Cult, Event, Membership
+from .tasks import announce_event
 
 
 @require_safe
@@ -242,6 +244,26 @@ def new_event(request, cult_slug):
                 event=new_event,
                 user=request.user,
             )
+
+            # send email announcement to members
+            for member in cult.members.all():
+                data = {
+                    'domain': get_current_site(request).domain,
+                    'member_email': member.email,
+                    'event_title': new_event.title,
+                    'event_date': new_event.date.strftime('%A, %B %-d, %Y'),
+                    'event_time': new_event.time.strftime('%H:%I'),
+                    'event_details': new_event.details,
+                    'event_venue': new_event.venue,
+                    'event_address': new_event.address,
+                    'event_maps_url': new_event.maps_url,
+                    'event_slug': new_event.slug,
+                    'cult_name': cult.name,
+                    'cult_city': cult.city,
+                    'cult_slug': cult.slug,
+                }
+                announce_event.delay(data)
+
             return redirect('main:event', cult_slug=cult.slug, event_slug=new_event.slug)
     else:
         form = EventForm()

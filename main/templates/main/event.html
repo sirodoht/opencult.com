@@ -19,7 +19,7 @@
         {% if event.details %}
             <div class="section-label">Details</div>
             <div class="section-body">
-                {{ event.details }}
+                {{ event.details|linebreaks }}
             </div>
         {% endif %}
 

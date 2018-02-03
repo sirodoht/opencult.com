@@ -1,3 +1,5 @@
+import os
+
 import shortuuid
 from django.contrib import messages
 from django.contrib.auth import login as dj_login
@@ -7,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.utils import IntegrityError
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.text import slugify
@@ -246,23 +248,24 @@ def new_event(request, cult_slug):
             )
 
             # send email announcement to members
-            for member in cult.members.all():
-                data = {
-                    'domain': get_current_site(request).domain,
-                    'member_email': member.email,
-                    'event_title': new_event.title,
-                    'event_date': new_event.date.strftime('%A, %B %-d, %Y'),
-                    'event_time': new_event.time.strftime('%H:%I'),
-                    'event_details': new_event.details,
-                    'event_venue': new_event.venue,
-                    'event_address': new_event.address,
-                    'event_maps_url': new_event.maps_url,
-                    'event_slug': new_event.slug,
-                    'cult_name': cult.name,
-                    'cult_city': cult.city,
-                    'cult_slug': cult.slug,
-                }
-                announce_event.delay(data)
+            if not os.getenv('CIRCLECI'):
+                for member in cult.members.all():
+                    data = {
+                        'domain': get_current_site(request).domain,
+                        'member_email': member.email,
+                        'event_title': new_event.title,
+                        'event_date': new_event.date.strftime('%A, %B %-d, %Y'),
+                        'event_time': new_event.time.strftime('%H:%I'),
+                        'event_details': new_event.details,
+                        'event_venue': new_event.venue,
+                        'event_address': new_event.address,
+                        'event_maps_url': new_event.maps_url,
+                        'event_slug': new_event.slug,
+                        'cult_name': cult.name,
+                        'cult_city': cult.city,
+                        'cult_slug': cult.slug,
+                    }
+                    announce_event.delay(data)
 
             return redirect('main:event', cult_slug=cult.slug, event_slug=new_event.slug)
     else:

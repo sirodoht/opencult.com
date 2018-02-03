@@ -16,5 +16,3 @@ def announce_event(data):
         settings.DEFAULT_FROM_EMAIL,
         [data['member_email']],
     )
-
-    return 'done'

@@ -2,15 +2,6 @@
 
 {% block content %}
     <div class="section">
-        {% if messages %}
-            <p class="alert">
-                {% for message in messages %}
-                    {{ message }}
-                    <br>
-                {% endfor %}
-            </p>
-        {% endif %}
-
         <div class="section-title">Create event for <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a></div>
 
         <form action="{% url 'main:new_event' cult.slug %}" method="post">

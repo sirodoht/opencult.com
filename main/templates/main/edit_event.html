@@ -2,15 +2,6 @@
 
 {% block content %}
     <div class="section">
-        {% if messages %}
-            <p class="alert">
-                {% for message in messages %}
-                    {{ message }}
-                    <br>
-                {% endfor %}
-            </p>
-        {% endif %}
-
         <div class="section-title">Edit {{ event.title }} event</div>
 
         <form action="{% url 'main:edit_event' event.cult.slug event.slug %}" method="post">

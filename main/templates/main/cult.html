@@ -2,15 +2,6 @@
 
 {% block content %}
     <div class="section">
-        {% if messages %}
-            <p class="alert">
-                {% for message in messages %}
-                    {{ message }}
-                    <br>
-                {% endfor %}
-            </p>
-        {% endif %}
-
         <div class="section-title">{{ cult.name }}</div>
 
         <div class="section-label">Doctrine</div>

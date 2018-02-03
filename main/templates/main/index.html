@@ -13,14 +13,23 @@
                         <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
                     <div class="item-event-subtext">
                         <a href="{% url 'main:event' event.cult.slug event.slug %}" class="item-event-subtext-link">{{ event.date|date:"l, N j, Y" }} - {{ event.time|time:"H:i" }}</a>
+                        {% if event.venue or event.address or event.maps_url %}
                         |
-                        {% if event.venue %}
-                            {{ event.venue }} -
+                        {% if event.venue and event.address and event.maps_url %}
+                        {{ event.venue }} - <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
+                        {% elif event.venue and event.address %}
+                        {{ event.venue }} - {{ event.address }}
+                        {% elif event.venue and event.maps_url %}
+                        <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.venue }}</a>
+                        {% elif event.address and event.maps_url %}
+                        <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
+                        {% elif event.venue %}
+                        {{ event.venue }}
+                        {% elif event.address %}
+                        {{ event.address }}
+                        {% elif event.maps_url %}
+                        <a href="{{ event.maps_url }}" class="item-event-subtext-link">Maps</a>
                         {% endif %}
-                        {% if event.maps_url %}
-                            <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
-                        {% else %}
-                            {{ event.address }}
                         {% endif %}
                         | <a href="#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
                     </div>

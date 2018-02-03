@@ -11,8 +11,10 @@ from .helpers import generate_username
 
 
 class EmailTokenBackend:
+    """
+    Code stolen from https://github.com/skorokithakis/django-tokenauth
+    """
     def get_user(self, user_id):
-        """Get a user by their email address."""
         User = get_user_model()
         try:
             return User.objects.get(pk=user_id)
@@ -20,7 +22,6 @@ class EmailTokenBackend:
             return None
 
     def authenticate(self, token=None):
-        """Authenticate a user given a signed token."""
         try:
             data = Signer().unsign(token)
         except BadSignature:

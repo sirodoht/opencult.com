@@ -19,24 +19,33 @@
         {% if event.details %}
             <div class="section-label">Details</div>
             <div class="section-body">
-                {{ event.details }}
+                {{ event.details|linebreaks }}
             </div>
         {% endif %}
 
         <div class="section-label">Date & Time</div>
         <div class="section-body">{{ event.date|date:"l, N j, Y" }} at {{ event.time|time:"H:i" }} local time.</div>
 
+        {% if event.venue or event.address or event.maps_url %}
         <div class="section-label">Venue</div>
         <div class="section-body">
-            {% if event.venue %}
-                {{ event.venue }},
-            {% endif %}
-            {% if event.maps_url %}
-                <a href="{{ event.maps_url }}">{{ event.address }}, {{ event.cult.city }}</a>
-            {% else %}
-                {{ event.address }}, {{ event.cult.city }}
+            {% if event.venue and event.address and event.maps_url %}
+            {{ event.venue }} - <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.cult.city }}
+            {% elif event.venue and event.address %}
+            {{ event.venue }} - {{ event.address }}, {{ event.cult.city }}
+            {% elif event.venue and event.maps_url %}
+            <a href="{{ event.maps_url }}">{{ event.venue }}</a>, {{ event.cult.city }}
+            {% elif event.address and event.maps_url %}
+            <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.cult.city }}
+            {% elif event.venue %}
+            {{ event.venue }}, {{ event.cult.city }}
+            {% elif event.address %}
+            {{ event.address }}, {{ event.cult.city }}
+            {% elif event.maps_url %}
+            <a href="{{ event.maps_url }}">At this lat/long</a> in {{ event.cult.city }}
             {% endif %}
         </div>
+        {% endif %}
 
         <div class="section-label" id="attendees">Attendees ({{ event.attendees_count }})</div>
         <div class="section-body">

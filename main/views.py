@@ -1,6 +1,4 @@
-import base64
-import json
-import time
+import os
 
 import shortuuid
 from django.contrib import messages
@@ -10,12 +8,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail
-from django.core.signing import Signer
 from django.db.utils import IntegrityError
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods, require_POST, require_safe
@@ -23,22 +18,20 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 from opencult import settings
 
 from .forms import CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
+from .helpers import email_login_link
 from .models import Attendance, Cult, Event, Membership
+from .tasks import announce_event
 
 
 @require_safe
 def index(request):
     now = timezone.now()
     events_list = Event.objects.filter(
-        date__year__gte=now.year,
-        date__month__gte=now.month,
-        date__day__gte=now.day,
+        date__gte=now.date(),
     ).order_by('date', 'time')
     attending_events_list = Event.objects.filter(
         attendees__username=request.user.username,
-        date__year__gte=now.year,
-        date__month__gte=now.month,
-        date__day__gte=now.day,
+        date__gte=now.date(),
     ).order_by('date', 'time')
 
     own_cults = None
@@ -95,27 +88,6 @@ def token_post(request):
     return redirect(settings.LOGIN_URL)
 
 
-def email_login_link(request, email):
-    current_site = get_current_site(request)
-
-    # Create the signed structure containing the time and email address.
-    email = email.lower().strip()
-    data = {
-        't': int(time.time()),
-        'e': email,
-    }
-    data = json.dumps(data).encode('utf8')
-    data = Signer().sign(base64.b64encode(data).decode('utf8'))
-
-    # Send the link by email.
-    send_mail(
-        'Login link for Open Cult',
-        render_to_string('main/token_auth_email.txt', {'current_site': current_site, 'data': data}, request=request),
-        settings.DEFAULT_FROM_EMAIL,
-        [email],
-    )
-
-
 @require_safe
 @login_required
 def logout(request):
@@ -126,7 +98,11 @@ def logout(request):
 
 @require_safe
 def cult(request, cult_slug):
-    cult = Cult.objects.get(slug=cult_slug)
+    try:
+        cult = Cult.objects.get(slug=cult_slug)
+    except Cult.DoesNotExist:
+        raise Http404('Cult not found')
+
     events_list = Event.objects.filter(cult=cult).order_by('-date', '-time')
 
     membership = None  # not authed
@@ -270,6 +246,27 @@ def new_event(request, cult_slug):
                 event=new_event,
                 user=request.user,
             )
+
+            # send email announcement to members
+            if not os.getenv('CIRCLECI'):
+                for member in cult.members.all():
+                    data = {
+                        'domain': get_current_site(request).domain,
+                        'member_email': member.email,
+                        'event_title': new_event.title,
+                        'event_date': new_event.date.strftime('%A, %B %-d, %Y'),
+                        'event_time': new_event.time.strftime('%H:%I'),
+                        'event_details': new_event.details,
+                        'event_venue': new_event.venue,
+                        'event_address': new_event.address,
+                        'event_maps_url': new_event.maps_url,
+                        'event_slug': new_event.slug,
+                        'cult_name': cult.name,
+                        'cult_city': cult.city,
+                        'cult_slug': cult.slug,
+                    }
+                    announce_event.delay(data)
+
             return redirect('main:event', cult_slug=cult.slug, event_slug=new_event.slug)
     else:
         form = EventForm()

@@ -25,15 +25,11 @@ from .tasks import announce_event
 def index(request):
     now = timezone.now()
     events_list = Event.objects.filter(
-        date__year__gte=now.year,
-        date__month__gte=now.month,
-        date__day__gte=now.day,
+        date__gte=now.date(),
     ).order_by('date', 'time')
     attending_events_list = Event.objects.filter(
         attendees__username=request.user.username,
-        date__year__gte=now.year,
-        date__month__gte=now.month,
-        date__day__gte=now.day,
+        date__gte=now.date(),
     ).order_by('date', 'time')
 
     own_cults = None

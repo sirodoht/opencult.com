@@ -7,11 +7,11 @@
 amqp==2.2.2               # via kombu
 attrs==17.4.0             # via pytest
 billiard==3.5.0.3         # via celery
-celery[redis]==4.1.0
+celery[gevent,redis]==4.1.0
 dj-database-url==0.4.2
 django==2.0.1
 flake8==3.5.0
-gevent==1.2.2
+gevent==1.2.2             # via celery
 greenlet==0.4.13          # via gevent
 isort==4.2.15
 kombu==4.1.0              # via celery

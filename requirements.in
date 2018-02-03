@@ -8,5 +8,4 @@ dj-database-url
 whitenoise
 uwsgi
 flake8
-celery[redis]
-gevent
+celery[redis,gevent]

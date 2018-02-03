@@ -184,4 +184,4 @@ if not DEBUG:
 # Celery settings
 # http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
 
-CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://@localhost:6379/1')
+CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://@localhost:6379') + '/1'

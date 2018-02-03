@@ -2,14 +2,11 @@ Announcing new event for {{ data.cult_name|safe }}: {{ data.event_title|safe }}
 
 It will take place on {{ data.event_date }} at {{ data.event_time }}.
 
-{% if data.event_details %}
-Details:
+{% if data.event_details %}Details:
 
-{{ data.event_details|safe }}
-{% endif %}
+{{ data.event_details|safe }}{% endif %}
 
-{% if data.event_venue or data.event_address %}
-Location:
+{% if data.event_venue or data.event_address %}Location:
 {% if data.event_venue and data.event_address %}{{ data.event_venue|safe }} - {{ data.event_address|safe }}, {{ data.cult_city|safe }}{% elif data.event_venue %}{{ data.event_venue|safe }} in {{ data.cult_city }}{% elif data.event_address %}{{ data.event_address|safe }}, {{ data.cult_city|safe }}{% endif %}{% endif %}
 
 {% if data.event_maps_url %}Maps:

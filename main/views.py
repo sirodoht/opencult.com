@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.utils import IntegrityError
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.text import slugify
@@ -100,7 +100,11 @@ def logout(request):
 
 @require_safe
 def cult(request, cult_slug):
-    cult = Cult.objects.get(slug=cult_slug)
+    try:
+        cult = Cult.objects.get(slug=cult_slug)
+    except Cult.DoesNotExist:
+        raise Http404('Cult not found')
+
     events_list = Event.objects.filter(cult=cult).order_by('-date', '-time')
 
     membership = None  # not authed

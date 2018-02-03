@@ -17,7 +17,7 @@ def test_attendance_anon(django_user_model):
         title='Westworld marathon',
         slug='westworld-marathon',
         details='Season 2 coming!',
-        date='2018-02-02',
+        date='2118-02-02',
         time='18:00',
         venue='OK!Thess',
         address='Komotinis 2, 553 77',
@@ -45,7 +45,7 @@ def test_attendance_nonmember(django_user_model):
         title='Westworld marathon',
         slug='westworld-marathon',
         details='Season 2 coming!',
-        date='2018-02-02',
+        date='2118-02-02',
         time='18:00',
         venue='OK!Thess',
         address='Komotinis 2, 553 77',
@@ -54,7 +54,7 @@ def test_attendance_nonmember(django_user_model):
     c = Client()
     logged_in = c.login(username='mother', password='takeajacket')
     assert logged_in
-    response = c.post('/attendance/' + cult.slug + '/' + event.slug + '/', {})
+    response = c.post('/attendance/' + cult.slug + '/' + event.slug + '/')
     assert response.status_code == 302
     assert Attendance.objects.filter().count() == 1
 
@@ -75,7 +75,7 @@ def test_attendance_member(django_user_model):
         title='Westworld marathon',
         slug='westworld-marathon',
         details='Season 2 coming!',
-        date='2018-02-02',
+        date='2118-02-02',
         time='18:00',
         venue='OK!Thess',
         address='Komotinis 2, 553 77',
@@ -110,7 +110,7 @@ def test_attendance_member_delete(django_user_model):
         title='Westworld marathon',
         slug='westworld-marathon',
         details='Season 2 coming!',
-        date='2018-02-02',
+        date='2118-02-02',
         time='18:00',
         venue='OK!Thess',
         address='Komotinis 2, 553 77',

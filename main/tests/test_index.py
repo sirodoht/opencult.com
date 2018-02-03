@@ -17,7 +17,7 @@ def test_events(django_user_model):
         title='Westworld marathon',
         slug='westworld-marathon',
         details='Season 2 coming!',
-        date='2018-02-02',
+        date='2118-02-02',
         time='18:00',
         venue='OK!Thess',
         address='Komotinis 2, 553 77',

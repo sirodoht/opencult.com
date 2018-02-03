@@ -6,7 +6,7 @@
 
         <div class="section-label">About</div>
         <div class="section-body">
-            {{ user.profile.about|default:"" }}
+            {{ user.profile.about|default:""|linebreaks }}
         </div>
 
         <div class="section-label">Leader of</div>

@@ -57,13 +57,14 @@ uwsgi --ini=uwsgi.ini -H venv/
 `Celery` is used as a task queue, with a Redis broker.
 
 To run:
-```
+```sh
 celery -A opencult worker -P gevent -l debug
 ```
 
 
 ## Testing
 
+Run test suite:
 ```sh
 pytest
 ```

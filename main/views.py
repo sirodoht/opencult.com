@@ -62,7 +62,7 @@ def login(request):
 @require_http_methods(['HEAD', 'GET', 'POST'])
 def token_post(request):
     if request.user.is_authenticated:
-        messages.error(request, 'You are already logged in')
+        messages.error(request, 'You are already logged in.')
         return redirect(settings.LOGIN_REDIRECT_URL)
 
     if request.GET.get('d'):
@@ -70,7 +70,7 @@ def token_post(request):
         user = authenticate(token=request.GET['d'])
         if user is not None:
             dj_login(request, user)
-            messages.success(request, 'Login successful')
+            messages.success(request, 'Login successful.')
             return redirect(settings.LOGIN_REDIRECT_URL)
         else:
             messages.error(request, 'The login link was invalid or has expired. Please try to log in again.')
@@ -92,7 +92,7 @@ def token_post(request):
 @login_required
 def logout(request):
     dj_logout(request)
-    messages.success(request, 'You have been logged out')
+    messages.success(request, 'You have been logged out.')
     return redirect(settings.LOGOUT_REDIRECT_URL)
 
 

@@ -22,10 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('OPENCULT_SECRET_KEY', 'thiswillbeoursecret')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'thiswillbeoursecret')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.getenv('NODEBUG') is None else False
+DEBUG = True if os.environ.get('NODEBUG') is None else False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -153,8 +153,8 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'email-smtp.eu-west-1.amazonaws.com'
-EMAIL_HOST_USER = os.getenv('OPENCULT_EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('OPENCULT_EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 
 DEFAULT_FROM_EMAIL = 'hi@opencult.com'
@@ -185,4 +185,4 @@ if not DEBUG:
 # Celery settings
 # http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
 
-CELERY_BROKER_URL = os.getenv('REDIS_URL') + '/1'
+CELERY_BROKER_URL = os.environ.get('REDIS_URL') + '/1'

@@ -1,0 +1,24 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+    <div class="section">
+        <div class="section-title">Add cult leader</div>
+
+        <form action="{% url 'main:cult_leader' cult.slug %}" method="post">
+            {{ form.non_field_errors }}
+
+            <label for="id_username" class="section-label">Username:</label>
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <input type="text" name="username" maxlength="150" required id="id_username">
+
+            {% csrf_token %}
+
+            <input type="submit" value="add">
+        </form>
+
+    </div>
+{% endblock %}

@@ -91,11 +91,6 @@ AUTH_TOKEN_DURATION = 30 * 60  # = 1800 = 30 min in seconds
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'opencult',
-        'USER': 'opencult',
-        'PASSWORD': 'opencult',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
     }
 }
 
@@ -158,7 +153,6 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 
 DEFAULT_FROM_EMAIL = 'hi@opencult.com'
-EMAIL_ALERT = 'theodorekeloglou@gmail.com'
 
 
 # Authentication backends

@@ -5,7 +5,8 @@
 
 ## Setup
 
-The Django project is [`opencult`](/opencult). There is one Django app, [`main`](/main).
+The Django project is [`opencult`](/opencult). There is the [`main`](/main) Django app,
+with most business logic, and [`api`](/api), with the public API.
 
 Create virtualenv, enable it and then install requirements:
 ```sh
@@ -64,17 +65,22 @@ celery -A opencult worker -P gevent -l debug
 
 ## Testing
 
-Run test suite:
+Run test:
 ```sh
 pytest
 ```
 
-`isort` is used to sort imports:
+Sort imports:
 ```sh
 isort
 ```
 
-`flake8` is used to lint the Python code:
+Lint the Python code:
 ```sh
 flake8 main/
 ```
+
+
+## License
+
+MIT

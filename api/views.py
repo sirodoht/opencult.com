@@ -6,7 +6,10 @@ from main.models import Attendance, Cult, Event
 
 
 def docs(request):
-    return render(request, 'api/docs.html')
+    return render(request, 'api/docs.html', {
+        'color_class': 'purple-mixin',
+        'dark_color_class': 'purple-dark-mixin',
+    })
 
 
 def cults(request):

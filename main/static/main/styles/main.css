@@ -395,6 +395,10 @@ p {
   width: 360px;
 }
 
+.section-body a {
+  text-decoration: underline;
+}
+
 .section-event {
   margin-top: 6px;
 }

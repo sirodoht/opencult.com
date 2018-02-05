@@ -1,0 +1,27 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+    <div class="section">
+        <div class="section-title">API</div>
+
+        <div class="section-label">cults#list</div>
+        <div class="section-body">
+            <code>GET</code> on <code>/api/cults/</code>
+        </div>
+
+        <div class="section-label">cults#read</div>
+        <div class="section-body">
+            <code>GET</code> on <code>/api/cults/{cult-slug}</code>
+        </div>
+
+        <div class="section-label">events#list</div>
+        <div class="section-body">
+            <code>GET</code> on <code>/api/events/</code>
+        </div>
+
+        <div class="section-label">events#read</div>
+        <div class="section-body">
+            <code>GET</code> on <code>/api/events/{event-slug}</code>
+        </div>
+    </div>
+{% endblock %}

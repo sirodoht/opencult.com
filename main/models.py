@@ -57,7 +57,7 @@ class Cult(models.Model):
 
     @property
     def members_list(self):
-        return self.members.filter(membership__role=Membership.MEMBER)
+        return self.members.filter()
 
     def __str__(self):
         return self.name

@@ -56,7 +56,7 @@
                 {% if membership %}
                     <form action="{% url 'main:delete_membership' cult.slug %}" method="post" class="inline">
                         {% csrf_token %}
-                        | <input type="submit" value="un-join">
+                        | <input type="submit" value="leave cult">
                     </form>
                 {% else %}
                     <form action="{% url 'main:membership' cult.slug %}" method="post" class="inline">

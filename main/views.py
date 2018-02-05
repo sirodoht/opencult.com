@@ -25,6 +25,9 @@ from .tasks import announce_event
 
 @require_safe
 def index(request):
+    print('settings-celery:', settings.CELERY_BROKER_URL)
+    print('settings-secret:', settings.SECRET_KEY)
+
     now = timezone.now()
     events_list = Event.objects.filter(
         date__gte=now.date(),

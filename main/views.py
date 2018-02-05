@@ -17,7 +17,7 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 
 from opencult import settings
 
-from .forms import CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
+from .forms import AddCultLeaderForm, CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
 from .helpers import email_login_link
 from .models import Attendance, Cult, Event, Membership
 from .tasks import announce_event
@@ -303,7 +303,7 @@ def edit_cult(request, cult_slug):
         'color_class': 'green-mixin',
         'dark_color_class': 'green-dark-mixin',
         'nav_show_cult': True,
-        'nav_show_new_event': True,
+        'nav_show_leader_add': True,
         'cult': cult,
         'form': form,
     })
@@ -341,7 +341,7 @@ def edit_event(request, cult_slug, event_slug):
 @login_required
 def membership(request, cult_slug):
     cult = Cult.objects.get(slug=cult_slug)
-    Membership.objects.create(
+    Membership.objects.get_or_create(
         user=request.user,
         cult=cult,
         role=Membership.MEMBER,
@@ -372,7 +372,7 @@ def attendance(request, cult_slug, event_slug):
     if event.date < now.date():
         return HttpResponse(status=403)
 
-    Attendance.objects.create(
+    Attendance.objects.get_or_create(
         user=request.user,
         event=event,
     )

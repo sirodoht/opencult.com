@@ -53,7 +53,7 @@ uwsgi --ini=uwsgi.ini -H venv/
 
 ## Worker
 
-`Celery` is used as a task queue, with Redis as a broker. See the [setup](#setup) section
+[Celery](http://www.celeryproject.org/) is used as a task queue, with Redis as a broker. See the [setup](#setup) section
 above on how to configure it using the `.env` file.
 
 To run:

@@ -348,6 +348,14 @@ p {
   padding: 0 20px;
 }
 
+.home-alert {
+  margin-top: 22px;
+}
+
+.home-alert a {
+  text-decoration: underline;
+}
+
 .home-label {
   color: #828282;
   font-size: 14px;

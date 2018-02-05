@@ -39,6 +39,11 @@
                     You are not attending any events.
                 </div>
             {% endfor %}
+
+        {% else %}
+            <div class="home-alert">
+                > First time here? <a href="{% url 'main:about' %}">What is Open Cult</a>?
+            </div>
         {% endif %}
 
         {% regroup events_list by date as events_by_date %}

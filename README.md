@@ -18,26 +18,24 @@ pip install -r requirements.txt
 > Note: This project uses [pip-tools](https://github.com/jazzband/pip-tools) for dependencies management.
 
 
+You need to create a new file named `.env` in the root of this project once you cloned it.
+
+`.env` should contain the following env variables:
+```
+DATABASE_URL="postgres://username:password@localhost:5432/db_name"
+REDIS_URL="redis://@localhost:6379"  # used for celery worker, see [below](#Worker)
+OPENCULT_SECRET_KEY="thisisthesecretkey"
+OPENCULT_EMAIL_HOST_USER="AKIAJSBAOD2FSY4C54IA"  # optional, only for email functionality
+OPENCULT_EMAIL_HOST_PASSWORD="At8i/iwdc9H///bCFhrm9hxB1K4bIL2IusypNg/wiqWa"  # optional, only for email functionality
+```
+
 ## Database 
 
-This project uses PostgreSQL.
-
-```
-name: opencult
-user: opencult
-password: opencult
-port: 5432
-```
+This project uses PostgreSQL. See above on how to configure it using the `.env` file.
 
 > [How to: Create PostgreSQL DB](https://gist.github.com/sirodoht/0666e232e1baf76f76bac43eb2600e2b)
 
-Credentials [here](https://github.com/sirodoht/opencult.com/blob/master/opencult/settings.py),
-or alternatively set `DATABASE_URL` in your shell environment with the database URL. Eg:
-```sh
-export DATABASE_URL="postgres://postgres:username@localhost:5432/database_name"
-```
-
-After creating it, migrate your database:
+After that, migrate your database:
 ```sh
 python manage.py migrate
 ```
@@ -55,7 +53,8 @@ uwsgi --ini=uwsgi.ini -H venv/
 
 ## Worker
 
-`Celery` is used as a task queue, with a Redis broker.
+`Celery` is used as a task queue, with Redis as a broker. See the [setup](#Setup) section
+above on how to configure it using the `.env` file.
 
 To run:
 ```sh
@@ -75,9 +74,9 @@ Sort imports:
 isort
 ```
 
-Lint the Python code:
+Lint Python code:
 ```sh
-flake8 main/
+flake8
 ```
 
 

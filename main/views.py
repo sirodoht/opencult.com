@@ -391,3 +391,43 @@ def delete_attendance(request, cult_slug, event_slug):
 
     Attendance.objects.get(user=request.user, event=event).delete()
     return redirect('main:event', cult_slug=cult_slug, event_slug=event.slug)
+
+
+@require_http_methods(['HEAD', 'GET', 'POST'])
+@login_required
+def cult_leader(request, cult_slug):
+    cult = Cult.objects.get(slug=cult_slug)
+
+    if request.user not in cult.leaders_list:
+        return HttpResponse(status=403)
+
+    if request.method == 'POST':
+        form = AddCultLeaderForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                messages.error(request, 'User "' + username + '" does not exist.')
+                return redirect('main:cult_leader', cult.slug)
+            membership, created = Membership.objects.get_or_create(
+                user=user,
+                cult=cult,
+                role=Membership.LEADER,
+            )
+            if created:
+                messages.success(request, username + ' has been added as leader at ' + cult.name + '.')
+            else:
+                messages.success(request, username + ' is already leader at ' + cult.name + '.')
+            return redirect('main:cult', cult_slug=cult.slug)
+    else:
+        form = AddCultLeaderForm()
+
+    return render(request, 'main/cult_leader.html', {
+        'color_class': 'green-mixin',
+        'dark_color_class': 'green-dark-mixin',
+        'nav_show_cult': True,
+        'nav_show_edit_cult': True,
+        'cult': cult,
+        'form': form,
+    })

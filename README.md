@@ -23,7 +23,7 @@ You need to create a new file named `.env` in the root of this project once you 
 `.env` should contain the following env variables:
 ```
 DATABASE_URL="postgres://username:password@localhost:5432/db_name"
-REDIS_URL="redis://@localhost:6379"  # used for celery worker, see [below](#Worker)
+REDIS_URL="redis://@localhost:6379"  # used for celery worker, see below
 OPENCULT_SECRET_KEY="thisisthesecretkey"
 OPENCULT_EMAIL_HOST_USER="AKIAJSBAOD2FSY4C54IA"  # optional, only for email functionality
 OPENCULT_EMAIL_HOST_PASSWORD="At8i/iwdc9H///bCFhrm9hxB1K4bIL2IusypNg/wiqWa"  # optional, only for email functionality
@@ -53,7 +53,7 @@ uwsgi --ini=uwsgi.ini -H venv/
 
 ## Worker
 
-`Celery` is used as a task queue, with Redis as a broker. See the [setup](#Setup) section
+`Celery` is used as a task queue, with Redis as a broker. See the [setup](#setup) section
 above on how to configure it using the `.env` file.
 
 To run:

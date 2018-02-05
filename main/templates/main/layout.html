@@ -36,6 +36,9 @@
         {% if nav_show_cult %}
             | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
         {% endif %}
+        {% if nav_show_leader_add and request.user in cult.leaders_list %}
+            | <a href="{% url 'main:cult_leader' cult.slug %}">add cult leader</a>
+        {% endif %}
         {% if nav_show_edit_cult and request.user in cult.leaders_list %}
             | <a href="{% url 'main:edit_cult' cult.slug %}">edit {{ cult.name }}</a>
         {% endif %}
@@ -53,7 +56,7 @@
                 {% if membership %}
                     <form action="{% url 'main:delete_membership' cult.slug %}" method="post" class="inline">
                         {% csrf_token %}
-                        | <input type="submit" value="un-join">
+                        | <input type="submit" value="leave cult">
                     </form>
                 {% else %}
                     <form action="{% url 'main:membership' cult.slug %}" method="post" class="inline">

@@ -1,7 +1,7 @@
 import pytest
 from django.test import Client
 
-from main.forms import CultForm, EditCultForm
+from main.forms import AddCultLeaderForm, CultForm, EditCultForm
 from main.models import Cult, Event, Membership
 
 
@@ -373,3 +373,68 @@ def test_cult_post_edit_form_leader(django_user_model):
     assert form_data['slug'].encode() in response.content
     assert form_data['doctrine'].encode() in response.content
     assert form_data['city'].encode() in response.content
+
+
+@pytest.mark.django_db()
+def test_cult_add_leader(django_user_model):
+    user_1 = django_user_model.objects.create(username='mother')
+    user_1.set_password('takeajacket')
+    user_1.save()
+    user_2 = django_user_model.objects.create(username='father')
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    Membership.objects.create(
+        cult=cult,
+        user=user_1,
+        role=Membership.LEADER,
+    )
+    form_data = {
+        'username': user_2.username,
+    }
+    form = AddCultLeaderForm(data=form_data)
+    assert form.is_valid()
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    assert logged_in
+    response = c.post('/' + cult.slug + '/leader/', form_data, follow=True)
+    assert response.status_code == 200
+    assert form_data['username'].encode() in response.content
+    message = form_data['username'] + ' has been added as leader at ' + cult.name + '.'
+    assert message.encode() in response.content
+
+
+@pytest.mark.django_db()
+def test_cult_add_existing_leader(django_user_model):
+    user_1 = django_user_model.objects.create(username='mother')
+    user_1.set_password('takeajacket')
+    user_1.save()
+    user_2 = django_user_model.objects.create(username='father')
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    Membership.objects.create(
+        cult=cult,
+        user=user_1,
+        role=Membership.LEADER,
+    )
+    form_data = {
+        'username': user_2.username,
+    }
+    form = AddCultLeaderForm(data=form_data)
+    assert form.is_valid()
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    assert logged_in
+    c.post('/' + cult.slug + '/leader/', form_data, follow=True)
+    response = c.post('/' + cult.slug + '/leader/', form_data, follow=True)
+    assert response.status_code == 200
+    assert form_data['username'].encode() in response.content
+    message = form_data['username'] + ' is already leader at ' + cult.name + '.'
+    assert message.encode() in response.content

@@ -38,3 +38,7 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username']
+
+
+class AddCultLeaderForm(forms.Form):
+    username = forms.CharField()

@@ -17,7 +17,6 @@ pip install -r requirements.txt
 
 > Note: This project uses [pip-tools](https://github.com/jazzband/pip-tools) for dependencies management.
 
-
 You need to create a new file named `.env` in the root of this project once you cloned it.
 
 `.env` should contain the following env variables:
@@ -29,7 +28,7 @@ OPENCULT_EMAIL_HOST_USER="AKIAJSBAOD2FSY4C54IA"  # optional, only for email func
 OPENCULT_EMAIL_HOST_PASSWORD="At8i/iwdc9H///bCFhrm9hxB1K4bIL2IusypNg/wiqWa"  # optional, only for email functionality
 ```
 
-## Database 
+## Database
 
 This project uses PostgreSQL. See above on how to configure it using the `.env` file.
 

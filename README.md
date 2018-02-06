@@ -34,12 +34,12 @@ This project uses PostgreSQL. See above on how to configure it using the `.env` 
 
 > [How to: Create PostgreSQL DB](https://gist.github.com/sirodoht/0666e232e1baf76f76bac43eb2600e2b)
 
-After that, migrate your database:
+After creating your local database, you need to apply the migrations:
 ```sh
 python manage.py migrate
 ```
 
-Finally, run the Django development server:
+Finally, you can run the Django development server:
 ```sh
 python manage.py runserver
 ```
@@ -49,11 +49,13 @@ Or, run the production-grade `uwsgi` server:
 uwsgi --ini=uwsgi.ini -H venv/
 ```
 
+> Note: The `uwsgi` method does not read the `.env` file, so in this case you need to set the env vars in your shell.
+
 
 ## Worker
 
-[Celery](http://www.celeryproject.org/) is used as a task queue, with Redis as a broker. See the [setup](#setup) section
-above on how to configure it using the `.env` file.
+[Celery](http://www.celeryproject.org/) is used as a task queue, with Redis as a broker. 
+See the [setup](#setup) section above on how to configure it using the `.env` file.
 
 To run:
 ```sh

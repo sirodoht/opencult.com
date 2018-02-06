@@ -56,7 +56,7 @@
                     <a href="{{ event.maps_url }}" class="item-event-subtext-link">Maps</a>
                     {% endif %}
                     {% endif %}
-                    | <a href="#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
+                    | <a href="{% url 'main:event' event.cult.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
                 </div>
             </div>
         {% empty %}
@@ -88,7 +88,7 @@
                     <a href="{{ event.maps_url }}" class="item-event-subtext-link">Maps</a>
                     {% endif %}
                     {% endif %}
-                    | <a href="#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
+                    | <a href="{% url 'main:event' event.cult.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
                 </div>
             </div>
         {% empty %}

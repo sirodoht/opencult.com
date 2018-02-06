@@ -23,9 +23,9 @@ You need to create a new file named `.env` in the root of this project once you 
 ```
 DATABASE_URL="postgres://username:password@localhost:5432/db_name"
 REDIS_URL="redis://@localhost:6379"  # used for celery worker, see below
-OPENCULT_SECRET_KEY="thisisthesecretkey"
-OPENCULT_EMAIL_HOST_USER="AKIAJSBAOD2FSY4C54IA"  # optional, only for email functionality
-OPENCULT_EMAIL_HOST_PASSWORD="At8i/iwdc9H///bCFhrm9hxB1K4bIL2IusypNg/wiqWa"  # optional, only for email functionality
+SECRET_KEY="thisisthesecretkey"
+EMAIL_HOST_USER="usernamehere"  # optional, only for email functionality
+EMAIL_HOST_PASSWORD="passwordhere"  # optional, only for email functionality
 ```
 
 ## Database

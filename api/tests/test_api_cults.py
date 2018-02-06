@@ -46,3 +46,20 @@ def test_api_cult_single():
     assert cult.slug.encode() in response.content
     assert cult.doctrine.encode() in response.content
     assert cult.city.encode() in response.content
+
+
+@pytest.mark.django_db()
+def test_api_cult_city():
+    cult = Cult.objects.create(
+        name='Starman',
+        slug='starman',
+        doctrine='There\'s a starman waiting in the sky.',
+        city='Cape Town',
+    )
+    c = Client()
+    response = c.get('/api/cults/?city=Cape Town')
+    assert response.status_code == 200
+    assert cult.name.encode() in response.content
+    assert cult.slug.encode() in response.content
+    assert cult.doctrine.encode() in response.content
+    assert cult.city.encode() in response.content

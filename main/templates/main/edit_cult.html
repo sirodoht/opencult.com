@@ -1,5 +1,7 @@
 {% extends 'main/layout.html' %}
 
+{% block title %}Edit {{ cult.name }} - Open Cult{% endblock %}
+
 {% block content %}
     <div class="section">
         <div class="section-title">Edit <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a></div>

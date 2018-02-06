@@ -1,5 +1,7 @@
 {% extends 'main/layout.html' %}
 
+{% block title %}Create event for {{ cult.name }} - Open Cult{% endblock %}
+
 {% block content %}
     <div class="section">
         <div class="section-title">Create event for <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a></div>

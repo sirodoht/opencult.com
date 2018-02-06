@@ -25,6 +25,9 @@ from .tasks import announce_event
 
 @require_safe
 def index(request):
+    if request.GET.get('city'):
+        return city(request)
+
     now = timezone.now()
     events_list = Event.objects.filter(
         date__gte=now.date(),
@@ -45,6 +48,33 @@ def index(request):
         'events_list': events_list,
         'attending_events_list': attending_events_list,
         'own_cults': own_cults,
+    })
+
+
+@require_safe
+def city(request):
+    city = request.GET.get('city')
+
+    now = timezone.now()
+    events_list = Event.objects.filter(
+        cult__city=city,
+        date__gte=now.date(),
+    ).order_by('date', 'time')
+
+    cults_list = Cult.objects.filter(city=city)
+
+    own_cults = None
+    if request.user.is_authenticated:
+        own_cults = Cult.objects.filter(membership__user=request.user, membership__role=Membership.LEADER)
+
+    return render(request, 'main/city.html', {
+        'color_class': 'purple-mixin',
+        'dark_color_class': 'purple-dark-mixin',
+        'nav_show_own_cults': True,
+        'events_list': events_list,
+        'cults_list': cults_list,
+        'own_cults': own_cults,
+        'city': city,
     })
 
 

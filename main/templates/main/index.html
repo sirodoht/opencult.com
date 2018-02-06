@@ -8,7 +8,7 @@
             {% for event in attending_events_list %}
                 <div class="home-event">
                     <div class="item-event-title">
-                        <a href="#">{{ event.cult.city }}</a> >
+                        <a href="{% url 'main:index' %}?city={{ event.cult.city }}">{{ event.cult.city }}</a> >
                         <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a> >
                         <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
                     <div class="item-event-subtext">
@@ -53,7 +53,7 @@
             {% for event in date.list %}
                 <div class="home-event">
                     <div class="item-event-title">
-                        <a href="#">{{ event.cult.city }}</a> >
+                        <a href="{% url 'main:index' %}?city={{ event.cult.city }}">{{ event.cult.city }}</a> >
                         <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a> >
                         <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a>
                     </div>

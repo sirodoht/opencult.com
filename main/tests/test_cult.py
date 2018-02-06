@@ -22,7 +22,7 @@ def test_cult():
         time='18:00',
         venue='OK!Thess',
         address='Komotinis 2, 553 77',
-        maps_url='https://goo.gl/maps/sample=link',
+        maps_url='https://goo.gl/maps/sample-link',
     )
     c = Client()
     response = c.get('/' + cult.slug + '/')
@@ -63,7 +63,7 @@ def test_cult_leader(django_user_model):
         time='18:00',
         venue='OK!Thess',
         address='Komotinis 2, 553 77',
-        maps_url='https://goo.gl/maps/sample=link',
+        maps_url='https://goo.gl/maps/sample-link',
     )
     c = Client()
     logged_in = c.login(username='mother', password='takeajacket')
@@ -109,7 +109,7 @@ def test_cult_member(django_user_model):
         time='18:00',
         venue='OK!Thess',
         address='Komotinis 2, 553 77',
-        maps_url='https://goo.gl/maps/sample=link',
+        maps_url='https://goo.gl/maps/sample-link',
     )
     c = Client()
     logged_in = c.login(username='mother', password='takeajacket')
@@ -155,7 +155,7 @@ def test_cult_anon(django_user_model):
         time='18:00',
         venue='OK!Thess',
         address='Komotinis 2, 553 77',
-        maps_url='https://goo.gl/maps/sample=link',
+        maps_url='https://goo.gl/maps/sample-link',
     )
     c = Client()
     logged_in = c.login(username='mother', password='false_password')

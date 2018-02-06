@@ -1,6 +1,7 @@
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.utils import timezone
 
 from main.models import Attendance, Cult, Event
 
@@ -13,7 +14,20 @@ def docs(request):
 
 
 def cults(request):
+    if request.GET.get('city'):
+        return cults_city(request)
+
     cults = Cult.objects.all().order_by('name').values('name', 'slug', 'doctrine', 'city')
+    cults_list = list(cults)
+    for cult in cults_list:
+        cult['members_count'] = Cult.objects.get(slug=cult['slug']).members_count
+    return JsonResponse(cults_list, safe=False)
+
+
+def cults_city(request):
+    city = request.GET.get('city')
+
+    cults = Cult.objects.filter(city=city).order_by('name').values('name', 'slug', 'doctrine', 'city')
     cults_list = list(cults)
     for cult in cults_list:
         cult['members_count'] = Cult.objects.get(slug=cult['slug']).members_count
@@ -30,7 +44,35 @@ def single_cult(request, cult_slug):
 
 
 def events(request):
-    events = Event.objects.all().order_by('title').values(
+    if request.GET.get('city'):
+        return events_city(request)
+
+    now = timezone.now()
+    events = Event.objects.filter(date__gte=now.date()).order_by('title').values(
+        'title',
+        'slug',
+        'details',
+        'date',
+        'time',
+        'venue',
+        'address',
+        'maps_url',
+    )
+    events_list = list(events)
+    for event in events_list:
+        event['city'] = Event.objects.get(slug=event['slug']).cult.city
+        event['attendees_count'] = Event.objects.get(slug=event['slug']).attendees_count
+    return JsonResponse(events_list, safe=False)
+
+
+def events_city(request):
+    city = request.GET.get('city')
+
+    now = timezone.now()
+    events = Event.objects.filter(
+        cult__city=city,
+        date__gte=now.date(),
+    ).order_by('date', 'time').values(
         'title',
         'slug',
         'details',

@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+if not DEBUG:
+    INSTALLED_APPS.append('raven.contrib.django.raven_compat')
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -180,3 +183,11 @@ if not DEBUG:
 # http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
 
 CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://@localhost:6379') + '/1'
+
+
+# Sentry
+# https://docs.sentry.io/clients/python/integrations/django/
+
+RAVEN_CONFIG = {
+    'dsn': os.getenv('SENTRY_DSN'),
+}

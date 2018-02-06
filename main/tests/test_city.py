@@ -1,8 +1,7 @@
 import pytest
 from django.test import Client
 
-from main.forms import AddCultLeaderForm, CultForm, EditCultForm
-from main.models import Cult, Event, Membership
+from main.models import Cult, Event
 
 
 @pytest.mark.django_db()
@@ -18,12 +17,11 @@ def test_city_cult():
     assert response.status_code == 200
     assert cult.name.encode() in response.content
     assert cult.slug.encode() in response.content
-    assert cult.doctrine.encode() in response.content
     assert cult.city.encode() in response.content
 
 
 @pytest.mark.django_db()
-def test_city_cult():
+def test_city_event():
     cult = Cult.objects.create(
         name='SpaceX worshippers',
         slug='the-spacex-creed',

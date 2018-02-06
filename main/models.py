@@ -39,7 +39,7 @@ def save_user_profile(sender, instance, **kwargs):
 class Cult(models.Model):
     members = models.ManyToManyField(User, through='Membership')
     name = models.CharField(max_length=100)
-    slug = models.CharField(max_length=100, unique=True)
+    slug = models.CharField(max_length=100, unique=True, db_index=True)
     doctrine = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100)
 
@@ -67,7 +67,7 @@ class Event(models.Model):
     cult = models.ForeignKey(Cult, on_delete=models.CASCADE)
     attendees = models.ManyToManyField(User, through='Attendance')
     title = models.CharField(max_length=100)
-    slug = models.CharField(max_length=100, unique=True)
+    slug = models.CharField(max_length=100, unique=True, db_index=True)
     details = models.TextField(blank=True, null=True)
     date = models.DateField(default=timezone.now)
     time = models.TimeField(default=timezone.now)

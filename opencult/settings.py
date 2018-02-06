@@ -146,7 +146,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 
 # Email
-# https://docs.djangoproject.com/en/1.11/topics/email/
+# https://docs.djangoproject.com/en/2.0/topics/email/
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
@@ -159,7 +159,7 @@ DEFAULT_FROM_EMAIL = 'hi@opencult.com'
 
 
 # Authentication backends
-# https://docs.djangoproject.com/en/1.11/topics/auth/customizing/
+# https://docs.djangoproject.com/en/2.0/topics/auth/customizing/
 
 AUTHENTICATION_BACKENDS = (
     'main.auth_backends.EmailTokenBackend',
@@ -168,7 +168,7 @@ AUTHENTICATION_BACKENDS = (
 
 
 # Security middleware
-# https://docs.djangoproject.com/en/1.11/ref/middleware/#module-django.middleware.security
+# https://docs.djangoproject.com/en/2.0/ref/middleware/#module-django.middleware.security
 
 if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -180,7 +180,7 @@ if not DEBUG:
 
 
 # Celery settings
-# http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
+# http://docs.celeryproject.org/en/v4.1.0/django/first-steps-with-django.html
 
 CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://@localhost:6379') + '/1'
 

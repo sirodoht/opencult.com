@@ -133,7 +133,15 @@ def cult(request, cult_slug):
     except Cult.DoesNotExist:
         raise Http404('Cult not found')
 
-    events_list = Event.objects.filter(cult=cult).order_by('-date', '-time')
+    now = timezone.now()
+    upcoming_events_list = Event.objects.filter(
+        cult=cult,
+        date__gte=now.date(),
+    ).order_by('-date', '-time')
+    past_events_list = Event.objects.filter(
+        cult=cult,
+        date__lt=now.date(),
+    ).order_by('-date', '-time')
 
     membership = None  # not authed
     if request.user.is_authenticated:
@@ -150,7 +158,8 @@ def cult(request, cult_slug):
         'nav_show_join_cult': True,
         'cult': cult,
         'membership': membership,
-        'events_list': events_list,
+        'upcoming_events_list': upcoming_events_list,
+        'past_events_list': past_events_list,
     })
 
 

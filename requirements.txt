@@ -26,6 +26,7 @@ pytest-django==3.1.2
 pytest==3.4.0
 python-dotenv==0.7.1
 pytz==2017.3              # via celery, django
+raven==6.5.0
 redis==2.10.6             # via celery
 shortuuid==0.5.0
 six==1.11.0               # via pytest

@@ -7,7 +7,7 @@ from .models import Attendance, Cult, Event, Membership, Profile
 
 # User
 class OpCuAdmin(UserAdmin):
-    list_display = ('id', 'username', 'date_joined', 'last_login',)
+    list_display = ('username', 'email', 'date_joined', 'last_login', 'id',)
 
 
 admin.site.unregister(User)

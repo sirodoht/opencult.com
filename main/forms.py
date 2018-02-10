@@ -48,3 +48,7 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['body']
+
+
+class CultAnnouncementForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea)

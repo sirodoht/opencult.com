@@ -49,8 +49,14 @@
                 No comments. Post one!
             {% endfor %}
             <form action="{% url 'main:comment' event.cult.slug event.slug %}" method="post">
-                {% csrf_token %}
+                {{ form.non_field_errors }}
+                {% if form.body.errors %}
+                    {% for error in form.body.errors %}
+                        <div class="form-error">{{ error|escape }}</div>
+                    {% endfor %}
+                {% endif %}
                 <textarea name="body" rows="6" required></textarea>
+                {% csrf_token %}
                 <input type="submit" value="post comment">
             </form>
         </div>

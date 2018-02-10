@@ -17,10 +17,11 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 
 from opencult import settings
 
-from .forms import AddCultLeaderForm, CommentForm, CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
+from .forms import (AddCultLeaderForm, CommentForm, CultAnnouncementForm, CultForm, EditCultForm, EditEventForm,
+                    EmailForm, EventForm, UserForm)
 from .helpers import email_login_link
 from .models import Attendance, Comment, Cult, Event, Membership
-from .tasks import announce_event
+from .tasks import announce_event, email_members
 
 
 @require_safe
@@ -156,6 +157,7 @@ def cult(request, cult_slug):
         'nav_show_edit_cult': True,
         'nav_show_new_event': True,
         'nav_show_join_cult': True,
+        'nav_show_cult_announcement': True,
         'ld_cult': True,
         'cult': cult,
         'membership': membership,
@@ -340,7 +342,6 @@ def edit_cult(request, cult_slug):
             form.save()
             return redirect('main:cult', cult_slug=cult.slug)
     else:
-        cult = Cult.objects.get(slug=cult_slug)
         form = EditCultForm(instance=cult)
 
     return render(request, 'main/edit_cult.html', {
@@ -490,3 +491,40 @@ def comment(request, cult_slug, event_slug):
             body=body,
         )
         return redirect('main:event', cult_slug=event.cult.slug, event_slug=event.slug)
+
+
+@require_http_methods(['HEAD', 'GET', 'POST'])
+@login_required
+def cult_announcement(request, cult_slug):
+    cult = Cult.objects.get(slug=cult_slug)
+
+    if request.user not in cult.leaders_list:
+        return HttpResponse(status=403)
+
+    if request.method == 'POST':
+        form = CultAnnouncementForm(request.POST)
+        if form.is_valid():
+
+            # send email announcement to members
+            if not os.getenv('CIRCLECI'):
+                for member in cult.members.all():
+                    data = {
+                        'domain': get_current_site(request).domain,
+                        'member_email': member.email,
+                        'cult_name': cult.name,
+                        'message': form.cleaned_data.get('message'),
+                    }
+                    email_members.delay(data)
+
+            messages.success(request, 'The announcement has been emailed.')
+            return redirect('main:cult', cult_slug=cult.slug)
+    else:
+        form = CultAnnouncementForm()
+
+    return render(request, 'main/cult_announcement.html', {
+        'color_class': 'green-mixin',
+        'dark_color_class': 'green-dark-mixin',
+        'nav_show_cult': True,
+        'cult': cult,
+        'form': form,
+    })

@@ -1,6 +1,6 @@
 # opencult.com
 
-> Meetup clone in the spirit of HN.
+> Ridiculously minimal meetup.com alternative.
 
 
 ## Setup

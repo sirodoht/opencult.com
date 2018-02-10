@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from .models import Attendance, Cult, Event, Membership, Profile
+from .models import Attendance, Comment, Cult, Event, Membership, Profile
 
 
 # User
@@ -48,3 +48,11 @@ class AttendanceAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Attendance, AttendanceAdmin)
+
+
+# Comment
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('date_posted', 'body', 'author', 'event',)
+
+
+admin.site.register(Comment, CommentAdmin)

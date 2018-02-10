@@ -17,9 +17,9 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 
 from opencult import settings
 
-from .forms import AddCultLeaderForm, CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
+from .forms import AddCultLeaderForm, CommentForm, CultForm, EditCultForm, EditEventForm, EmailForm, EventForm, UserForm
 from .helpers import email_login_link
-from .models import Attendance, Cult, Event, Membership
+from .models import Attendance, Comment, Cult, Event, Membership
 from .tasks import announce_event
 
 
@@ -175,6 +175,8 @@ def event(request, cult_slug, event_slug):
         except Attendance.DoesNotExist:  # user is not attending
             attendance = None
 
+    form = CommentForm()
+
     return render(request, 'main/event.html', {
         'color_class': 'blue-mixin',
         'dark_color_class': 'blue-dark-mixin',
@@ -185,6 +187,7 @@ def event(request, cult_slug, event_slug):
         'event': event,
         'cult': cult,
         'attendance': attendance,
+        'form': form,
     })
 
 
@@ -470,3 +473,18 @@ def cult_leader(request, cult_slug):
         'cult': cult,
         'form': form,
     })
+
+
+@require_http_methods(['POST'])
+@login_required
+def comment(request, cult_slug, event_slug):
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        body = form.cleaned_data.get('body')
+        event = Event.objects.get(slug=event_slug)
+        Comment.objects.create(
+            event=event,
+            author=request.user,
+            body=body,
+        )
+        return redirect('main:event', cult_slug=event.cult.slug, event_slug=event.slug)

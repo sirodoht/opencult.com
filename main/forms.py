@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Cult, Event
+from .models import Comment, Cult, Event
 
 
 class EmailForm(forms.Form):
@@ -42,3 +42,9 @@ class UserForm(forms.ModelForm):
 
 class AddCultLeaderForm(forms.Form):
     username = forms.CharField()
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['body']

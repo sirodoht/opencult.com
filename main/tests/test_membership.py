@@ -5,7 +5,7 @@ from main.models import Cult, Membership
 
 
 @pytest.mark.django_db()
-def test_membership_anon(django_user_model):
+def test_membership_anon():
     cult = Cult.objects.create(
         name='Sweet Dreams',
         slug='sweet-dreams',

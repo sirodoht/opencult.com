@@ -411,6 +411,19 @@ p {
   margin-top: 6px;
 }
 
+.section-body textarea {
+  margin-top: 8px;
+}
+
+.section-body input[type="submit"] {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.section-body-comment {
+  line-height: 1.5;
+}
+
 footer {
   color: #828282;
   text-align: center;

@@ -39,6 +39,7 @@ def save_user_profile(sender, instance, **kwargs):
 class Cult(models.Model):
     members = models.ManyToManyField(User, through='Membership')
     name = models.CharField(max_length=100)
+    date_created = models.DateTimeField(default=timezone.now)
     slug = models.CharField(max_length=100, unique=True, db_index=True)
     doctrine = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100)
@@ -115,3 +116,16 @@ class Attendance(models.Model):
 
     def __str__(self):
         return self.user.username + ' :: ' + self.event.title
+
+
+class Comment(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_posted = models.DateTimeField(default=timezone.now)
+    body = models.TextField()
+
+    class Meta:
+        ordering = ['date_posted']
+
+    def __str__(self):
+        return self.body[:50] + '(...)'

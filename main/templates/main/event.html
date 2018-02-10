@@ -40,6 +40,21 @@
         </div>
         {% endif %}
 
+        <div class="section-label" id="attendees">Comments ({{ event.comment_set.count }})</div>
+        <div class="section-body">
+            {% for comment in event.comment_set.all %}
+                <a href="{% url 'main:profile' comment.author.username %}" class="section-body-comment"
+                    title="Posted at {{ comment.date_posted }}">{{ comment.author.username }}</a>: {{ comment.body|linebreaksbr }}<br>
+            {% empty %}
+                No comments. Post one!
+            {% endfor %}
+            <form action="{% url 'main:comment' event.cult.slug event.slug %}" method="post">
+                {% csrf_token %}
+                <textarea name="body" rows="6" required></textarea>
+                <input type="submit" value="post comment">
+            </form>
+        </div>
+
         <div class="section-label" id="attendees">Attendees ({{ event.attendees_count }})</div>
         <div class="section-body">
             {% for person in event.attendees_list %}

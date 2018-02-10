@@ -39,6 +39,7 @@ def save_user_profile(sender, instance, **kwargs):
 class Cult(models.Model):
     members = models.ManyToManyField(User, through='Membership')
     name = models.CharField(max_length=100)
+    date_created = models.DateTimeField(default=timezone.now)
     slug = models.CharField(max_length=100, unique=True, db_index=True)
     doctrine = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100)

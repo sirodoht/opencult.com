@@ -5,7 +5,7 @@ from main.models import Cult, Event
 
 
 @pytest.mark.django_db()
-def test_events(django_user_model):
+def test_events():
     cult = Cult.objects.create(
         name='Sweet Dreams',
         slug='sweet-dreams',

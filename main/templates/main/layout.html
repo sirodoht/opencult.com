@@ -98,5 +98,64 @@
         | <a href="{% url 'api:docs' %}">API</a>
         | <a href="mailto:hi@opencult.com">Contact</a>
     </footer>
+
+    {% if ld_cult %}
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [{
+                "@type": "ListItem",
+                "position": 1,
+                "item": {
+                    "@id": "https://opencult.com/{{ cult.slug }}",
+                    "name": "{{ cult.name }}"
+                }
+            }]
+        }
+    </script>
+    {% endif %}
+
+    {% if ld_event %}
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [{
+                "@type": "ListItem",
+                "position": 1,
+                "item": {
+                    "@id": "https://opencult.com/{{ event.cult.slug }}",
+                    "name": "{{ event.cult.name }}"
+                }
+            },{
+                "@type": "ListItem",
+                "position": 2,
+                "item": {
+                    "@id": "https://opencult.com/{{ event.cult.slug }}/{{ event.slug }}",
+                    "name": "{{ event.title }}"
+                }
+            }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "Event",
+            "name": "{{ event.title }}",
+            "startDate": "{{ event.date|date:"Y-m-d" }}T{{ event.time|time:"H:i" }}"{% if event.venue or event.address %},
+            "location": {
+                "@type": "Place"{% if event.venue %},
+                "name": "{{ event.venue }}"{% endif  %}{% if event.address %},
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "{{ event.address }}",
+                    "addressLocality": "{{ event.cult.city }}"
+                }{% endif  %}
+            }{% endif %}{% if event.details %},
+            "description": "{{ event.details }}"{% endif %}
+        }
+    </script>
+    {% endif %}
 </body>
 </html>

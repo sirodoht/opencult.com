@@ -16,3 +16,16 @@ def announce_event(data):
         settings.DEFAULT_FROM_EMAIL,
         [data['member_email']],
     )
+
+
+@shared_task
+def email_members(data):
+    send_mail(
+        'Announcement from ' + data['cult_name'],
+        render_to_string(
+            'main/cult_announcement_email.txt',
+            {'data': data},
+        ),
+        settings.DEFAULT_FROM_EMAIL,
+        [data['member_email']],
+    )

@@ -18,7 +18,7 @@ isort==4.3.4
 kombu==4.1.0              # via celery
 mccabe==0.6.1             # via flake8
 pluggy==0.6.0             # via pytest
-psycopg2==2.7.4
+psycopg2-binary==2.7.4
 py==1.5.2                 # via pytest
 pycodestyle==2.3.1        # via flake8
 pyflakes==1.6.0           # via flake8

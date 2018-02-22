@@ -222,9 +222,15 @@ def profile(request, username):
 
 
 @require_http_methods(['HEAD', 'GET', 'POST'])
+@login_required
 def edit_profile(request, username):
     user = User.objects.get(username=username)
     if request.method == 'POST':
+
+        # user can only change their own profile
+        if request.user != user:
+            return HttpResponse(status=403)
+
         form = UserForm(request.POST, instance=user, initial={'about': user.profile.about})
         if form.is_valid():
             updated_user = form.save(commit=False)

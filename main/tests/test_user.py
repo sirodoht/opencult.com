@@ -41,6 +41,13 @@ def test_profile(django_user_model):
     assert cult_2.name.encode() in response.content
 
 
+@pytest.mark.django_db()
+def test_profile_not_found():
+    c = Client()
+    response = c.get('/@' + 'non_existent_user' + '/')
+    assert response.status_code == 404
+
+
 def test_get_login():
     c = Client()
     response = c.get('/login/')

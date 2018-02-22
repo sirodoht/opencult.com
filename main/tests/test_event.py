@@ -6,6 +6,19 @@ from main.models import Attendance, Cult, Event, Membership
 
 
 @pytest.mark.django_db()
+def test_event_not_found():
+    cult = Cult.objects.create(
+        name='Sweet Dreams',
+        slug='sweet-dreams',
+        doctrine='Hold your head up, keep your head up!',
+        city='Amsterdam',
+    )
+    c = Client()
+    response = c.get('/' + cult.slug + '/' + 'non-existent-event' + '/')
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db()
 def test_event_no_attendees():
     cult = Cult.objects.create(
         name='Sweet Dreams',

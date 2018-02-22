@@ -39,6 +39,13 @@ def test_cult():
 
 
 @pytest.mark.django_db()
+def test_cult_not_found():
+    c = Client()
+    response = c.get('/' + 'non-existent-cult' + '/')
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db()
 def test_cult_leader(django_user_model):
     user = django_user_model.objects.create(username='mother')
     user.set_password('takeajacket')

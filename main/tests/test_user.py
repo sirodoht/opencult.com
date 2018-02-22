@@ -103,3 +103,23 @@ def test_edit_user(django_user_model):
     assert b'Profile updated' in response.content
     assert form_data['username'].encode() in response.content
     assert form_data['about'].encode() in response.content
+
+
+@pytest.mark.django_db()
+def test_edit_other_user(django_user_model):
+    user_1 = django_user_model.objects.create(username='mother')
+    user_1.set_password('takeajacket')
+    user_1.profile.about = 'Built a wall.'
+    user_1.save()
+    user_2 = django_user_model.objects.create(username='father')
+    form_data = {
+        'username': 'daddycool',
+        'about': 'Watching Grease',
+    }
+    form = UserForm(data=form_data)
+    assert form.is_valid()
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    assert logged_in
+    response = c.post('/@' + user_2.username + '/edit/', form_data, follow=True)
+    assert response.status_code == 403

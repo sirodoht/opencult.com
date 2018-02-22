@@ -168,7 +168,11 @@ def cult(request, cult_slug):
 
 @require_safe
 def event(request, cult_slug, event_slug):
-    event = Event.objects.get(slug=event_slug)
+    try:
+        event = Event.objects.get(slug=event_slug)
+    except Event.DoesNotExist:
+        raise Http404('Event not found')
+
     cult = Cult.objects.get(slug=cult_slug)
 
     attendance = None  # not authed

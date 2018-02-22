@@ -3,7 +3,7 @@ isort
 pytest
 pytest-django
 shortuuid
-psycopg2
+psycopg2-binary
 dj-database-url
 whitenoise
 uwsgi

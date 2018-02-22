@@ -210,7 +210,10 @@ def about(request):
 
 @require_safe
 def profile(request, username):
-    user = User.objects.get(username=username)
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404('User not found')
 
     own_cults = None
     if request.user.is_authenticated:

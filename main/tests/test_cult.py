@@ -41,7 +41,7 @@ def test_cult():
 @pytest.mark.django_db()
 def test_cult_not_found():
     c = Client()
-    response = c.get('/' + 'non-existent-cult' + '/')
+    response = c.get('/non-existent-cult/')
     assert response.status_code == 404
 
 

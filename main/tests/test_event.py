@@ -14,7 +14,7 @@ def test_event_not_found():
         city='Amsterdam',
     )
     c = Client()
-    response = c.get('/' + cult.slug + '/' + 'non-existent-event' + '/')
+    response = c.get('/' + cult.slug + '/non-existent-event/')
     assert response.status_code == 404
 
 

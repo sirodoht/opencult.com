@@ -48,6 +48,13 @@ def test_profile_not_found():
     assert response.status_code == 404
 
 
+@pytest.mark.django_db()
+def test_edit_profile_not_found():
+    c = Client()
+    response = c.get('/@' + 'non_existent_user' + '/edit/')
+    assert response.status_code == 404
+
+
 def test_get_login():
     c = Client()
     response = c.get('/login/')

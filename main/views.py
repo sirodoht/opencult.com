@@ -231,7 +231,11 @@ def profile(request, username):
 @require_http_methods(['HEAD', 'GET', 'POST'])
 @login_required
 def edit_profile(request, username):
-    user = User.objects.get(username=username)
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404('User not found')
+
     if request.method == 'POST':
 
         # user can only change their own profile

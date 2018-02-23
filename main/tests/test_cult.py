@@ -46,6 +46,25 @@ def test_cult_not_found():
 
 
 @pytest.mark.django_db()
+def test_edit_cult_not_found():
+    c = Client()
+    response = c.get('/non-existent-cult/edit/')
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db()
+def test_edit_cult_not_found_logged_in(django_user_model):
+    user = django_user_model.objects.create(username='mother')
+    user.set_password('takeajacket')
+    user.save()
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    assert logged_in
+    response = c.get('/non-existent-cult/edit/')
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db()
 def test_cult_leader(django_user_model):
     user = django_user_model.objects.create(username='mother')
     user.set_password('takeajacket')

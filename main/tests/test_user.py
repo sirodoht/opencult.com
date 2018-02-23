@@ -51,7 +51,19 @@ def test_profile_not_found():
 @pytest.mark.django_db()
 def test_edit_profile_not_found():
     c = Client()
-    response = c.get('/@non_existent_user/edit/')
+    response = c.get('/oneuser21323/edit/')
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db()
+def test_edit_profile_not_found_logged_in(django_user_model):
+    user = django_user_model.objects.create(username='mother')
+    user.set_password('takeajacket')
+    user.save()
+    c = Client()
+    logged_in = c.login(username='mother', password='takeajacket')
+    assert logged_in
+    response = c.get('/oneuser21323/edit/')
     assert response.status_code == 404
 
 

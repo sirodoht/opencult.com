@@ -348,7 +348,10 @@ def new_event(request, cult_slug):
 @require_http_methods(['HEAD', 'GET', 'POST'])
 @login_required
 def edit_cult(request, cult_slug):
-    cult = Cult.objects.get(slug=cult_slug)
+    try:
+        cult = Cult.objects.get(slug=cult_slug)
+    except Cult.DoesNotExist:
+        raise Http404('Cult not found')
 
     if request.user not in cult.leaders_list:
         return HttpResponse(status=403)

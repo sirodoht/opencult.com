@@ -231,18 +231,13 @@ def profile(request, username):
 @require_http_methods(['HEAD', 'GET', 'POST'])
 @login_required
 def edit_profile(request, username):
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        raise Http404('User not found')
-
     if request.method == 'POST':
 
-        # user can only change their own profile
-        if request.user != user:
+        # user gets 403 on other profile post
+        if request.user.username != username:
             return HttpResponse(status=403)
 
-        form = UserForm(request.POST, instance=user, initial={'about': user.profile.about})
+        form = UserForm(request.POST, instance=request.user, initial={'about': request.user.profile.about})
         if form.is_valid():
             updated_user = form.save(commit=False)
             updated_user.profile.about = form.cleaned_data['about']
@@ -250,7 +245,7 @@ def edit_profile(request, username):
             messages.success(request, 'Profile updated')
             return redirect('main:edit_profile', updated_user.username)
     else:
-        form = UserForm(instance=user, initial={'about': user.profile.about})
+        form = UserForm(instance=request.user, initial={'about': request.user.profile.about})
 
     return render(request, 'main/edit_profile.html', {
         'color_class': 'yellow-mixin',

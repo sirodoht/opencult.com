@@ -147,15 +147,7 @@
             "@type": "Event",
             "name": "{{ event.title }}",
             "startDate": "{{ event.date|date:"Y-m-d" }}T{{ event.time|time:"H:i" }}"{% if event.venue or event.address %},
-            "location": {
-                "@type": "Place"{% if event.venue %},
-                "name": "{{ event.venue }}"{% endif  %}{% if event.address %},
-                "address": {
-                    "@type": "PostalAddress",
-                    "streetAddress": "{{ event.address }}",
-                    "addressLocality": "{{ event.cult.city }}"
-                }{% endif  %}
-            }{% endif %}{% if event.details %},
+            "location": "{{ event.venue }} {{ event.address }}",{% if event.details %},
             "description": "{{ event.details }}"{% endif %}
         }
     </script>

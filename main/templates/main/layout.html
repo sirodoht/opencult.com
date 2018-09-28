@@ -146,7 +146,7 @@
             "@context": "http://schema.org",
             "@type": "Event",
             "name": "{{ event.title }}",
-            "startDate": "{{ event.date|date:"Y-m-d" }}T{{ event.time|time:"H:i" }}"{% if event.venue or event.address %},
+            "startDate": "{{ event.date|date:"Y-m-d" }}T{{ event.time|time:"H:i" }}",
             "location": "{{ event.venue }} {{ event.address }}",{% if event.details %},
             "description": "{{ event.details }}"{% endif %}
         }

@@ -306,24 +306,23 @@ def new_event(request, cult_slug):
             )
 
             # send email announcement to members
-            if not os.getenv('CIRCLECI'):
-                for member in cult.members.all():
-                    data = {
-                        'domain': get_current_site(request).domain,
-                        'member_email': member.email,
-                        'event_title': new_event.title,
-                        'event_date': new_event.date.strftime('%A, %B %-d, %Y'),
-                        'event_time': new_event.time.strftime('%H:%I'),
-                        'event_details': new_event.details,
-                        'event_venue': new_event.venue,
-                        'event_address': new_event.address,
-                        'event_maps_url': new_event.maps_url,
-                        'event_slug': new_event.slug,
-                        'cult_name': cult.name,
-                        'cult_city': cult.city,
-                        'cult_slug': cult.slug,
-                    }
-                    announce_event.delay(data)
+            for member in cult.members.all():
+                data = {
+                    'domain': get_current_site(request).domain,
+                    'member_email': member.email,
+                    'event_title': new_event.title,
+                    'event_date': new_event.date.strftime('%A, %B %-d, %Y'),
+                    'event_time': new_event.time.strftime('%H:%I'),
+                    'event_details': new_event.details,
+                    'event_venue': new_event.venue,
+                    'event_address': new_event.address,
+                    'event_maps_url': new_event.maps_url,
+                    'event_slug': new_event.slug,
+                    'cult_name': cult.name,
+                    'cult_city': cult.city,
+                    'cult_slug': cult.slug,
+                }
+                announce_event.delay(data)
 
             return redirect('main:event', cult_slug=cult.slug, event_slug=new_event.slug)
     else:
@@ -521,15 +520,14 @@ def cult_announcement(request, cult_slug):
         if form.is_valid():
 
             # send email announcement to members
-            if not os.getenv('CIRCLECI'):
-                for member in cult.members.all():
-                    data = {
-                        'domain': get_current_site(request).domain,
-                        'member_email': member.email,
-                        'cult_name': cult.name,
-                        'message': form.cleaned_data.get('message'),
-                    }
-                    email_members.delay(data)
+            for member in cult.members.all():
+                data = {
+                    'domain': get_current_site(request).domain,
+                    'member_email': member.email,
+                    'cult_name': cult.name,
+                    'message': form.cleaned_data.get('message'),
+                }
+                email_members.delay(data)
 
             messages.success(request, 'The announcement has been emailed.')
             return redirect('main:cult', cult_slug=cult.slug)

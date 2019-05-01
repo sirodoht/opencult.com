@@ -62,7 +62,7 @@ uwsgi --ini=uwsgi.ini -H venv/
 
 > Note: The `uwsgi` method does not read the `.env` file, so in this case you need to set the env vars in your shell.
 
-## Worker
+### Worker
 
 [Celery](http://www.celeryproject.org/) is used as a task queue, with Redis as a broker. 
 See the [environment variables section](#environment-variables) above on how to configure it using the `.env` file.

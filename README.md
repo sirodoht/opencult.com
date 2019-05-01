@@ -1,7 +1,6 @@
 # opencult.com
 
-> Ridiculously minimal meetup.com alternative.
-
+> Ridiculously minimal event system for groups.
 
 ## Setup
 
@@ -51,7 +50,6 @@ uwsgi --ini=uwsgi.ini -H venv/
 
 > Note: The `uwsgi` method does not read the `.env` file, so in this case you need to set the env vars in your shell.
 
-
 ## Worker
 
 [Celery](http://www.celeryproject.org/) is used as a task queue, with Redis as a broker. 
@@ -61,7 +59,6 @@ To run:
 ```sh
 celery -A opencult worker -P gevent -l debug
 ```
-
 
 ## Testing
 
@@ -79,7 +76,6 @@ Lint Python code:
 ```sh
 flake8
 ```
-
 
 ## License
 

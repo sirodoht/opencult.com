@@ -6,7 +6,7 @@ from os.path import dirname, join
 from dotenv import load_dotenv
 
 if __name__ == "__main__":
-    dotenv_path = join(dirname(__file__), '.env')
+    dotenv_path = join(dirname(__file__), ".env")
     load_dotenv(dotenv_path)
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "opencult.settings")

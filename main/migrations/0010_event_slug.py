@@ -5,15 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('main', '0009_auto_20180130_1455'),
-    ]
+    dependencies = [("main", "0009_auto_20180130_1455")]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='slug',
-            field=models.CharField(default='default-slug', max_length=100),
+            model_name="event",
+            name="slug",
+            field=models.CharField(default="default-slug", max_length=100),
             preserve_default=False,
-        ),
+        )
     ]

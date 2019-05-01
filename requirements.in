@@ -11,3 +11,4 @@ flake8
 celery[redis,gevent]
 python-dotenv
 raven
+black

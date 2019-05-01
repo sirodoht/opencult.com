@@ -14,6 +14,7 @@ class EmailTokenBackend:
     """
     Code stolen from https://github.com/skorokithakis/django-tokenauth
     """
+
     def get_user(self, user_id):
         User = get_user_model()
         try:
@@ -27,15 +28,15 @@ class EmailTokenBackend:
         except BadSignature:
             return
 
-        data = json.loads(base64.b64decode(data).decode('utf8'))
-        if data['t'] < time.time() - settings.AUTH_TOKEN_DURATION:
+        data = json.loads(base64.b64decode(data).decode("utf8"))
+        if data["t"] < time.time() - settings.AUTH_TOKEN_DURATION:
             return
 
         User = get_user_model()
 
-        user, created = User.objects.get_or_create(email=data['e'])
+        user, created = User.objects.get_or_create(email=data["e"])
         if created:
-            user.username = generate_username(data['e'])
+            user.username = generate_username(data["e"])
             user.save()
 
         return user

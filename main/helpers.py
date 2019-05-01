@@ -17,27 +17,30 @@ def email_login_link(request, email):
 
     # Create signed structure containing the time and email address.
     email = email.lower().strip()
-    data = {
-        't': int(time.time()),
-        'e': email,
-    }
-    data = json.dumps(data).encode('utf8')
-    data = Signer().sign(base64.b64encode(data).decode('utf8'))
+    data = {"t": int(time.time()), "e": email}
+    data = json.dumps(data).encode("utf8")
+    data = Signer().sign(base64.b64encode(data).decode("utf8"))
 
     send_mail(
-        'Login link for Open Cult',
-        render_to_string('main/token_auth_email.txt', {'current_site': current_site, 'data': data}, request=request),
+        "Login link for Open Cult",
+        render_to_string(
+            "main/token_auth_email.txt",
+            {"current_site": current_site, "data": data},
+            request=request,
+        ),
         settings.DEFAULT_FROM_EMAIL,
         [email],
     )
 
 
 def generate_username(email):
-    username = email.split('@')[0]
+    username = email.split("@")[0]
 
     # check if exists
     if User.objects.filter(username=username).count():
-        uuid = shortuuid.ShortUUID('abdcefghkmnpqrstuvwxyzABDCEFGHKMNPQRSTUVWXYZ23456789').random(length=12)
+        uuid = shortuuid.ShortUUID(
+            "abdcefghkmnpqrstuvwxyzABDCEFGHKMNPQRSTUVWXYZ23456789"
+        ).random(length=12)
         username += uuid
 
     return username

@@ -5,14 +5,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('main', '0002_auto_20180129_2320'),
-    ]
+    dependencies = [("main", "0002_auto_20180129_2320")]
 
     operations = [
         migrations.AlterField(
-            model_name='membership',
-            name='role',
-            field=models.CharField(choices=[('admin', 'Admin'), ('member', 'Member')], default='member', max_length=50),
-        ),
+            model_name="membership",
+            name="role",
+            field=models.CharField(
+                choices=[("admin", "Admin"), ("member", "Member")],
+                default="member",
+                max_length=50,
+            ),
+        )
     ]

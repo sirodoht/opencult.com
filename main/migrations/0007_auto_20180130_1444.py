@@ -5,14 +5,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('main', '0006_auto_20180130_0304'),
-    ]
+    dependencies = [("main", "0006_auto_20180130_0304")]
 
     operations = [
-        migrations.RenameField(
-            model_name='event',
-            old_name='when',
-            new_name='date',
-        ),
+        migrations.RenameField(model_name="event", old_name="when", new_name="date")
     ]

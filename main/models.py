@@ -37,7 +37,7 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class Cult(models.Model):
-    members = models.ManyToManyField(User, through='Membership')
+    members = models.ManyToManyField(User, through="Membership")
     name = models.CharField(max_length=100)
     date_created = models.DateTimeField(default=timezone.now)
     slug = models.CharField(max_length=100, unique=True, db_index=True)
@@ -66,7 +66,7 @@ class Cult(models.Model):
 
 class Event(models.Model):
     cult = models.ForeignKey(Cult, on_delete=models.CASCADE)
-    attendees = models.ManyToManyField(User, through='Attendance')
+    attendees = models.ManyToManyField(User, through="Attendance")
     title = models.CharField(max_length=100)
     slug = models.CharField(max_length=100, unique=True, db_index=True)
     details = models.TextField(blank=True, null=True)
@@ -82,7 +82,7 @@ class Event(models.Model):
 
     @property
     def attendees_list(self):
-        return self.attendees.order_by('attendance__date_rsvped')
+        return self.attendees.order_by("attendance__date_rsvped")
 
     def __str__(self):
         return self.title
@@ -93,20 +93,13 @@ class Membership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_joined = models.DateTimeField(default=timezone.now)
 
-    LEADER = 'leader'
-    MEMBER = 'member'
-    ROLE_CHOICES = (
-        (LEADER, 'Leader'),
-        (MEMBER, 'Member'),
-    )
-    role = models.CharField(
-        choices=ROLE_CHOICES,
-        max_length=50,
-        default=MEMBER,
-    )
+    LEADER = "leader"
+    MEMBER = "member"
+    ROLE_CHOICES = ((LEADER, "Leader"), (MEMBER, "Member"))
+    role = models.CharField(choices=ROLE_CHOICES, max_length=50, default=MEMBER)
 
     def __str__(self):
-        return self.cult.name + ' :: ' + self.user.username
+        return self.cult.name + " :: " + self.user.username
 
 
 class Attendance(models.Model):
@@ -115,7 +108,7 @@ class Attendance(models.Model):
     date_rsvped = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.user.username + ' :: ' + self.event.title
+        return self.user.username + " :: " + self.event.title
 
 
 class Comment(models.Model):
@@ -125,7 +118,7 @@ class Comment(models.Model):
     body = models.TextField()
 
     class Meta:
-        ordering = ['date_posted']
+        ordering = ["date_posted"]
 
     def __str__(self):
-        return self.body[:50] + '(...)'
+        return self.body[:50] + "(...)"

@@ -5,24 +5,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('main', '0004_auto_20180129_2359'),
-    ]
+    dependencies = [("main", "0004_auto_20180129_2359")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='cult',
-            name='location',
-        ),
+        migrations.RemoveField(model_name="cult", name="location"),
         migrations.AddField(
-            model_name='cult',
-            name='city',
-            field=models.CharField(default='default city', max_length=100),
+            model_name="cult",
+            name="city",
+            field=models.CharField(default="default city", max_length=100),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='cult',
-            name='country',
+            model_name="cult",
+            name="country",
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
     ]

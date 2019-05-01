@@ -54,8 +54,6 @@ def index(request):
         request,
         "main/index.html",
         {
-            "color_class": "purple-mixin",
-            "dark_color_class": "purple-dark-mixin",
             "nav_show_own_cults": True,
             "events_list": events_list,
             "attending_events_list": attending_events_list,
@@ -85,8 +83,6 @@ def city(request):
         request,
         "main/city.html",
         {
-            "color_class": "purple-mixin",
-            "dark_color_class": "purple-dark-mixin",
             "nav_show_own_cults": True,
             "events_list": events_list,
             "cults_list": cults_list,
@@ -100,15 +96,7 @@ def city(request):
 def login(request):
     if request.user.is_authenticated:
         return redirect("main:index")
-    return render(
-        request,
-        "main/login.html",
-        {
-            "color_class": "yellow-mixin",
-            "dark_color_class": "yellow-dark-mixin",
-            "next": request.GET.get("next"),
-        },
-    )
+    return render(request, "main/login.html", {"next": request.GET.get("next")})
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
@@ -186,8 +174,6 @@ def cult(request, cult_slug):
         request,
         "main/cult.html",
         {
-            "color_class": "green-mixin",
-            "dark_color_class": "green-dark-mixin",
             "nav_show_edit_cult": True,
             "nav_show_new_event": True,
             "nav_show_join_cult": True,
@@ -223,8 +209,6 @@ def event(request, cult_slug, event_slug):
         request,
         "main/event.html",
         {
-            "color_class": "blue-mixin",
-            "dark_color_class": "blue-dark-mixin",
             "nav_show_cult": True,
             "nav_show_edit_event": True,
             "nav_show_rsvp_event": True,
@@ -240,15 +224,7 @@ def event(request, cult_slug, event_slug):
 
 @require_safe
 def about(request):
-    return render(
-        request,
-        "main/about.html",
-        {
-            "color_class": "purple-mixin",
-            "dark_color_class": "purple-dark-mixin",
-            "nav_show_own_cults": True,
-        },
-    )
+    return render(request, "main/about.html", {"nav_show_own_cults": True})
 
 
 @require_safe
@@ -267,13 +243,7 @@ def profile(request, username):
     return render(
         request,
         "main/profile.html",
-        {
-            "color_class": "yellow-mixin",
-            "dark_color_class": "yellow-dark-mixin",
-            "nav_show_own_cults": True,
-            "own_cults": own_cults,
-            "user": user,
-        },
+        {"nav_show_own_cults": True, "own_cults": own_cults, "user": user},
     )
 
 
@@ -305,13 +275,7 @@ def edit_profile(request, username):
     return render(
         request,
         "main/edit_profile.html",
-        {
-            "color_class": "yellow-mixin",
-            "dark_color_class": "yellow-dark-mixin",
-            "nav_show_own_cults": True,
-            "nav_show_logout": True,
-            "form": form,
-        },
+        {"nav_show_own_cults": True, "nav_show_logout": True, "form": form},
     )
 
 
@@ -332,14 +296,7 @@ def new_cult(request):
         form = CultForm()
 
     return render(
-        request,
-        "main/new_cult.html",
-        {
-            "color_class": "green-mixin",
-            "dark_color_class": "green-dark-mixin",
-            "nav_show_own_cults": True,
-            "form": form,
-        },
+        request, "main/new_cult.html", {"nav_show_own_cults": True, "form": form}
     )
 
 
@@ -394,8 +351,6 @@ def new_event(request, cult_slug):
         request,
         "main/new_event.html",
         {
-            "color_class": "blue-mixin",
-            "dark_color_class": "blue-dark-mixin",
             "nav_show_own_cults": True,
             "nav_show_cult": True,
             "nav_show_new_event": True,
@@ -428,8 +383,6 @@ def edit_cult(request, cult_slug):
         request,
         "main/edit_cult.html",
         {
-            "color_class": "green-mixin",
-            "dark_color_class": "green-dark-mixin",
             "nav_show_cult": True,
             "nav_show_leader_add": True,
             "cult": cult,
@@ -459,8 +412,6 @@ def edit_event(request, cult_slug, event_slug):
         request,
         "main/edit_event.html",
         {
-            "color_class": "blue-mixin",
-            "dark_color_class": "blue-dark-mixin",
             "nav_show_cult": True,
             "nav_show_new_event": True,
             "cult": cult,
@@ -557,14 +508,7 @@ def cult_leader(request, cult_slug):
     return render(
         request,
         "main/cult_leader.html",
-        {
-            "color_class": "green-mixin",
-            "dark_color_class": "green-dark-mixin",
-            "nav_show_cult": True,
-            "nav_show_edit_cult": True,
-            "cult": cult,
-            "form": form,
-        },
+        {"nav_show_cult": True, "nav_show_edit_cult": True, "cult": cult, "form": form},
     )
 
 
@@ -609,11 +553,5 @@ def cult_announcement(request, cult_slug):
     return render(
         request,
         "main/cult_announcement.html",
-        {
-            "color_class": "green-mixin",
-            "dark_color_class": "green-dark-mixin",
-            "nav_show_cult": True,
-            "cult": cult,
-            "form": form,
-        },
+        {"nav_show_cult": True, "cult": cult, "form": form},
     )

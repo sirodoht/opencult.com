@@ -269,7 +269,7 @@ a.header-brand {
 }
 
 nav {
-  background: #dcd3e0;
+  background: #e3e3e3;
   color: #000;
   padding: 8px 20px;
   line-height: 20px;
@@ -306,38 +306,6 @@ form.inline {
 
 p {
   width: 360px;
-}
-
-.purple-mixin {
-  background: #f6eff6;
-}
-
-.purple-dark-mixin {
-  background: #dcd3e0;
-}
-
-.green-mixin {
-  background: #eff6f2;
-}
-
-.green-dark-mixin {
-  background: #d3e0d8;
-}
-
-.blue-mixin {
-  background: #eff3f6;
-}
-
-.blue-dark-mixin {
-  background: #d3d8e0;
-}
-
-.yellow-mixin {
-  background: #f6f5ef;
-}
-
-.yellow-dark-mixin {
-  background: #e0ded3;
 }
 
 .alert {

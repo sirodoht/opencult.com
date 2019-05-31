@@ -26,7 +26,7 @@ from main.forms import (
     EditEventForm,
     EventForm,
 )
-from main.models import Attendance, Comment, Cult, Event, Membership
+from main.models import Attendance, Comment, Cult, Event, Membership, CustomUser
 from main.tasks import announce_event, email_members
 
 
@@ -177,7 +177,7 @@ def about(request):
 @require_safe
 def profile(request, username):
     try:
-        user = User.objects.get(username=username)
+        user = CustomUser.objects.get(username=username)
     except User.DoesNotExist:
         raise Http404("User not found")
 
@@ -432,7 +432,7 @@ def cult_leader(request, cult_slug):
         if form.is_valid():
             username = form.cleaned_data.get("username")
             try:
-                user = User.objects.get(username=username)
+                user = CustomUser.objects.get(username=username)
             except User.DoesNotExist:
                 messages.error(request, 'User "' + username + '" does not exist.')
                 return redirect("main:cult_leader", cult.slug)

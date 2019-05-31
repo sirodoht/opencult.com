@@ -15,7 +15,7 @@ def groups(request):
         return groups_city(request)
 
     groups = (
-        Group.objects.all().order_by("name").values("name", "slug", "doctrine", "city")
+        Group.objects.all().order_by("name").values("name", "slug", "description", "city")
     )
     groups_list = list(groups)
     for group in groups_list:
@@ -29,7 +29,7 @@ def groups_city(request):
     groups = (
         Group.objects.filter(city=city)
         .order_by("name")
-        .values("name", "slug", "doctrine", "city")
+        .values("name", "slug", "description", "city")
     )
     groups_list = list(groups)
     for group in groups_list:
@@ -39,7 +39,7 @@ def groups_city(request):
 
 def single_group(request, group_slug):
     group = Group.objects.get(slug=group_slug)
-    group_dict = model_to_dict(group, fields=["name", "slug", "doctrine", "city"])
+    group_dict = model_to_dict(group, fields=["name", "slug", "description", "city"])
     group_dict["members"] = [m.username for m in group.members_list]
     events = Event.objects.filter(group=group).values_list("slug", flat=True)
     group_dict["events"] = list(events)

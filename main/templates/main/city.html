@@ -3,56 +3,56 @@
 {% block title %}{{ city }} - Open Cult{% endblock %}
 
 {% block content %}
-    <div class="section">
-        <div class="section-title">Events in {{ city }}</div>
+<section>
+    <h1>Events in {{ city }}</h1>
 
-        {% regroup events_list by date as events_by_date %}
-        {% for date in events_by_date %}
-            <div class="home-label">{{ date.grouper|date:"l, N j, Y" }}</div>
+    {% regroup events_list by date as events_by_date %}
+    {% for date in events_by_date %}
+        <div class="home-label">{{ date.grouper|date:"l, N j, Y" }}</div>
 
-            {% for event in date.list %}
-                <div class="home-event">
-                    <div class="item-event-title">
-                        <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a> >
-                        <a href="{% url 'main:event' event.group.slug event.slug %}">{{ event.title }}</a>
-                    </div>
-                    <div class="item-event-subtext">
-                        <a href="{% url 'main:event' event.group.slug event.slug %}" class="item-event-subtext-link">{{ event.time|time:"H:i" }}</a>
-                        {% if event.venue or event.address or event.maps_url %}
-                        |
-                        {% if event.venue and event.address and event.maps_url %}
-                        {{ event.venue }} - <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
-                        {% elif event.venue and event.address %}
-                        {{ event.venue }} - {{ event.address }}
-                        {% elif event.venue and event.maps_url %}
-                        <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.venue }}</a>
-                        {% elif event.address and event.maps_url %}
-                        <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
-                        {% elif event.venue %}
-                        {{ event.venue }}
-                        {% elif event.address %}
-                        {{ event.address }}
-                        {% elif event.maps_url %}
-                        <a href="{{ event.maps_url }}" class="item-event-subtext-link">Maps</a>
-                        {% endif %}
-                        {% endif %}
-                        | <a href="{% url 'main:event' event.group.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
-                    </div>
+        {% for event in date.list %}
+            <div class="home-event">
+                <div class="item-event-title">
+                    <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a> >
+                    <a href="{% url 'main:event' event.group.slug event.slug %}">{{ event.title }}</a>
                 </div>
-            {% endfor %}
+                <div class="item-event-subtext">
+                    <a href="{% url 'main:event' event.group.slug event.slug %}" class="item-event-subtext-link">{{ event.time|time:"H:i" }}</a>
+                    {% if event.venue or event.address or event.maps_url %}
+                    |
+                    {% if event.venue and event.address and event.maps_url %}
+                    {{ event.venue }} - <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
+                    {% elif event.venue and event.address %}
+                    {{ event.venue }} - {{ event.address }}
+                    {% elif event.venue and event.maps_url %}
+                    <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.venue }}</a>
+                    {% elif event.address and event.maps_url %}
+                    <a href="{{ event.maps_url }}" class="item-event-subtext-link">{{ event.address }}</a>
+                    {% elif event.venue %}
+                    {{ event.venue }}
+                    {% elif event.address %}
+                    {{ event.address }}
+                    {% elif event.maps_url %}
+                    <a href="{{ event.maps_url }}" class="item-event-subtext-link">Maps</a>
+                    {% endif %}
+                    {% endif %}
+                    | <a href="{% url 'main:event' event.group.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% empty %}
+        <p>There are currently no events happening.</p>
+    {% endfor %}
+</section>
+
+<section>
+    <h1>Groups in {{ city }}</h1>
+    <div class="section-body">
+        {% for group in groups_list %}
+            <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
         {% empty %}
-            <p>There are currently no events happening.</p>
+            <p>There are no groups in this town.</p>
         {% endfor %}
     </div>
-
-    <div class="section">
-        <div class="section-title">Groups in {{ city }}</div>
-        <div class="section-body">
-            {% for group in groups_list %}
-                <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
-            {% empty %}
-                <p>There are no groups in this town.</p>
-            {% endfor %}
-        </div>
-    </div>
+</section>
 {% endblock %}

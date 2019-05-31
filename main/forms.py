@@ -19,13 +19,13 @@ class CustomUserChangeForm(UserChangeForm):
 class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
-        fields = ["name", "doctrine", "city"]
+        fields = ["name", "description", "city"]
 
 
 class EditGroupForm(forms.ModelForm):
     class Meta:
         model = Group
-        fields = ["name", "slug", "doctrine", "city"]
+        fields = ["name", "slug", "description", "city"]
 
 
 class EventForm(forms.ModelForm):

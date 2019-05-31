@@ -27,7 +27,7 @@ class Group(models.Model):
     name = models.CharField(max_length=100)
     date_created = models.DateTimeField(default=timezone.now)
     slug = models.CharField(max_length=100, unique=True, db_index=True)
-    doctrine = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100)
 
     @property

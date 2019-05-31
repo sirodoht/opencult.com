@@ -3,7 +3,7 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="section">
+<section>
     {% if next %}
         {% if user.is_authenticated %}
             <p class="alert">
@@ -12,11 +12,13 @@
             </p>
         {% endif %}
     {% endif %}
-    <div class="section-title">Login</div>
+
+    <h1>Login</h1>
+    
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Login</button>
+        <input type="submit" value="login">
     </form>
-</div>
+</section>
 {% endblock %}

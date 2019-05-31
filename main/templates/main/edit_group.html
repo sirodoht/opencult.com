@@ -3,48 +3,48 @@
 {% block title %}Edit {{ group.name }} - Open Cult{% endblock %}
 
 {% block content %}
-    <div class="section">
-        <div class="section-title">Edit <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a></div>
+<section>
+    <h1>Edit <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a></h1>
 
-        <form action="{% url 'main:edit_group' group.slug %}" method="post">
-            {{ form.non_field_errors }}
+    <form action="{% url 'main:edit_group' group.slug %}" method="post">
+        {{ form.non_field_errors }}
 
-            <label for="id_name">Name</label>
-            {% if form.name.errors %}
-                {% for error in form.name.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="text" name="name" value="{{ form.name.value }}" maxlength="100" required id="id_name">
+        <label for="id_name">Name</label>
+        {% if form.name.errors %}
+            {% for error in form.name.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="name" value="{{ form.name.value }}" maxlength="100" required id="id_name">
 
-            <label for="id_slug">Slug</label>
-            {% if form.slug.errors %}
-                {% for error in form.slug.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="text" name="slug" value="{{ form.slug.value }}" maxlength="100" required id="id_slug">
+        <label for="id_slug">Slug</label>
+        {% if form.slug.errors %}
+            {% for error in form.slug.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="slug" value="{{ form.slug.value }}" maxlength="100" required id="id_slug">
 
-            <label for="id_doctrine">Doctrine</label>
-            {% if form.doctrine.errors %}
-                {% for error in form.doctrine.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <textarea name="doctrine" rows="6" id="id_doctrine">{{ form.doctrine.value }}</textarea>
+        <label for="id_description">Description</label>
+        {% if form.description.errors %}
+            {% for error in form.description.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <textarea name="description" rows="6" id="id_description">{{ form.description.value }}</textarea>
 
-            <label for="id_city">City</label>
-            {% if form.city.errors %}
-                {% for error in form.city.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="text" name="city" value="{{ form.city.value }}" maxlength="100" required id="id_city">
+        <label for="id_city">City</label>
+        {% if form.city.errors %}
+            {% for error in form.city.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="city" value="{{ form.city.value }}" maxlength="100" required id="id_city">
 
-            {% csrf_token %}
+        {% csrf_token %}
 
-            <input type="submit" value="update">
-        </form>
+        <input type="submit" value="update">
+    </form>
 
-    </div>
+</section>
 {% endblock %}

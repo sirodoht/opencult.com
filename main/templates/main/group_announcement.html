@@ -3,24 +3,21 @@
 {% block title %}Email all {{ group.name }} members - Open Cult{% endblock %}
 
 {% block content %}
-    <div class="section">
-        <div class="section-title">Email all <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a> members</div>
+<section>
+    <h1>Email all <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a> members</h1>
 
-        <form action="{% url 'main:group_announcement' group.slug %}" method="post">
-            {{ form.non_field_errors }}
+    <form action="{% url 'main:group_announcement' group.slug %}" method="post">
+        {{ form.non_field_errors }}
 
-            <label for="id_message">Message:</label>
-            {% if form.message.errors %}
-                {% for error in form.message.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <textarea name="message" rows="6" required id="id_message"></textarea>
-
-            {% csrf_token %}
-
-            <input type="submit" value="blast all {{ group.members_list.count }} members">
-        </form>
-
-    </div>
+        <label for="id_message">Message:</label>
+        {% if form.message.errors %}
+            {% for error in form.message.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <textarea name="message" rows="6" required id="id_message"></textarea>
+        {% csrf_token %}
+        <input type="submit" value="blast all {{ group.members_list.count }} members">
+    </form>
+</section>
 {% endblock %}

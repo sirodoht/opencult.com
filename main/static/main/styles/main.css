@@ -235,11 +235,14 @@ input[type="time"],
 textarea {
     display: block;
     width: 360px;
+    border: 1px solid #ccc;
 }
 
 input[type="submit"] {
     margin-top: 24px;
     margin-bottom: 8px;
+    border: 1px solid #000;
+    cursor: pointer;
 }
 
 form.inline {
@@ -272,6 +275,7 @@ section {
     max-width: 540px;
     border: 1px dotted #121212;
     border-left: 3px solid #121212;
+    margin-top: 24px;
     padding-left: 12px;
     padding-bottom: 8px;
 }
@@ -318,7 +322,7 @@ section {
     color: #828282;
 }
 
-.section-title {
+h1 {
     font-size: 14px;
     font-weight: bold;
     margin-top: 24px;

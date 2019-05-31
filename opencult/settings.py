@@ -77,11 +77,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "opencult.wsgi.application"
 
+AUTH_USER_MODEL = "main.CustomUser"
+
 LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-
-AUTH_TOKEN_DURATION = 30 * 60  # = 1800 = 30 min in seconds
 
 
 # Database
@@ -90,7 +90,6 @@ AUTH_TOKEN_DURATION = 30 * 60  # = 1800 = 30 min in seconds
 DATABASES = {"default": {"ENGINE": "django.db.backends.postgresql"}}
 
 # Update database configuration with $DATABASE_URL.
-# https://devcenter.heroku.com/articles/django-app-configuration#database-configuration
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES["default"].update(db_from_env)
 
@@ -142,15 +141,6 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
 
 DEFAULT_FROM_EMAIL = "hi@opencult.com"
-
-
-# Authentication backends
-# https://docs.djangoproject.com/en/2.0/topics/auth/customizing/
-
-AUTHENTICATION_BACKENDS = (
-    "main.auth_backends.EmailTokenBackend",
-    "django.contrib.auth.backends.ModelBackend",
-)
 
 
 # The age of session cookies, in seconds

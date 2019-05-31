@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.urls import path
+from django.contrib.auth import views as auth_views
+from django.urls import path, reverse_lazy
 
 from . import views
 
@@ -8,28 +9,54 @@ app_name = "main"
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("login/", auth_views.LoginView.as_view(), name="login"),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path(
+        "password_change/",
+        auth_views.PasswordChangeView.as_view(
+            success_url=reverse_lazy("main:password_change_done")
+        ),
+        name="password_change",
+    ),
+    path(
+        "password_change/done/",
+        auth_views.PasswordChangeDoneView.as_view(),
+        name="password_change_done",
+    ),
+    path(
+        "password_reset/", auth_views.PasswordResetView.as_view(), name="password_reset"
+    ),
+    path(
+        "password_reset/done/",
+        auth_views.PasswordResetDoneView.as_view(),
+        name="password_reset_done",
+    ),
+    path(
+        "reset/<uidb64>/<token>/",
+        auth_views.PasswordResetConfirmView.as_view(),
+        name="password_reset_confirm",
+    ),
+    path(
+        "reset/done/",
+        auth_views.PasswordResetCompleteView.as_view(),
+        name="password_reset_complete",
+    ),
+    path("signup/", views.SignUp.as_view(), name="signup"),
     path("about/", views.about, name="about"),
-    # /new/
     path("new/", views.new_cult, name="new_cult"),
-    # e.g. /@some-username/edit/
     path("@<username>/edit/", views.edit_profile, name="edit_profile"),
-    # e.g. /@some-username/
     path("@<username>/", views.profile, name="profile"),
-    # e.g. /membership/some-cult-slug/delete/
     path(
         "membership/<slug:cult_slug>/delete/",
         views.delete_membership,
         name="delete_membership",
     ),
-    # e.g. /membership/some-cult-slug/
     path("membership/<slug:cult_slug>/", views.membership, name="membership"),
-    # e.g. /attendance/some-cult-slug/some-event-slug/delete/
     path(
         "attendance/<slug:cult_slug>/<slug:event_slug>/delete/",
         views.delete_attendance,
         name="delete_attendance",
     ),
-    # e.g. /attendance/some-cult-slug/some-event-slug/
     path(
         "attendance/<slug:cult_slug>/<slug:event_slug>/",
         views.attendance,

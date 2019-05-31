@@ -1,0 +1,22 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="section">
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p class="alert">
+                Your account doesn't have access to this page.
+                To proceed please login with an account that has access.
+            </p>
+        {% endif %}
+    {% endif %}
+    <div class="section-title">Login</div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+</div>
+{% endblock %}

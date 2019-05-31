@@ -17,13 +17,13 @@
         {% endif %}
         <input type="text" name="username" value="{{ form.username.value }}" maxlength="150" id="id_username">
 
-        <!-- <label for="id_email"">Email</label>
+        <label for="id_email"">Email</label>
         {% if form.email.errors %}
             {% for error in form.email.errors %}
                 <div class="form-error">{{ error|escape }}</div>
             {% endfor %}
         {% endif %}
-        <input type="email" name="email" value="{{ form.email.value }}" maxlength="254" id="id_email"> -->
+        <input type="email" name="email" value="{{ form.email.value }}" maxlength="254" id="id_email">
 
         <label for="id_about"">About</label>
         {% if form.about.errors %}

@@ -187,27 +187,24 @@ def profile(request, username):
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
 def edit_profile(request, username):
-    # if request.method == "POST":
+    if request.method == "POST":
 
-    #     # user gets 403 on other profile post
-    #     if request.user.username != username:
-    #         return HttpResponse(status=403)
+        # user gets 403 on other profile post
+        if request.user.username != username:
+            return HttpResponse(status=403)
 
-    #     form = UserForm(
-    #         request.POST,
-    #         instance=request.user,
-    #         initial={"about": request.user.profile.about},
-    #     )
-    #     if form.is_valid():
-    #         updated_user = form.save(commit=False)
-    #         updated_user.profile.about = form.cleaned_data["about"]
-    #         updated_user.save()
-    #         messages.success(request, "Profile updated")
-    #         return redirect("main:edit_profile", updated_user.username)
-    # else:
-    #     form = UserForm(
-    #         instance=request.user, initial={"about": request.user.profile.about}
-    #     )
+        form = forms.CustomUserChangeForm(
+            request.POST,
+            instance=request.user,
+        )
+        if form.is_valid():
+            updated_user = form.save()
+            messages.success(request, "Profile updated")
+            return redirect("main:profile", updated_user.username)
+    else:
+        form = forms.CustomUserChangeForm(
+            instance=request.user
+        )
 
     return render(
         request,

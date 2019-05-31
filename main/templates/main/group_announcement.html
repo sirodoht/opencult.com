@@ -17,7 +17,7 @@
         {% endif %}
         <textarea name="message" rows="6" required id="id_message"></textarea>
         {% csrf_token %}
-        <input type="submit" value="blast all {{ group.members_list.count }} members">
+        <input type="submit" value="Blast all {{ group.members_list.count }} members">
     </form>
 </section>
 {% endblock %}

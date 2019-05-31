@@ -13,8 +13,5 @@ indent_size = 4
 [*.md]
 trim_trailing_whitespace = false
 
-[*.css]
-indent_size = 2
-
 [*.yml]
 indent_size = 2

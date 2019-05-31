@@ -4,3 +4,4 @@ __pycache__/
 prod-env.txt
 .pytest_cache/
 .env
+dbdata/

@@ -1,21 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 
-from .models import Attendance, Comment, Cult, Event, Membership, Profile
+from main.forms import CustomUserChangeForm, CustomUserCreationForm
+from main.models import Attendance, Comment, Cult, CustomUser, Event, Membership
 
 
 # User
-class OpCuAdmin(UserAdmin):
-    list_display = ("username", "email", "date_joined", "last_login", "id")
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
+    list_display = ["email", "username"]
 
 
-admin.site.unregister(User)
-admin.site.register(User, OpCuAdmin)
-
-
-# Profile
-admin.site.register(Profile)
+admin.site.register(CustomUser, CustomUserAdmin)
 
 
 # Cult

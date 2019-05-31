@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:11.3
+    environment:
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+
+  web:
+    command: bash -c "while ! nc -w 1 -z db 5432; do sleep 0.1; done; ./manage.py migrate; while :; do ./manage.py runserver 0.0.0.0:8000; sleep 1; done"
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/postgres

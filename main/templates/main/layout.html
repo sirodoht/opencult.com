@@ -14,80 +14,79 @@
 <body>
     <header>
         <a href="{% url 'main:index' %}" class="header-brand">Open Cult</a>
-        {% if request.user.is_authenticated %}
-            <a href="{% url 'main:edit_profile' request.user.username %}" class="header-user">{{ request.user.username }}</a>
-        {% else %}
-            <a href="{% url 'main:login' %}" class="header-user">login</a>
-        {% endif %}
-    </header>
-
-    <nav>
-        <a href="{% url 'main:new_cult' %}">new cult</a>
-        {% if request.user.is_authenticated %}
-            | <a href="{% url 'main:profile' request.user.username %}">my cults</a>
-        {% endif %}
-        {% if nav_show_own_cults %}
-            {% for cult in own_cults %}
+        <nav>
+            <a href="{% url 'main:new_cult' %}">new cult</a>
+            {% if request.user.is_authenticated %}
+                | <a href="{% url 'main:profile' request.user.username %}">my cults</a>
+            {% endif %}
+            {% if nav_show_own_cults %}
+                {% for cult in own_cults %}
+                    | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
+                {% endfor %}
+            {% endif %}
+            {% if nav_show_cult %}
                 | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
-            {% endfor %}
-        {% endif %}
-        {% if nav_show_cult %}
-            | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
-        {% endif %}
-        {% if nav_show_leader_add and request.user in cult.leaders_list %}
-            | <a href="{% url 'main:cult_leader' cult.slug %}">add cult leader</a>
-        {% endif %}
-        {% if nav_show_edit_cult and request.user in cult.leaders_list %}
-            | <a href="{% url 'main:edit_cult' cult.slug %}">edit cult</a>
-        {% endif %}
-        {% if nav_show_new_event and request.user in cult.leaders_list %}
-            | <a href="{% url 'main:new_event' cult.slug %}">new event</a>
-        {% endif %}
-        {% if nav_show_cult_announcement and request.user in cult.leaders_list %}
-            | <a href="{% url 'main:cult_announcement' cult.slug %}">email members</a>
-        {% endif %}
-        {% if nav_show_edit_event and request.user in event.cult.leaders_list %}
-            | <a href="{% url 'main:edit_event' event.cult.slug event.slug %}">edit event</a>
-        {% endif %}
-        {% if nav_show_logout %}
-            | <a href="{% url 'main:logout' %}">logout</a>
-        {% endif %}
-        {% if nav_show_join_cult %}
-            {% if request.user not in cult.leaders_list or cult.leaders_count != 1 %}
-                {% if membership %}
-                    <form action="{% url 'main:delete_membership' cult.slug %}" method="post" class="inline">
+            {% endif %}
+            {% if nav_show_leader_add and request.user in cult.leaders_list %}
+                | <a href="{% url 'main:cult_leader' cult.slug %}">add cult leader</a>
+            {% endif %}
+            {% if nav_show_edit_cult and request.user in cult.leaders_list %}
+                | <a href="{% url 'main:edit_cult' cult.slug %}">edit cult</a>
+            {% endif %}
+            {% if nav_show_new_event and request.user in cult.leaders_list %}
+                | <a href="{% url 'main:new_event' cult.slug %}">new event</a>
+            {% endif %}
+            {% if nav_show_cult_announcement and request.user in cult.leaders_list %}
+                | <a href="{% url 'main:cult_announcement' cult.slug %}">email members</a>
+            {% endif %}
+            {% if nav_show_edit_event and request.user in event.cult.leaders_list %}
+                | <a href="{% url 'main:edit_event' event.cult.slug event.slug %}">edit event</a>
+            {% endif %}
+            {% if nav_show_logout %}
+                | <a href="{% url 'main:logout' %}">logout</a>
+            {% endif %}
+            {% if nav_show_join_cult %}
+                {% if request.user not in cult.leaders_list or cult.leaders_count != 1 %}
+                    {% if membership %}
+                        <form action="{% url 'main:delete_membership' cult.slug %}" method="post" class="inline">
+                            {% csrf_token %}
+                            | <input type="submit" value="leave cult">
+                        </form>
+                    {% else %}
+                        <form action="{% url 'main:membership' cult.slug %}" method="post" class="inline">
+                            {% csrf_token %}
+                            | <input type="submit" value="join">
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+            {% if nav_show_rsvp_event and event.date >= now.date %}
+                {% if attendance %}
+                    <form action="{% url 'main:delete_attendance' event.cult.slug event.slug %}" method="post" class="inline">
                         {% csrf_token %}
-                        | <input type="submit" value="leave cult">
+                        | <input type="submit" value="un-rsvp">
                     </form>
                 {% else %}
-                    <form action="{% url 'main:membership' cult.slug %}" method="post" class="inline">
+                    <form action="{% url 'main:attendance' event.cult.slug event.slug %}" method="post" class="inline">
                         {% csrf_token %}
-                        | <input type="submit" value="join">
+                        | <input type="submit" value="rsvp">
                     </form>
                 {% endif %}
             {% endif %}
-        {% endif %}
-        {% if nav_show_rsvp_event and event.date >= now.date %}
-            {% if attendance %}
-                <form action="{% url 'main:delete_attendance' event.cult.slug event.slug %}" method="post" class="inline">
-                    {% csrf_token %}
-                    | <input type="submit" value="un-rsvp">
-                </form>
-            {% else %}
-                <form action="{% url 'main:attendance' event.cult.slug event.slug %}" method="post" class="inline">
-                    {% csrf_token %}
-                    | <input type="submit" value="rsvp">
-                </form>
+            {% if messages %}
+                | <span class="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </span>
             {% endif %}
+        </nav>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'main:edit_profile' request.user.username %}" class="header-user">{{ request.user.username }}</a>
+        {% else %}
+        <a href="{% url 'main:login' %}" class="header-user">login</a>
         {% endif %}
-        {% if messages %}
-            | <span class="alert">
-                {% for message in messages %}
-                    {{ message }}
-                {% endfor %}
-            </span>
-        {% endif %}
-    </nav>
+    </header>
 
     {% block content %}
     {% endblock %}

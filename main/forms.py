@@ -1,42 +1,42 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from main.models import Comment, Group, CustomUser, Event
+from main import models
 
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
-        model = CustomUser
-        fields = ("username", "email")
+        model = models.CustomUser
+        fields = ["username", "email"]
 
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
-        model = CustomUser
-        fields = ("username", "email")
+        model = models.CustomUser
+        fields = ["username", "email", "about"]
 
 
-class GroupForm(forms.ModelForm):
+class GroupCreationForm(forms.ModelForm):
     class Meta:
-        model = Group
+        model = models.Group
         fields = ["name", "description", "city"]
 
 
-class EditGroupForm(forms.ModelForm):
+class GroupChangeForm(forms.ModelForm):
     class Meta:
-        model = Group
+        model = models.Group
         fields = ["name", "slug", "description", "city"]
 
 
-class EventForm(forms.ModelForm):
+class EventCreationForm(forms.ModelForm):
     class Meta:
-        model = Event
+        model = models.Event
         fields = ["title", "details", "date", "time", "venue", "address", "maps_url"]
 
 
-class EditEventForm(forms.ModelForm):
+class EventChangeForm(forms.ModelForm):
     class Meta:
-        model = Event
+        model = models.Event
         fields = [
             "title",
             "slug",
@@ -53,9 +53,9 @@ class AddGroupLeaderForm(forms.Form):
     username = forms.CharField()
 
 
-class CommentForm(forms.ModelForm):
+class CommentCreationForm(forms.ModelForm):
     class Meta:
-        model = Comment
+        model = models.Comment
         fields = ["body"]
 
 

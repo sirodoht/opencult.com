@@ -5,18 +5,16 @@ from main.forms import CustomUserChangeForm, CustomUserCreationForm
 from main.models import Attendance, Comment, Group, CustomUser, Event, Membership
 
 
-# User
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ["email", "username"]
+    list_display = ["email", "username", "about"]
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
 
 
-# Group
 class GroupAdmin(admin.ModelAdmin):
     list_display = ("name", "city")
 
@@ -24,7 +22,6 @@ class GroupAdmin(admin.ModelAdmin):
 admin.site.register(Group, GroupAdmin)
 
 
-# Event
 class EventAdmin(admin.ModelAdmin):
     list_display = ("title", "group", "date", "time", "venue")
 
@@ -32,7 +29,6 @@ class EventAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventAdmin)
 
 
-# Membership
 class MembershipAdmin(admin.ModelAdmin):
     list_display = ("group", "user", "role", "date_joined")
 
@@ -40,7 +36,6 @@ class MembershipAdmin(admin.ModelAdmin):
 admin.site.register(Membership, MembershipAdmin)
 
 
-# Attendance
 class AttendanceAdmin(admin.ModelAdmin):
     list_display = ("event", "user", "date_rsvped")
 
@@ -48,7 +43,6 @@ class AttendanceAdmin(admin.ModelAdmin):
 admin.site.register(Attendance, AttendanceAdmin)
 
 
-# Comment
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("date_posted", "body", "author", "event")
 

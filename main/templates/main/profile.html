@@ -6,23 +6,29 @@
 <section>
     <h1>{{ user.username }}</h1>
 
+    {% if user.about %}
     <div class="section-label">About</div>
     <div class="section-body">
-        {{ user.profile.about|default:""|linebreaks }}
+        {{ user.about|default:""|linebreaks }}
     </div>
+    {% endif %}
 
+    {% if user.leader_of_list %}
     <div class="section-label">Leader of</div>
     <div class="section-body">
-        {% for group in user.profile.leader_of_list %}
+        {% for group in user.leader_of_list %}
             <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
         {% endfor %}
     </div>
+    {% endif %}
 
-    <div class="section-label">Member of ({{ user.profile.member_of_count }})</div>
+    {% if user.member_of_count %}
+    <div class="section-label">Member of ({{ user.member_of_count }})</div>
     <div class="section-body">
-        {% for group in user.profile.member_of_list %}
+        {% for group in user.member_of_list %}
             <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
         {% endfor %}
     </div>
+    {% endif %}
 </section>
 {% endblock %}

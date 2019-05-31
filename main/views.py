@@ -16,17 +16,7 @@ from django.views.decorators.http import (
     require_safe,
 )
 
-from main.forms import (
-    AddGroupLeaderForm,
-    CommentForm,
-    GroupAnnouncementForm,
-    GroupForm,
-    CustomUserCreationForm,
-    EditGroupForm,
-    EditEventForm,
-    EventForm,
-)
-from main.models import Attendance, Comment, Group, Event, Membership, CustomUser
+from main import forms, models
 from main.tasks import announce_event, email_members
 
 
@@ -36,15 +26,15 @@ def index(request):
         return city(request)
 
     now = timezone.now()
-    events_list = Event.objects.filter(date__gte=now.date()).order_by("date", "time")
-    attending_events_list = Event.objects.filter(
+    events_list = models.Event.objects.filter(date__gte=now.date()).order_by("date", "time")
+    attending_events_list = models.Event.objects.filter(
         attendees__username=request.user.username, date__gte=now.date()
     ).order_by("date", "time")
 
     own_groups = None
     if request.user.is_authenticated:
-        own_groups = Group.objects.filter(
-            membership__user=request.user, membership__role=Membership.LEADER
+        own_groups = models.Group.objects.filter(
+            membership__user=request.user, membership__role=models.Membership.LEADER
         )
 
     return render(
@@ -64,16 +54,16 @@ def city(request):
     city = request.GET.get("city")
 
     now = timezone.now()
-    events_list = Event.objects.filter(group__city=city, date__gte=now.date()).order_by(
+    events_list = models.Event.objects.filter(group__city=city, date__gte=now.date()).order_by(
         "date", "time"
     )
 
-    groups_list = Group.objects.filter(city=city)
+    groups_list = models.Group.objects.filter(city=city)
 
     own_groups = None
     if request.user.is_authenticated:
-        own_groups = Group.objects.filter(
-            membership__user=request.user, membership__role=Membership.LEADER
+        own_groups = models.Group.objects.filter(
+            membership__user=request.user, membership__role=models.Membership.LEADER
         )
 
     return render(
@@ -90,7 +80,7 @@ def city(request):
 
 
 class SignUp(generic.CreateView):
-    form_class = CustomUserCreationForm
+    form_class = forms.CustomUserCreationForm
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
@@ -98,23 +88,23 @@ class SignUp(generic.CreateView):
 @require_safe
 def group(request, group_slug):
     try:
-        group = Group.objects.get(slug=group_slug)
-    except Group.DoesNotExist:
+        group = models.Group.objects.get(slug=group_slug)
+    except models.Group.DoesNotExist:
         raise Http404("Group not found")
 
     now = timezone.now()
-    upcoming_events_list = Event.objects.filter(
+    upcoming_events_list = models.Event.objects.filter(
         group=group, date__gte=now.date()
     ).order_by("-date", "-time")
-    past_events_list = Event.objects.filter(group=group, date__lt=now.date()).order_by(
+    past_events_list = models.Event.objects.filter(group=group, date__lt=now.date()).order_by(
         "-date", "-time"
     )
 
     membership = None  # not authed
     if request.user.is_authenticated:
         try:
-            membership = Membership.objects.get(user=request.user, group=group)
-        except Membership.DoesNotExist:  # user is not member
+            membership = models.Membership.objects.get(user=request.user, group=group)
+        except models.Membership.DoesNotExist:  # user is not member
             membership = None
 
     return render(
@@ -137,20 +127,20 @@ def group(request, group_slug):
 @require_safe
 def event(request, group_slug, event_slug):
     try:
-        event = Event.objects.get(slug=event_slug)
-    except Event.DoesNotExist:
+        event = models.Event.objects.get(slug=event_slug)
+    except models.Event.DoesNotExist:
         raise Http404("Event not found")
 
-    group = Group.objects.get(slug=group_slug)
+    group = models.Group.objects.get(slug=group_slug)
 
     attendance = None  # not authed
     if request.user.is_authenticated:
         try:
-            attendance = Attendance.objects.get(user=request.user, event=event)
-        except Attendance.DoesNotExist:  # user is not attending
+            attendance = models.Attendance.objects.get(user=request.user, event=event)
+        except models.Attendance.DoesNotExist:  # user is not attending
             attendance = None
 
-    form = CommentForm()
+    form = forms.CommentCreationForm()
 
     return render(
         request,
@@ -177,14 +167,14 @@ def about(request):
 @require_safe
 def profile(request, username):
     try:
-        user = CustomUser.objects.get(username=username)
-    except User.DoesNotExist:
+        user = models.CustomUser.objects.get(username=username)
+    except models.CustomUser.DoesNotExist:
         raise Http404("User not found")
 
     own_groups = None
     if request.user.is_authenticated:
-        own_groups = Group.objects.filter(
-            membership__user=request.user, membership__role=Membership.LEADER
+        own_groups = models.Group.objects.filter(
+            membership__user=request.user, membership__role=models.Membership.LEADER
         )
 
     return render(
@@ -222,7 +212,7 @@ def edit_profile(request, username):
     return render(
         request,
         "main/edit_profile.html",
-        {"nav_show_own_groups": True, "nav_show_logout": True},
+        {"nav_show_own_groups": True, "nav_show_logout": True, "form": form},
     )
 
 
@@ -230,17 +220,17 @@ def edit_profile(request, username):
 @login_required
 def new_group(request):
     if request.method == "POST":
-        form = GroupForm(request.POST)
+        form = forms.GroupCreationForm(request.POST)
         if form.is_valid():
             new_group = form.save(commit=False)
             new_group.slug = slugify(new_group.name)
             new_group.save()
-            Membership.objects.create(
+            models.Membership.objects.create(
                 group=new_group, user=request.user, role=Membership.LEADER
             )
             return redirect("main:group", group_slug=new_group.slug)
     else:
-        form = GroupForm()
+        form = forms.GroupCreationForm()
 
     return render(
         request, "main/new_group.html", {"nav_show_own_groups": True, "form": form}
@@ -250,11 +240,11 @@ def new_group(request):
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
 def new_event(request, group_slug):
-    group = Group.objects.get(slug=group_slug)
+    group = models.Group.objects.get(slug=group_slug)
     if request.user not in group.leaders_list:
         return HttpResponse(status=403)
     if request.method == "POST":
-        form = EventForm(request.POST)
+        form = forms.EventCreationForm(request.POST)
         if form.is_valid():
             new_event = form.save(commit=False)
             new_event.slug = slugify(new_event.title)
@@ -267,7 +257,7 @@ def new_event(request, group_slug):
                 ).random(length=12)
                 new_event.slug = slugify(new_event.title) + "-" + uuid
                 new_event.save()
-            Attendance.objects.create(event=new_event, user=request.user)
+            models.Attendance.objects.create(event=new_event, user=request.user)
 
             # send email announcement to members
             for member in group.members.all():
@@ -292,7 +282,7 @@ def new_event(request, group_slug):
                 "main:event", group_slug=group.slug, event_slug=new_event.slug
             )
     else:
-        form = EventForm()
+        form = forms.EventCreationForm()
 
     return render(
         request,
@@ -311,20 +301,20 @@ def new_event(request, group_slug):
 @login_required
 def edit_group(request, group_slug):
     try:
-        group = Group.objects.get(slug=group_slug)
-    except Group.DoesNotExist:
+        group = models.Group.objects.get(slug=group_slug)
+    except models.Group.DoesNotExist:
         raise Http404("Group not found")
 
     if request.user not in group.leaders_list:
         return HttpResponse(status=403)
 
     if request.method == "POST":
-        form = EditGroupForm(request.POST, instance=group)
+        form = forms.GroupChangeForm(request.POST, instance=group)
         if form.is_valid():
             form.save()
             return redirect("main:group", group_slug=group.slug)
     else:
-        form = EditGroupForm(instance=group)
+        form = forms.GroupChangeForm(instance=group)
 
     return render(
         request,
@@ -341,19 +331,19 @@ def edit_group(request, group_slug):
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
 def edit_event(request, group_slug, event_slug):
-    group = Group.objects.get(slug=group_slug)
-    event = Event.objects.get(slug=event_slug)
+    group = models.Group.objects.get(slug=group_slug)
+    event = models.Event.objects.get(slug=event_slug)
 
     if request.user not in group.leaders_list:
         return HttpResponse(status=403)
 
     if request.method == "POST":
-        form = EditEventForm(request.POST, instance=event)
+        form = forms.EventChangeForm(request.POST, instance=event)
         if form.is_valid():
             form.save()
             return redirect("main:event", group_slug=group.slug, event_slug=event.slug)
     else:
-        form = EditEventForm(instance=event)
+        form = forms.EventChangeForm(instance=event)
 
     return render(
         request,
@@ -371,8 +361,8 @@ def edit_event(request, group_slug, event_slug):
 @require_POST
 @login_required
 def membership(request, group_slug):
-    group = Group.objects.get(slug=group_slug)
-    Membership.objects.get_or_create(
+    group = models.Group.objects.get(slug=group_slug)
+    models.Membership.objects.get_or_create(
         user=request.user, group=group, role=Membership.MEMBER
     )
     return redirect("main:group", group_slug=group.slug)
@@ -381,62 +371,62 @@ def membership(request, group_slug):
 @require_POST
 @login_required
 def delete_membership(request, group_slug):
-    group = Group.objects.get(slug=group_slug)
+    group = models.Group.objects.get(slug=group_slug)
 
     # solo group leader cannot unjoin
     if request.user in group.leaders_list and group.leaders_count == 1:
         return HttpResponse(status=403)
 
-    Membership.objects.get(user=request.user, group=group).delete()
+    models.Membership.objects.get(user=request.user, group=group).delete()
     return redirect("main:group", group_slug=group.slug)
 
 
 @require_POST
 @login_required
 def attendance(request, group_slug, event_slug):
-    event = Event.objects.get(slug=event_slug)
+    event = models.Event.objects.get(slug=event_slug)
 
     # attendance cannot change on past events
     now = timezone.now()
     if event.date < now.date():
         return HttpResponse(status=403)
 
-    Attendance.objects.get_or_create(user=request.user, event=event)
+    models.Attendance.objects.get_or_create(user=request.user, event=event)
     return redirect("main:event", group_slug=group_slug, event_slug=event.slug)
 
 
 @require_POST
 @login_required
 def delete_attendance(request, group_slug, event_slug):
-    event = Event.objects.get(slug=event_slug)
+    event = models.Event.objects.get(slug=event_slug)
 
     # attendance cannot change on past events
     now = timezone.now()
     if event.date < now.date():
         return HttpResponse(status=403)
 
-    Attendance.objects.get(user=request.user, event=event).delete()
+    models.Attendance.objects.get(user=request.user, event=event).delete()
     return redirect("main:event", group_slug=group_slug, event_slug=event.slug)
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
 def group_leader(request, group_slug):
-    group = Group.objects.get(slug=group_slug)
+    group = models.Group.objects.get(slug=group_slug)
 
     if request.user not in group.leaders_list:
         return HttpResponse(status=403)
 
     if request.method == "POST":
-        form = AddGroupLeaderForm(request.POST)
+        form = forms.AddGroupLeaderForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get("username")
             try:
-                user = CustomUser.objects.get(username=username)
-            except User.DoesNotExist:
+                user = models.CustomUser.objects.get(username=username)
+            except models.CustomUser.DoesNotExist:
                 messages.error(request, 'User "' + username + '" does not exist.')
                 return redirect("main:group_leader", group.slug)
-            membership, created = Membership.objects.get_or_create(
+            membership, created = models.Membership.objects.get_or_create(
                 user=user, group=group, role=Membership.LEADER
             )
             if created:
@@ -450,7 +440,7 @@ def group_leader(request, group_slug):
                 )
             return redirect("main:group", group_slug=group.slug)
     else:
-        form = AddGroupLeaderForm()
+        form = forms.AddGroupLeaderForm()
 
     return render(
         request,
@@ -462,24 +452,24 @@ def group_leader(request, group_slug):
 @require_http_methods(["POST"])
 @login_required
 def comment(request, group_slug, event_slug):
-    form = CommentForm(request.POST)
+    form = forms.CommentCreationForm(request.POST)
     if form.is_valid():
         body = form.cleaned_data.get("body")
-        event = Event.objects.get(slug=event_slug)
-        Comment.objects.create(event=event, author=request.user, body=body)
+        event = models.Event.objects.get(slug=event_slug)
+        models.Comment.objects.create(event=event, author=request.user, body=body)
         return redirect("main:event", group_slug=event.group.slug, event_slug=event.slug)
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
 def group_announcement(request, group_slug):
-    group = Group.objects.get(slug=group_slug)
+    group = models.Group.objects.get(slug=group_slug)
 
     if request.user not in group.leaders_list:
         return HttpResponse(status=403)
 
     if request.method == "POST":
-        form = GroupAnnouncementForm(request.POST)
+        form = forms.GroupAnnouncementForm(request.POST)
         if form.is_valid():
 
             # send email announcement to members
@@ -495,7 +485,7 @@ def group_announcement(request, group_slug):
             messages.success(request, "The announcement has been emailed.")
             return redirect("main:group", group_slug=group.slug)
     else:
-        form = GroupAnnouncementForm()
+        form = forms.GroupAnnouncementForm()
 
     return render(
         request,

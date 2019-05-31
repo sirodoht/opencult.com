@@ -1,11 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path, reverse_lazy
+from django.urls import path, re_path, reverse_lazy
+from django.views.generic.base import RedirectView
 
 from . import views
 
 admin.site.site_header = "Open Cult administration"
 app_name = "main"
+
+favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -82,4 +85,5 @@ urlpatterns = [
     path("<slug:group_slug>/<slug:event_slug>/comment/", views.comment, name="comment"),
     path("<slug:group_slug>/<slug:event_slug>/", views.event, name="event"),
     path("<slug:group_slug>/", views.group, name="group"),
+    re_path(r"^favicon\.ico$", favicon_view),
 ]

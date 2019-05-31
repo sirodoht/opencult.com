@@ -9,7 +9,7 @@
         <form action="{% url 'main:cult_announcement' cult.slug %}" method="post">
             {{ form.non_field_errors }}
 
-            <label for="id_message" class="section-label">Message:</label>
+            <label for="id_message">Message:</label>
             {% if form.message.errors %}
                 {% for error in form.message.errors %}
                     <div class="form-error">{{ error|escape }}</div>

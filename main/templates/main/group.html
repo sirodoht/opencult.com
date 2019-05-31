@@ -11,7 +11,7 @@
     <div class="section-special">
         <div class="item-event-title">
             <a href="{% url 'main:event' event.group.slug event.slug %}">{{ event.title }}</a>
-            {% if request.user in event.attendees_list %}<span>rsvp</span>{% endif %}
+            {% if request.user in event.attendees_list %}<span class="rsvp">rsvp</span>{% endif %}
         </div>
         <div class="item-event-subtext">
             <a href="{% url 'main:event' event.group.slug event.slug %}" class="item-event-subtext-link">{{ event.date|date:"l, N j, Y" }} - {{ event.time|time:"H:i" }}</a>

@@ -4,9 +4,12 @@
 <section>
     {% if request.user.is_authenticated %}
     <div class="attending">
-        <div class="attending-title">Attending</div>
+        <div class="attending-title">
+            Upcoming events
+            <span class="rsvp">rsvp</span>
+        </div>
         {% for event in attending_events_list %}
-        <div class="home-event">
+        <div class="attending-event">
             <div class="item-event-title">
                 <a href="{% url 'main:index' %}?city={{ event.group.city }}">{{ event.group.city }}</a> >
                 <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a> >
@@ -35,7 +38,7 @@
             </div>
         </div>
         {% empty %}
-        <div class="home-event">You are not attending any events.</div>
+        <div class="attending-event">You are not attending any events.</div>
         {% endfor %}
     </div>
     {% else %}

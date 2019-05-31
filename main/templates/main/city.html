@@ -13,11 +13,11 @@
             {% for event in date.list %}
                 <div class="home-event">
                     <div class="item-event-title">
-                        <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a> >
-                        <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a>
+                        <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a> >
+                        <a href="{% url 'main:event' event.group.slug event.slug %}">{{ event.title }}</a>
                     </div>
                     <div class="item-event-subtext">
-                        <a href="{% url 'main:event' event.cult.slug event.slug %}" class="item-event-subtext-link">{{ event.time|time:"H:i" }}</a>
+                        <a href="{% url 'main:event' event.group.slug event.slug %}" class="item-event-subtext-link">{{ event.time|time:"H:i" }}</a>
                         {% if event.venue or event.address or event.maps_url %}
                         |
                         {% if event.venue and event.address and event.maps_url %}
@@ -36,7 +36,7 @@
                         <a href="{{ event.maps_url }}" class="item-event-subtext-link">Maps</a>
                         {% endif %}
                         {% endif %}
-                        | <a href="{% url 'main:event' event.cult.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
+                        | <a href="{% url 'main:event' event.group.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
                     </div>
                 </div>
             {% endfor %}
@@ -46,12 +46,12 @@
     </div>
 
     <div class="section">
-        <div class="section-title">Cults in {{ city }}</div>
+        <div class="section-title">Groups in {{ city }}</div>
         <div class="section-body">
-            {% for cult in cults_list %}
-                <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a><br>
+            {% for group in groups_list %}
+                <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
             {% empty %}
-                <p>There are no cults in this town.</p>
+                <p>There are no groups in this town.</p>
             {% endfor %}
         </div>
     </div>

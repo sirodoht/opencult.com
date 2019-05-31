@@ -1,27 +1,27 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}{{ cult.name }} - Open Cult{% endblock %}
+{% block title %}{{ group.name }} - Open Cult{% endblock %}
 
 {% block content %}
     <div class="section">
-        <div class="section-title">{{ cult.name }}</div>
+        <div class="section-title">{{ group.name }}</div>
 
         <div class="section-label">Doctrine</div>
         <div class="section-body">
-            {{ cult.doctrine }}
+            {{ group.doctrine }}
         </div>
 
         <div class="section-label">City</div>
         <div class="section-body">
-            {{ cult.city }}
+            {{ group.city }}
         </div>
 
         <div class="section-label">Members</div>
-        <div class="section-body">{{ cult.members_count }}</div>
+        <div class="section-body">{{ group.members_count }}</div>
 
         <div class="section-label">Leaders</div>
         <div class="section-body">
-            {% for person in cult.leaders_list %}
+            {% for person in group.leaders_list %}
                 <a href="{% url 'main:profile' person.username %}">{{ person.username }}</a><br>
             {% endfor %}
         </div>
@@ -35,9 +35,9 @@
         {% for event in upcoming_events_list %}
             <div class="section-event">
                 <div class="item-event-title">
-                    <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
+                    <a href="{% url 'main:event' event.group.slug event.slug %}">{{ event.title }}</a></div>
                 <div class="item-event-subtext">
-                    <a href="{% url 'main:event' event.cult.slug event.slug %}" class="item-event-subtext-link">{{ event.date|date:"l, N j, Y" }} - {{ event.time|time:"H:i" }}</a>
+                    <a href="{% url 'main:event' event.group.slug event.slug %}" class="item-event-subtext-link">{{ event.date|date:"l, N j, Y" }} - {{ event.time|time:"H:i" }}</a>
                     {% if event.venue or event.address or event.maps_url %}
                     |
                     {% if event.venue and event.address and event.maps_url %}
@@ -56,7 +56,7 @@
                     <a href="{{ event.maps_url }}" class="item-event-subtext-link">Maps</a>
                     {% endif %}
                     {% endif %}
-                    | <a href="{% url 'main:event' event.cult.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
+                    | <a href="{% url 'main:event' event.group.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
                 </div>
             </div>
         {% empty %}
@@ -67,9 +67,9 @@
         {% for event in past_events_list %}
             <div class="section-event">
                 <div class="item-event-title">
-                    <a href="{% url 'main:event' event.cult.slug event.slug %}">{{ event.title }}</a></div>
+                    <a href="{% url 'main:event' event.group.slug event.slug %}">{{ event.title }}</a></div>
                 <div class="item-event-subtext">
-                    <a href="{% url 'main:event' event.cult.slug event.slug %}" class="item-event-subtext-link">{{ event.date|date:"l, N j, Y" }} - {{ event.time|time:"H:i" }}</a>
+                    <a href="{% url 'main:event' event.group.slug event.slug %}" class="item-event-subtext-link">{{ event.date|date:"l, N j, Y" }} - {{ event.time|time:"H:i" }}</a>
                     {% if event.venue or event.address or event.maps_url %}
                     |
                     {% if event.venue and event.address and event.maps_url %}
@@ -88,7 +88,7 @@
                     <a href="{{ event.maps_url }}" class="item-event-subtext-link">Maps</a>
                     {% endif %}
                     {% endif %}
-                    | <a href="{% url 'main:event' event.cult.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
+                    | <a href="{% url 'main:event' event.group.slug event.slug %}#attendees" class="item-event-subtext-link">{{ event.attendees_count }} attendee{{ event.attendees_count|pluralize }}</a>
                 </div>
             </div>
         {% empty %}
@@ -96,7 +96,7 @@
         {% endfor %}
 
         <div class="section-label">Members</div>
-        {% for member in cult.members_list %}
+        {% for member in group.members_list %}
             <div class="section-body">
                 <a href="{% url 'main:profile' member.username %}">{{ member.username }}</a><br>
             </div>

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from main.forms import CustomUserChangeForm, CustomUserCreationForm
-from main.models import Attendance, Comment, Cult, CustomUser, Event, Membership
+from main.models import Attendance, Comment, Group, CustomUser, Event, Membership
 
 
 # User
@@ -16,17 +16,17 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 
 
-# Cult
-class CultAdmin(admin.ModelAdmin):
+# Group
+class GroupAdmin(admin.ModelAdmin):
     list_display = ("name", "city")
 
 
-admin.site.register(Cult, CultAdmin)
+admin.site.register(Group, GroupAdmin)
 
 
 # Event
 class EventAdmin(admin.ModelAdmin):
-    list_display = ("title", "cult", "date", "time", "venue")
+    list_display = ("title", "group", "date", "time", "venue")
 
 
 admin.site.register(Event, EventAdmin)
@@ -34,7 +34,7 @@ admin.site.register(Event, EventAdmin)
 
 # Membership
 class MembershipAdmin(admin.ModelAdmin):
-    list_display = ("cult", "user", "role", "date_joined")
+    list_display = ("group", "user", "role", "date_joined")
 
 
 admin.site.register(Membership, MembershipAdmin)

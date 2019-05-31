@@ -8,7 +8,7 @@ from opencult import settings
 @shared_task
 def announce_event(data):
     send_mail(
-        data["cult_name"] + " announcement: " + data["event_title"] + " event",
+        data["group_name"] + " announcement: " + data["event_title"] + " event",
         render_to_string("main/announce_event_email.txt", {"data": data}),
         settings.DEFAULT_FROM_EMAIL,
         [data["member_email"]],
@@ -18,8 +18,8 @@ def announce_event(data):
 @shared_task
 def email_members(data):
     send_mail(
-        "Announcement from " + data["cult_name"],
-        render_to_string("main/cult_announcement_email.txt", {"data": data}),
+        "Announcement from " + data["group_name"],
+        render_to_string("main/group_announcement_email.txt", {"data": data}),
         settings.DEFAULT_FROM_EMAIL,
         [data["member_email"]],
     )

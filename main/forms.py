@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from main.models import Comment, Cult, CustomUser, Event
+from main.models import Comment, Group, CustomUser, Event
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -16,15 +16,15 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ("username", "email")
 
 
-class CultForm(forms.ModelForm):
+class GroupForm(forms.ModelForm):
     class Meta:
-        model = Cult
+        model = Group
         fields = ["name", "doctrine", "city"]
 
 
-class EditCultForm(forms.ModelForm):
+class EditGroupForm(forms.ModelForm):
     class Meta:
-        model = Cult
+        model = Group
         fields = ["name", "slug", "doctrine", "city"]
 
 
@@ -49,7 +49,7 @@ class EditEventForm(forms.ModelForm):
         ]
 
 
-class AddCultLeaderForm(forms.Form):
+class AddGroupLeaderForm(forms.Form):
     username = forms.CharField()
 
 
@@ -59,5 +59,5 @@ class CommentForm(forms.ModelForm):
         fields = ["body"]
 
 
-class CultAnnouncementForm(forms.Form):
+class GroupAnnouncementForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)

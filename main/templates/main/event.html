@@ -6,7 +6,7 @@
     <div class="section">
         <div class="section-title">
             {{ event.title }} &lt;
-            <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a>
+            <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a>
         </div>
 
         {% if event.details %}
@@ -23,19 +23,19 @@
         <div class="section-label">Venue</div>
         <div class="section-body">
             {% if event.venue and event.address and event.maps_url %}
-            {{ event.venue }} - <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.cult.city }}
+            {{ event.venue }} - <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.group.city }}
             {% elif event.venue and event.address %}
-            {{ event.venue }} - {{ event.address }}, {{ event.cult.city }}
+            {{ event.venue }} - {{ event.address }}, {{ event.group.city }}
             {% elif event.venue and event.maps_url %}
-            <a href="{{ event.maps_url }}">{{ event.venue }}</a>, {{ event.cult.city }}
+            <a href="{{ event.maps_url }}">{{ event.venue }}</a>, {{ event.group.city }}
             {% elif event.address and event.maps_url %}
-            <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.cult.city }}
+            <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.group.city }}
             {% elif event.venue %}
-            {{ event.venue }}, {{ event.cult.city }}
+            {{ event.venue }}, {{ event.group.city }}
             {% elif event.address %}
-            {{ event.address }}, {{ event.cult.city }}
+            {{ event.address }}, {{ event.group.city }}
             {% elif event.maps_url %}
-            <a href="{{ event.maps_url }}">At this lat/long</a> in {{ event.cult.city }}
+            <a href="{{ event.maps_url }}">At this lat/long</a> in {{ event.group.city }}
             {% endif %}
         </div>
         {% endif %}
@@ -48,7 +48,7 @@
             {% empty %}
                 No comments. Post one!
             {% endfor %}
-            <form action="{% url 'main:comment' event.cult.slug event.slug %}" method="post">
+            <form action="{% url 'main:comment' event.group.slug event.slug %}" method="post">
                 {{ form.non_field_errors }}
                 {% if form.body.errors %}
                     {% for error in form.body.errors %}

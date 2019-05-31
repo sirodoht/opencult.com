@@ -15,45 +15,45 @@
     <header>
         <a href="{% url 'main:index' %}" class="header-brand">Open Cult</a>
         <nav>
-            <a href="{% url 'main:new_cult' %}">new cult</a>
+            <a href="{% url 'main:new_group' %}">new group</a>
             {% if request.user.is_authenticated %}
-                | <a href="{% url 'main:profile' request.user.username %}">my cults</a>
+                | <a href="{% url 'main:profile' request.user.username %}">my groups</a>
             {% endif %}
-            {% if nav_show_own_cults %}
-                {% for cult in own_cults %}
-                    | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
+            {% if nav_show_own_groups %}
+                {% for group in own_groups %}
+                    | <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a>
                 {% endfor %}
             {% endif %}
-            {% if nav_show_cult %}
-                | <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a>
+            {% if nav_show_group %}
+                | <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a>
             {% endif %}
-            {% if nav_show_leader_add and request.user in cult.leaders_list %}
-                | <a href="{% url 'main:cult_leader' cult.slug %}">add cult leader</a>
+            {% if nav_show_leader_add and request.user in group.leaders_list %}
+                | <a href="{% url 'main:group_leader' group.slug %}">add group leader</a>
             {% endif %}
-            {% if nav_show_edit_cult and request.user in cult.leaders_list %}
-                | <a href="{% url 'main:edit_cult' cult.slug %}">edit cult</a>
+            {% if nav_show_edit_group and request.user in group.leaders_list %}
+                | <a href="{% url 'main:edit_group' group.slug %}">edit group</a>
             {% endif %}
-            {% if nav_show_new_event and request.user in cult.leaders_list %}
-                | <a href="{% url 'main:new_event' cult.slug %}">new event</a>
+            {% if nav_show_new_event and request.user in group.leaders_list %}
+                | <a href="{% url 'main:new_event' group.slug %}">new event</a>
             {% endif %}
-            {% if nav_show_cult_announcement and request.user in cult.leaders_list %}
-                | <a href="{% url 'main:cult_announcement' cult.slug %}">email members</a>
+            {% if nav_show_group_announcement and request.user in group.leaders_list %}
+                | <a href="{% url 'main:group_announcement' group.slug %}">email members</a>
             {% endif %}
-            {% if nav_show_edit_event and request.user in event.cult.leaders_list %}
-                | <a href="{% url 'main:edit_event' event.cult.slug event.slug %}">edit event</a>
+            {% if nav_show_edit_event and request.user in event.group.leaders_list %}
+                | <a href="{% url 'main:edit_event' event.group.slug event.slug %}">edit event</a>
             {% endif %}
             {% if nav_show_logout %}
                 | <a href="{% url 'main:logout' %}">logout</a>
             {% endif %}
-            {% if nav_show_join_cult %}
-                {% if request.user not in cult.leaders_list or cult.leaders_count != 1 %}
+            {% if nav_show_join_group %}
+                {% if request.user not in group.leaders_list or group.leaders_count != 1 %}
                     {% if membership %}
-                        <form action="{% url 'main:delete_membership' cult.slug %}" method="post" class="inline">
+                        <form action="{% url 'main:delete_membership' group.slug %}" method="post" class="inline">
                             {% csrf_token %}
-                            | <input type="submit" value="leave cult">
+                            | <input type="submit" value="leave group">
                         </form>
                     {% else %}
-                        <form action="{% url 'main:membership' cult.slug %}" method="post" class="inline">
+                        <form action="{% url 'main:membership' group.slug %}" method="post" class="inline">
                             {% csrf_token %}
                             | <input type="submit" value="join">
                         </form>
@@ -62,12 +62,12 @@
             {% endif %}
             {% if nav_show_rsvp_event and event.date >= now.date %}
                 {% if attendance %}
-                    <form action="{% url 'main:delete_attendance' event.cult.slug event.slug %}" method="post" class="inline">
+                    <form action="{% url 'main:delete_attendance' event.group.slug event.slug %}" method="post" class="inline">
                         {% csrf_token %}
                         | <input type="submit" value="un-rsvp">
                     </form>
                 {% else %}
-                    <form action="{% url 'main:attendance' event.cult.slug event.slug %}" method="post" class="inline">
+                    <form action="{% url 'main:attendance' event.group.slug event.slug %}" method="post" class="inline">
                         {% csrf_token %}
                         | <input type="submit" value="rsvp">
                     </form>
@@ -97,7 +97,7 @@
         | <a href="mailto:hi@opencult.com">Contact</a>
     </footer>
 
-    {% if ld_cult %}
+    {% if ld_group %}
     <script type="application/ld+json">
         {
             "@context": "http://schema.org",
@@ -106,8 +106,8 @@
                 "@type": "ListItem",
                 "position": 1,
                 "item": {
-                    "@id": "https://opencult.com/{{ cult.slug }}",
-                    "name": "{{ cult.name }}"
+                    "@id": "https://opencult.com/{{ group.slug }}",
+                    "name": "{{ group.name }}"
                 }
             }]
         }
@@ -123,14 +123,14 @@
                 "@type": "ListItem",
                 "position": 1,
                 "item": {
-                    "@id": "https://opencult.com/{{ event.cult.slug }}",
-                    "name": "{{ event.cult.name }}"
+                    "@id": "https://opencult.com/{{ event.group.slug }}",
+                    "name": "{{ event.group.name }}"
                 }
             },{
                 "@type": "ListItem",
                 "position": 2,
                 "item": {
-                    "@id": "https://opencult.com/{{ event.cult.slug }}/{{ event.slug }}",
+                    "@id": "https://opencult.com/{{ event.group.slug }}/{{ event.slug }}",
                     "name": "{{ event.title }}"
                 }
             }]

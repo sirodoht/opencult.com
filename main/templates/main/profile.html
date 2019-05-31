@@ -13,15 +13,15 @@
 
         <div class="section-label">Leader of</div>
         <div class="section-body">
-            {% for cult in user.profile.leader_of_list %}
-                <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a><br>
+            {% for group in user.profile.leader_of_list %}
+                <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
             {% endfor %}
         </div>
 
         <div class="section-label">Member of ({{ user.profile.member_of_count }})</div>
         <div class="section-body">
-            {% for cult in user.profile.member_of_list %}
-                <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a><br>
+            {% for group in user.profile.member_of_list %}
+                <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
             {% endfor %}
         </div>
 

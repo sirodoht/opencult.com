@@ -6,7 +6,7 @@
     <div class="section">
         <div class="section-title">Edit {{ event.title }} event</div>
 
-        <form action="{% url 'main:edit_event' event.cult.slug event.slug %}" method="post">
+        <form action="{% url 'main:edit_event' event.group.slug event.slug %}" method="post">
             {{ form.non_field_errors }}
 
             <label for="id_title">Title</label>

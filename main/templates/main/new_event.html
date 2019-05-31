@@ -1,12 +1,12 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}Create event for {{ cult.name }} - Open Cult{% endblock %}
+{% block title %}Create event for {{ group.name }} - Open Cult{% endblock %}
 
 {% block content %}
     <div class="section">
-        <div class="section-title">Create event for <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a></div>
+        <div class="section-title">Create event for <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a></div>
 
-        <form action="{% url 'main:new_event' cult.slug %}" method="post">
+        <form action="{% url 'main:new_event' group.slug %}" method="post">
             {{ form.non_field_errors }}
 
             <label for="id_title">Title</label>

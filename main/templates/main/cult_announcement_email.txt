@@ -1,7 +1,0 @@
-Announcement from {{ data.cult_name|safe }} follows.
-
-{{ data.message|safe }}
-
-
-The Open Cult Team,
-On behalf of {{ data.cult_name|safe }}

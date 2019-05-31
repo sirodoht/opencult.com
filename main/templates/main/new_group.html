@@ -1,12 +1,12 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}Create cult - Open Cult{% endblock %}
+{% block title %}Create group - Open Cult{% endblock %}
 
 {% block content %}
     <div class="section">
-        <div class="section-title">Create cult</div>
+        <div class="section-title">Create group</div>
 
-        <form action="{% url 'main:new_cult' %}" method="post">
+        <form action="{% url 'main:new_group' %}" method="post">
             {{ form.non_field_errors }}
 
             <label for="id_name">Name</label>

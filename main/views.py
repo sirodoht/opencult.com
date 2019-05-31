@@ -1,36 +1,33 @@
 import shortuuid
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.utils import IntegrityError
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.text import slugify
+from django.views import generic
 from django.views.decorators.http import (
     require_http_methods,
     require_POST,
     require_safe,
 )
 
-from opencult import settings
-
-from .forms import (
+from main.forms import (
     AddCultLeaderForm,
     CommentForm,
     CultAnnouncementForm,
     CultForm,
+    CustomUserCreationForm,
     EditCultForm,
     EditEventForm,
-    EmailForm,
     EventForm,
-    UserForm,
 )
-from .helpers import email_login_link
-from .models import Attendance, Comment, Cult, Event, Membership
-from .tasks import announce_event, email_members
+from main.models import Attendance, Comment, Cult, Event, Membership
+from main.tasks import announce_event, email_members
 
 
 @require_safe
@@ -92,60 +89,10 @@ def city(request):
     )
 
 
-@require_safe
-def login(request):
-    if request.user.is_authenticated:
-        return redirect("main:index")
-    return render(request, "main/login.html", {"next": request.GET.get("next")})
-
-
-@require_http_methods(["HEAD", "GET", "POST"])
-def token_post(request):
-    if request.user.is_authenticated:
-        messages.error(request, "You are already logged in.")
-        return redirect(settings.LOGIN_REDIRECT_URL)
-
-    if request.GET.get("d"):
-        # The user has clicked a login link.
-        user = authenticate(token=request.GET["d"])
-        if user is not None:
-            dj_login(request, user)
-            messages.success(request, "Login successful.")
-            return redirect(settings.LOGIN_REDIRECT_URL)
-        else:
-            messages.error(
-                request,
-                "The login link was invalid or has expired. Please try to log in again.",
-            )
-    elif request.method == "POST":
-        # The user has submitted the email form.
-        form = EmailForm(request.POST)
-        if form.is_valid():
-            email_login_link(request, form.cleaned_data["email"])
-            messages.success(
-                request,
-                "Login email sent! Please check your inbox and click on the link.",
-            )
-        else:
-            messages.error(
-                request,
-                "The email address was invalid. Please check the address and try again.",
-            )
-    else:
-        messages.error(
-            request,
-            "The login link was invalid or has expired. Please try to log in again.",
-        )
-
-    return redirect(settings.LOGIN_URL)
-
-
-@require_safe
-@login_required
-def logout(request):
-    dj_logout(request)
-    messages.success(request, "You have been logged out.")
-    return redirect(settings.LOGOUT_REDIRECT_URL)
+class SignUp(generic.CreateView):
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy("login")
+    template_name = "registration/signup.html"
 
 
 @require_safe
@@ -250,32 +197,32 @@ def profile(request, username):
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
 def edit_profile(request, username):
-    if request.method == "POST":
+    # if request.method == "POST":
 
-        # user gets 403 on other profile post
-        if request.user.username != username:
-            return HttpResponse(status=403)
+    #     # user gets 403 on other profile post
+    #     if request.user.username != username:
+    #         return HttpResponse(status=403)
 
-        form = UserForm(
-            request.POST,
-            instance=request.user,
-            initial={"about": request.user.profile.about},
-        )
-        if form.is_valid():
-            updated_user = form.save(commit=False)
-            updated_user.profile.about = form.cleaned_data["about"]
-            updated_user.save()
-            messages.success(request, "Profile updated")
-            return redirect("main:edit_profile", updated_user.username)
-    else:
-        form = UserForm(
-            instance=request.user, initial={"about": request.user.profile.about}
-        )
+    #     form = UserForm(
+    #         request.POST,
+    #         instance=request.user,
+    #         initial={"about": request.user.profile.about},
+    #     )
+    #     if form.is_valid():
+    #         updated_user = form.save(commit=False)
+    #         updated_user.profile.about = form.cleaned_data["about"]
+    #         updated_user.save()
+    #         messages.success(request, "Profile updated")
+    #         return redirect("main:edit_profile", updated_user.username)
+    # else:
+    #     form = UserForm(
+    #         instance=request.user, initial={"about": request.user.profile.about}
+    #     )
 
     return render(
         request,
         "main/edit_profile.html",
-        {"nav_show_own_cults": True, "nav_show_logout": True, "form": form},
+        {"nav_show_own_cults": True, "nav_show_logout": True},
     )
 
 

@@ -1,11 +1,19 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from .models import Comment, Cult, Event
+from main.models import Comment, Cult, CustomUser, Event
 
 
-class EmailForm(forms.Form):
-    email = forms.EmailField(label="Your email address")
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm):
+        model = CustomUser
+        fields = ("username", "email")
+
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ("username", "email")
 
 
 class CultForm(forms.ModelForm):
@@ -39,14 +47,6 @@ class EditEventForm(forms.ModelForm):
             "address",
             "maps_url",
         ]
-
-
-class UserForm(forms.ModelForm):
-    about = forms.CharField(widget=forms.Textarea, required=False)
-
-    class Meta:
-        model = User
-        fields = ["username"]
 
 
 class AddCultLeaderForm(forms.Form):

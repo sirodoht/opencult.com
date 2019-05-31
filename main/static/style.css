@@ -313,6 +313,17 @@ section {
     line-height: 18px;
 }
 
+.item-event-title span {
+    display: inline-block;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 3px;
+    border: 1px solid #000;
+    font-size: 11px;
+    transform: translateY(-2px);
+    margin-left: 3px;
+}
+
 .item-event-subtext {
     color: #828282;
     font-size: 10px;

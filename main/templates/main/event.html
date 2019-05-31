@@ -1,19 +1,18 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}{{ event.title }} event - Open Cult{% endblock %}
+{% block title %}{{ event.title }} event{% endblock %}
 
 {% block content %}
 <section>
     <h1>
-        {{ event.title }} &lt;
-        <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a>
+        <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a> > {{ event.title }}
     </h1>
 
     {% if event.details %}
-        <div class="section-label">Details</div>
-        <div class="section-body">
-            {{ event.details|linebreaks }}
-        </div>
+    <div class="section-label">Details</div>
+    <div class="section-body">
+        {{ event.details|linebreaks }}
+    </div>
     {% endif %}
 
     <div class="section-label">Date & Time</div>

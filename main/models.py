@@ -7,8 +7,8 @@ class CustomUser(AbstractUser):
     about = models.TextField(blank=True, null=True)
 
     @property
-    def leader_of_list(self):
-        return self.group_set.filter(membership__role=Membership.LEADER)
+    def organizer_of_list(self):
+        return self.group_set.filter(membership__role=Membership.ORGANIZER)
 
     @property
     def member_of_count(self):
@@ -31,12 +31,12 @@ class Group(models.Model):
     city = models.CharField(max_length=100)
 
     @property
-    def leaders_count(self):
-        return self.members.filter(membership__role=Membership.LEADER).count()
+    def organizers_count(self):
+        return self.members.filter(membership__role=Membership.ORGANIZER).count()
 
     @property
-    def leaders_list(self):
-        return self.members.filter(membership__role=Membership.LEADER)
+    def organizers_list(self):
+        return self.members.filter(membership__role=Membership.ORGANIZER)
 
     @property
     def members_count(self):
@@ -79,9 +79,9 @@ class Membership(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     date_joined = models.DateTimeField(default=timezone.now)
 
-    LEADER = "leader"
+    ORGANIZER = "organizer"
     MEMBER = "member"
-    ROLE_CHOICES = ((LEADER, "Leader"), (MEMBER, "Member"))
+    ROLE_CHOICES = ((ORGANIZER, "Organizer"), (MEMBER, "Member"))
     role = models.CharField(choices=ROLE_CHOICES, max_length=50, default=MEMBER)
 
     def __str__(self):

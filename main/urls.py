@@ -70,7 +70,7 @@ urlpatterns = [
     ),
     path("<slug:group_slug>/new/", views.new_event, name="new_event"),
     path("<slug:group_slug>/edit/", views.edit_group, name="edit_group"),
-    path("<slug:group_slug>/leader/", views.group_leader, name="group_leader"),
+    path("<slug:group_slug>/organizer/", views.group_organizer, name="group_organizer"),
     path(
         "<slug:group_slug>/announcement/",
         views.group_announcement,

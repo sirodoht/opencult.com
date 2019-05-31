@@ -49,7 +49,7 @@ class EventChangeForm(forms.ModelForm):
         ]
 
 
-class AddGroupLeaderForm(forms.Form):
+class AddGroupOrganizerForm(forms.Form):
     username = forms.CharField()
 
 

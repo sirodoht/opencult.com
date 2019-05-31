@@ -1,6 +1,6 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}{{ user.username }} - Open Cult{% endblock %}
+{% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
 <section>
@@ -13,11 +13,11 @@
     </div>
     {% endif %}
 
-    {% if user.leader_of_list %}
-    <div class="section-label">Leader of</div>
+    {% if user.organizer_of_list %}
+    <div class="section-label">Organizer of</div>
     <div class="section-body">
-        {% for group in user.leader_of_list %}
-            <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
+        {% for group in user.organizer_of_list %}
+        <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
         {% endfor %}
     </div>
     {% endif %}
@@ -26,7 +26,7 @@
     <div class="section-label">Member of ({{ user.member_of_count }})</div>
     <div class="section-body">
         {% for group in user.member_of_list %}
-            <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
+        <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
         {% endfor %}
     </div>
     {% endif %}

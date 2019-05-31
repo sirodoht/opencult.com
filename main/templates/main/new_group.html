@@ -1,11 +1,11 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}Create group - Open Cult{% endblock %}
+{% block title %}Create group{% endblock %}
 
 {% block content %}
 <section>
     <h1>Create group</h1>
-    
+
     <form action="{% url 'main:new_group' %}" method="post">
         {{ form.non_field_errors }}
 

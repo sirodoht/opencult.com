@@ -27,26 +27,26 @@
             {% if nav_show_group %}
                 | <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a>
             {% endif %}
-            {% if nav_show_leader_add and request.user in group.leaders_list %}
-                | <a href="{% url 'main:group_leader' group.slug %}">add group leader</a>
+            {% if nav_show_organizer_add and request.user in group.organizers_list %}
+                | <a href="{% url 'main:group_organizer' group.slug %}">add group organizer</a>
             {% endif %}
-            {% if nav_show_edit_group and request.user in group.leaders_list %}
+            {% if nav_show_edit_group and request.user in group.organizers_list %}
                 | <a href="{% url 'main:edit_group' group.slug %}">edit group</a>
             {% endif %}
-            {% if nav_show_new_event and request.user in group.leaders_list %}
+            {% if nav_show_new_event and request.user in group.organizers_list %}
                 | <a href="{% url 'main:new_event' group.slug %}">new event</a>
             {% endif %}
-            {% if nav_show_group_announcement and request.user in group.leaders_list %}
+            {% if nav_show_group_announcement and request.user in group.organizers_list %}
                 | <a href="{% url 'main:group_announcement' group.slug %}">email members</a>
             {% endif %}
-            {% if nav_show_edit_event and request.user in event.group.leaders_list %}
+            {% if nav_show_edit_event and request.user in event.group.organizers_list %}
                 | <a href="{% url 'main:edit_event' event.group.slug event.slug %}">edit event</a>
             {% endif %}
             {% if nav_show_logout %}
                 | <a href="{% url 'main:logout' %}">logout</a>
             {% endif %}
             {% if nav_show_join_group %}
-                {% if request.user not in group.leaders_list or group.leaders_count != 1 %}
+                {% if request.user not in group.organizers_list or group.organizers_count != 1 %}
                     {% if membership %}
                         <form action="{% url 'main:delete_membership' group.slug %}" method="post" class="inline">
                             {% csrf_token %}

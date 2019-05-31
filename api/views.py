@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 
-from main.models import Attendance, Group, Event
+from main.models import Attendance, Event, Group
 
 
 def docs(request):
@@ -15,7 +15,9 @@ def groups(request):
         return groups_city(request)
 
     groups = (
-        Group.objects.all().order_by("name").values("name", "slug", "description", "city")
+        Group.objects.all()
+        .order_by("name")
+        .values("name", "slug", "description", "city")
     )
     groups_list = list(groups)
     for group in groups_list:

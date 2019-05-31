@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "background_task",
 ]
 
 if not DEBUG:
@@ -159,12 +160,6 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
-
-
-# Celery settings
-# http://docs.celeryproject.org/en/v4.1.0/django/first-steps-with-django.html
-
-CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://@localhost:6379") + "/1"
 
 
 # Sentry

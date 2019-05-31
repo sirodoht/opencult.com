@@ -2,6 +2,5 @@ venv/
 __pycache__/
 .cache/
 prod-env.txt
-.pytest_cache/
 .env
 dbdata/

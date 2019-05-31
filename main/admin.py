@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from main.forms import CustomUserChangeForm, CustomUserCreationForm
-from main.models import Attendance, Comment, Group, CustomUser, Event, Membership
+from main.models import Attendance, Comment, CustomUser, Event, Group, Membership
 
 
 class CustomUserAdmin(UserAdmin):

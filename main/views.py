@@ -1,11 +1,11 @@
 import shortuuid
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.utils import IntegrityError
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.text import slugify
@@ -16,8 +16,8 @@ from django.views.decorators.http import (
     require_safe,
 )
 
-from main import forms, models
-from main.tasks import announce_event, email_members
+from main import forms, models, tasks
+from opencult import settings
 
 
 @require_safe
@@ -26,7 +26,9 @@ def index(request):
         return city(request)
 
     now = timezone.now()
-    events_list = models.Event.objects.filter(date__gte=now.date()).order_by("date", "time")
+    events_list = models.Event.objects.filter(date__gte=now.date()).order_by(
+        "date", "time"
+    )
     attending_events_list = models.Event.objects.filter(
         attendees__username=request.user.username, date__gte=now.date()
     ).order_by("date", "time")
@@ -54,9 +56,9 @@ def city(request):
     city = request.GET.get("city")
 
     now = timezone.now()
-    events_list = models.Event.objects.filter(group__city=city, date__gte=now.date()).order_by(
-        "date", "time"
-    )
+    events_list = models.Event.objects.filter(
+        group__city=city, date__gte=now.date()
+    ).order_by("date", "time")
 
     groups_list = models.Group.objects.filter(city=city)
 
@@ -81,7 +83,7 @@ def city(request):
 
 class SignUp(generic.CreateView):
     form_class = forms.CustomUserCreationForm
-    success_url = reverse_lazy("login")
+    success_url = reverse_lazy("main:login")
     template_name = "registration/signup.html"
 
 
@@ -96,9 +98,9 @@ def group(request, group_slug):
     upcoming_events_list = models.Event.objects.filter(
         group=group, date__gte=now.date()
     ).order_by("-date", "-time")
-    past_events_list = models.Event.objects.filter(group=group, date__lt=now.date()).order_by(
-        "-date", "-time"
-    )
+    past_events_list = models.Event.objects.filter(
+        group=group, date__lt=now.date()
+    ).order_by("-date", "-time")
 
     membership = None  # not authed
     if request.user.is_authenticated:
@@ -193,18 +195,13 @@ def edit_profile(request, username):
         if request.user.username != username:
             return HttpResponse(status=403)
 
-        form = forms.CustomUserChangeForm(
-            request.POST,
-            instance=request.user,
-        )
+        form = forms.CustomUserChangeForm(request.POST, instance=request.user)
         if form.is_valid():
             updated_user = form.save()
             messages.success(request, "Profile updated")
             return redirect("main:profile", updated_user.username)
     else:
-        form = forms.CustomUserChangeForm(
-            instance=request.user
-        )
+        form = forms.CustomUserChangeForm(instance=request.user)
 
     return render(
         request,
@@ -223,7 +220,7 @@ def new_group(request):
             new_group.slug = slugify(new_group.name)
             new_group.save()
             models.Membership.objects.create(
-                group=new_group, user=request.user, role=Membership.LEADER
+                group=new_group, user=request.user, role=models.Membership.LEADER
             )
             return redirect("main:group", group_slug=new_group.slug)
     else:
@@ -259,6 +256,7 @@ def new_event(request, group_slug):
             # send email announcement to members
             for member in group.members.all():
                 data = {
+                    "protocol": request.scheme,
                     "domain": get_current_site(request).domain,
                     "member_email": member.email,
                     "event_title": new_event.title,
@@ -273,7 +271,12 @@ def new_event(request, group_slug):
                     "group_city": group.city,
                     "group_slug": group.slug,
                 }
-                announce_event.delay(data)
+                tasks.email_async(
+                    group.name + " announcement: " + new_event.title + " event",
+                    render_to_string("main/announce_event_email.txt", {"data": data}),
+                    settings.DEFAULT_FROM_EMAIL,
+                    [data["member_email"]],
+                )
 
             return redirect(
                 "main:event", group_slug=group.slug, event_slug=new_event.slug
@@ -360,7 +363,7 @@ def edit_event(request, group_slug, event_slug):
 def membership(request, group_slug):
     group = models.Group.objects.get(slug=group_slug)
     models.Membership.objects.get_or_create(
-        user=request.user, group=group, role=Membership.MEMBER
+        user=request.user, group=group, role=models.Membership.MEMBER
     )
     return redirect("main:group", group_slug=group.slug)
 
@@ -424,7 +427,7 @@ def group_leader(request, group_slug):
                 messages.error(request, 'User "' + username + '" does not exist.')
                 return redirect("main:group_leader", group.slug)
             membership, created = models.Membership.objects.get_or_create(
-                user=user, group=group, role=Membership.LEADER
+                user=user, group=group, role=models.Membership.LEADER
             )
             if created:
                 messages.success(
@@ -442,7 +445,12 @@ def group_leader(request, group_slug):
     return render(
         request,
         "main/group_leader.html",
-        {"nav_show_group": True, "nav_show_edit_group": True, "group": group, "form": form},
+        {
+            "nav_show_group": True,
+            "nav_show_edit_group": True,
+            "group": group,
+            "form": form,
+        },
     )
 
 
@@ -454,7 +462,9 @@ def comment(request, group_slug, event_slug):
         body = form.cleaned_data.get("body")
         event = models.Event.objects.get(slug=event_slug)
         models.Comment.objects.create(event=event, author=request.user, body=body)
-        return redirect("main:event", group_slug=event.group.slug, event_slug=event.slug)
+        return redirect(
+            "main:event", group_slug=event.group.slug, event_slug=event.slug
+        )
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
@@ -468,17 +478,20 @@ def group_announcement(request, group_slug):
     if request.method == "POST":
         form = forms.GroupAnnouncementForm(request.POST)
         if form.is_valid():
-
             # send email announcement to members
             for member in group.members.all():
-                data = {
-                    "domain": get_current_site(request).domain,
-                    "member_email": member.email,
-                    "group_name": group.name,
-                    "message": form.cleaned_data.get("message"),
-                }
-                email_members.delay(data)
-
+                tasks.email_async(
+                    "Announcement from " + group.name,
+                    render_to_string(
+                        "main/group_announcement_email.txt",
+                        {
+                            "group_name": group.name,
+                            "message": form.cleaned_data.get("message"),
+                        },
+                    ),
+                    settings.DEFAULT_FROM_EMAIL,
+                    [member.email],
+                )
             messages.success(request, "The announcement has been emailed.")
             return redirect("main:group", group_slug=group.slug)
     else:

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "background_task",
 ]
 
 if not DEBUG:
@@ -77,11 +78,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "opencult.wsgi.application"
 
+AUTH_USER_MODEL = "main.CustomUser"
+
 LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-
-AUTH_TOKEN_DURATION = 30 * 60  # = 1800 = 30 min in seconds
 
 
 # Database
@@ -90,7 +91,6 @@ AUTH_TOKEN_DURATION = 30 * 60  # = 1800 = 30 min in seconds
 DATABASES = {"default": {"ENGINE": "django.db.backends.postgresql"}}
 
 # Update database configuration with $DATABASE_URL.
-# https://devcenter.heroku.com/articles/django-app-configuration#database-configuration
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES["default"].update(db_from_env)
 
@@ -144,15 +144,6 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = "hi@opencult.com"
 
 
-# Authentication backends
-# https://docs.djangoproject.com/en/2.0/topics/auth/customizing/
-
-AUTHENTICATION_BACKENDS = (
-    "main.auth_backends.EmailTokenBackend",
-    "django.contrib.auth.backends.ModelBackend",
-)
-
-
 # The age of session cookies, in seconds
 # https://docs.djangoproject.com/en/2.0/topics/http/sessions/
 
@@ -169,12 +160,6 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
-
-
-# Celery settings
-# http://docs.celeryproject.org/en/v4.1.0/django/first-steps-with-django.html
-
-CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://@localhost:6379") + "/1"
 
 
 # Sentry

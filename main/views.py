@@ -1,36 +1,23 @@
 import shortuuid
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.utils import IntegrityError
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.text import slugify
+from django.views import generic
 from django.views.decorators.http import (
     require_http_methods,
     require_POST,
     require_safe,
 )
 
+from main import forms, models, tasks
 from opencult import settings
-
-from .forms import (
-    AddCultLeaderForm,
-    CommentForm,
-    CultAnnouncementForm,
-    CultForm,
-    EditCultForm,
-    EditEventForm,
-    EmailForm,
-    EventForm,
-    UserForm,
-)
-from .helpers import email_login_link
-from .models import Attendance, Comment, Cult, Event, Membership
-from .tasks import announce_event, email_members
 
 
 @require_safe
@@ -39,25 +26,27 @@ def index(request):
         return city(request)
 
     now = timezone.now()
-    events_list = Event.objects.filter(date__gte=now.date()).order_by("date", "time")
-    attending_events_list = Event.objects.filter(
+    events_list = models.Event.objects.filter(date__gte=now.date()).order_by(
+        "date", "time"
+    )
+    attending_events_list = models.Event.objects.filter(
         attendees__username=request.user.username, date__gte=now.date()
     ).order_by("date", "time")
 
-    own_cults = None
+    own_groups = None
     if request.user.is_authenticated:
-        own_cults = Cult.objects.filter(
-            membership__user=request.user, membership__role=Membership.LEADER
+        own_groups = models.Group.objects.filter(
+            membership__user=request.user, membership__role=models.Membership.ORGANIZER
         )
 
     return render(
         request,
         "main/index.html",
         {
-            "nav_show_own_cults": True,
+            "nav_show_own_groups": True,
             "events_list": events_list,
             "attending_events_list": attending_events_list,
-            "own_cults": own_cults,
+            "own_groups": own_groups,
         },
     )
 
@@ -67,119 +56,67 @@ def city(request):
     city = request.GET.get("city")
 
     now = timezone.now()
-    events_list = Event.objects.filter(cult__city=city, date__gte=now.date()).order_by(
-        "date", "time"
-    )
+    events_list = models.Event.objects.filter(
+        group__city=city, date__gte=now.date()
+    ).order_by("date", "time")
 
-    cults_list = Cult.objects.filter(city=city)
+    groups_list = models.Group.objects.filter(city=city)
 
-    own_cults = None
+    own_groups = None
     if request.user.is_authenticated:
-        own_cults = Cult.objects.filter(
-            membership__user=request.user, membership__role=Membership.LEADER
+        own_groups = models.Group.objects.filter(
+            membership__user=request.user, membership__role=models.Membership.ORGANIZER
         )
 
     return render(
         request,
         "main/city.html",
         {
-            "nav_show_own_cults": True,
+            "nav_show_own_groups": True,
             "events_list": events_list,
-            "cults_list": cults_list,
-            "own_cults": own_cults,
+            "groups_list": groups_list,
+            "own_groups": own_groups,
             "city": city,
         },
     )
 
 
-@require_safe
-def login(request):
-    if request.user.is_authenticated:
-        return redirect("main:index")
-    return render(request, "main/login.html", {"next": request.GET.get("next")})
-
-
-@require_http_methods(["HEAD", "GET", "POST"])
-def token_post(request):
-    if request.user.is_authenticated:
-        messages.error(request, "You are already logged in.")
-        return redirect(settings.LOGIN_REDIRECT_URL)
-
-    if request.GET.get("d"):
-        # The user has clicked a login link.
-        user = authenticate(token=request.GET["d"])
-        if user is not None:
-            dj_login(request, user)
-            messages.success(request, "Login successful.")
-            return redirect(settings.LOGIN_REDIRECT_URL)
-        else:
-            messages.error(
-                request,
-                "The login link was invalid or has expired. Please try to log in again.",
-            )
-    elif request.method == "POST":
-        # The user has submitted the email form.
-        form = EmailForm(request.POST)
-        if form.is_valid():
-            email_login_link(request, form.cleaned_data["email"])
-            messages.success(
-                request,
-                "Login email sent! Please check your inbox and click on the link.",
-            )
-        else:
-            messages.error(
-                request,
-                "The email address was invalid. Please check the address and try again.",
-            )
-    else:
-        messages.error(
-            request,
-            "The login link was invalid or has expired. Please try to log in again.",
-        )
-
-    return redirect(settings.LOGIN_URL)
+class SignUp(generic.CreateView):
+    form_class = forms.CustomUserCreationForm
+    success_url = reverse_lazy("main:login")
+    template_name = "registration/signup.html"
 
 
 @require_safe
-@login_required
-def logout(request):
-    dj_logout(request)
-    messages.success(request, "You have been logged out.")
-    return redirect(settings.LOGOUT_REDIRECT_URL)
-
-
-@require_safe
-def cult(request, cult_slug):
+def group(request, group_slug):
     try:
-        cult = Cult.objects.get(slug=cult_slug)
-    except Cult.DoesNotExist:
-        raise Http404("Cult not found")
+        group = models.Group.objects.get(slug=group_slug)
+    except models.Group.DoesNotExist:
+        raise Http404("Group not found")
 
     now = timezone.now()
-    upcoming_events_list = Event.objects.filter(
-        cult=cult, date__gte=now.date()
+    upcoming_events_list = models.Event.objects.filter(
+        group=group, date__gte=now.date()
     ).order_by("-date", "-time")
-    past_events_list = Event.objects.filter(cult=cult, date__lt=now.date()).order_by(
-        "-date", "-time"
-    )
+    past_events_list = models.Event.objects.filter(
+        group=group, date__lt=now.date()
+    ).order_by("-date", "-time")
 
     membership = None  # not authed
     if request.user.is_authenticated:
         try:
-            membership = Membership.objects.get(user=request.user, cult=cult)
-        except Membership.DoesNotExist:  # user is not member
+            membership = models.Membership.objects.get(user=request.user, group=group)
+        except models.Membership.DoesNotExist:  # user is not member
             membership = None
 
     return render(
         request,
-        "main/cult.html",
+        "main/group.html",
         {
-            "nav_show_edit_cult": True,
-            "nav_show_new_event": True,
-            "nav_show_join_cult": True,
-            "nav_show_cult_announcement": True,
-            "ld_cult": True,
-            "cult": cult,
+            "nav_show_group_admin": True,
+            "nav_show_join_group": True,
+            "ld_group": True,
+            "group": group,
             "membership": membership,
             "upcoming_events_list": upcoming_events_list,
             "past_events_list": past_events_list,
@@ -188,34 +125,33 @@ def cult(request, cult_slug):
 
 
 @require_safe
-def event(request, cult_slug, event_slug):
+def event(request, group_slug, event_slug):
     try:
-        event = Event.objects.get(slug=event_slug)
-    except Event.DoesNotExist:
+        event = models.Event.objects.get(slug=event_slug)
+    except models.Event.DoesNotExist:
         raise Http404("Event not found")
 
-    cult = Cult.objects.get(slug=cult_slug)
+    group = models.Group.objects.get(slug=group_slug)
 
     attendance = None  # not authed
     if request.user.is_authenticated:
         try:
-            attendance = Attendance.objects.get(user=request.user, event=event)
-        except Attendance.DoesNotExist:  # user is not attending
+            attendance = models.Attendance.objects.get(user=request.user, event=event)
+        except models.Attendance.DoesNotExist:  # user is not attending
             attendance = None
 
-    form = CommentForm()
+    form = forms.CommentCreationForm()
 
     return render(
         request,
         "main/event.html",
         {
-            "nav_show_cult": True,
             "nav_show_edit_event": True,
             "nav_show_rsvp_event": True,
             "ld_event": True,
             "now": timezone.now(),
             "event": event,
-            "cult": cult,
+            "group": group,
             "attendance": attendance,
             "form": form,
         },
@@ -224,26 +160,26 @@ def event(request, cult_slug, event_slug):
 
 @require_safe
 def about(request):
-    return render(request, "main/about.html", {"nav_show_own_cults": True})
+    return render(request, "main/about.html", {"nav_show_own_groups": True})
 
 
 @require_safe
 def profile(request, username):
     try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
+        user = models.CustomUser.objects.get(username=username)
+    except models.CustomUser.DoesNotExist:
         raise Http404("User not found")
 
-    own_cults = None
+    own_groups = None
     if request.user.is_authenticated:
-        own_cults = Cult.objects.filter(
-            membership__user=request.user, membership__role=Membership.LEADER
+        own_groups = models.Group.objects.filter(
+            membership__user=request.user, membership__role=models.Membership.ORGANIZER
         )
 
     return render(
         request,
         "main/profile.html",
-        {"nav_show_own_cults": True, "own_cults": own_cults, "user": user},
+        {"nav_show_own_groups": True, "own_groups": own_groups, "user": user},
     )
 
 
@@ -256,62 +192,54 @@ def edit_profile(request, username):
         if request.user.username != username:
             return HttpResponse(status=403)
 
-        form = UserForm(
-            request.POST,
-            instance=request.user,
-            initial={"about": request.user.profile.about},
-        )
+        form = forms.CustomUserChangeForm(request.POST, instance=request.user)
         if form.is_valid():
-            updated_user = form.save(commit=False)
-            updated_user.profile.about = form.cleaned_data["about"]
-            updated_user.save()
+            updated_user = form.save()
             messages.success(request, "Profile updated")
-            return redirect("main:edit_profile", updated_user.username)
+            return redirect("main:profile", updated_user.username)
     else:
-        form = UserForm(
-            instance=request.user, initial={"about": request.user.profile.about}
-        )
+        form = forms.CustomUserChangeForm(instance=request.user)
 
     return render(
         request,
         "main/edit_profile.html",
-        {"nav_show_own_cults": True, "nav_show_logout": True, "form": form},
+        {"nav_show_own_groups": True, "nav_show_logout": True, "form": form},
     )
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
-def new_cult(request):
+def new_group(request):
     if request.method == "POST":
-        form = CultForm(request.POST)
+        form = forms.GroupCreationForm(request.POST)
         if form.is_valid():
-            new_cult = form.save(commit=False)
-            new_cult.slug = slugify(new_cult.name)
-            new_cult.save()
-            Membership.objects.create(
-                cult=new_cult, user=request.user, role=Membership.LEADER
+            new_group = form.save(commit=False)
+            new_group.slug = slugify(new_group.name)
+            new_group.save()
+            models.Membership.objects.create(
+                group=new_group, user=request.user, role=models.Membership.ORGANIZER
             )
-            return redirect("main:cult", cult_slug=new_cult.slug)
+            return redirect("main:group", group_slug=new_group.slug)
     else:
-        form = CultForm()
+        form = forms.GroupCreationForm()
 
     return render(
-        request, "main/new_cult.html", {"nav_show_own_cults": True, "form": form}
+        request, "main/new_group.html", {"nav_show_own_groups": True, "form": form}
     )
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
-def new_event(request, cult_slug):
-    cult = Cult.objects.get(slug=cult_slug)
-    if request.user not in cult.leaders_list:
+def new_event(request, group_slug):
+    group = models.Group.objects.get(slug=group_slug)
+    if request.user not in group.organizers_list:
         return HttpResponse(status=403)
     if request.method == "POST":
-        form = EventForm(request.POST)
+        form = forms.EventCreationForm(request.POST)
         if form.is_valid():
             new_event = form.save(commit=False)
             new_event.slug = slugify(new_event.title)
-            new_event.cult = cult
+            new_event.group = group
             try:
                 new_event.save()
             except IntegrityError:
@@ -320,11 +248,12 @@ def new_event(request, cult_slug):
                 ).random(length=12)
                 new_event.slug = slugify(new_event.title) + "-" + uuid
                 new_event.save()
-            Attendance.objects.create(event=new_event, user=request.user)
+            models.Attendance.objects.create(event=new_event, user=request.user)
 
             # send email announcement to members
-            for member in cult.members.all():
+            for member in group.members.all():
                 data = {
+                    "protocol": request.scheme,
                     "domain": get_current_site(request).domain,
                     "member_email": member.email,
                     "event_title": new_event.title,
@@ -335,223 +264,208 @@ def new_event(request, cult_slug):
                     "event_address": new_event.address,
                     "event_maps_url": new_event.maps_url,
                     "event_slug": new_event.slug,
-                    "cult_name": cult.name,
-                    "cult_city": cult.city,
-                    "cult_slug": cult.slug,
+                    "group_name": group.name,
+                    "group_city": group.city,
+                    "group_slug": group.slug,
                 }
-                announce_event.delay(data)
+                tasks.email_async(
+                    group.name + " announcement: " + new_event.title + " event",
+                    render_to_string("main/announce_event_email.txt", {"data": data}),
+                    settings.DEFAULT_FROM_EMAIL,
+                    [data["member_email"]],
+                )
 
             return redirect(
-                "main:event", cult_slug=cult.slug, event_slug=new_event.slug
+                "main:event", group_slug=group.slug, event_slug=new_event.slug
             )
     else:
-        form = EventForm()
+        form = forms.EventCreationForm()
 
     return render(
         request,
         "main/new_event.html",
-        {
-            "nav_show_own_cults": True,
-            "nav_show_cult": True,
-            "nav_show_new_event": True,
-            "cult": cult,
-            "form": form,
-        },
+        {"nav_show_own_groups": True, "group": group, "form": form},
     )
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
-def edit_cult(request, cult_slug):
+def edit_group(request, group_slug):
     try:
-        cult = Cult.objects.get(slug=cult_slug)
-    except Cult.DoesNotExist:
-        raise Http404("Cult not found")
+        group = models.Group.objects.get(slug=group_slug)
+    except models.Group.DoesNotExist:
+        raise Http404("Group not found")
 
-    if request.user not in cult.leaders_list:
+    if request.user not in group.organizers_list:
         return HttpResponse(status=403)
 
     if request.method == "POST":
-        form = EditCultForm(request.POST, instance=cult)
+        form = forms.GroupChangeForm(request.POST, instance=group)
         if form.is_valid():
             form.save()
-            return redirect("main:cult", cult_slug=cult.slug)
+            return redirect("main:group", group_slug=group.slug)
     else:
-        form = EditCultForm(instance=cult)
+        form = forms.GroupChangeForm(instance=group)
 
     return render(
         request,
-        "main/edit_cult.html",
-        {
-            "nav_show_cult": True,
-            "nav_show_leader_add": True,
-            "cult": cult,
-            "form": form,
-        },
+        "main/edit_group.html",
+        {"nav_show_organizer_add": True, "group": group, "form": form},
     )
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
-def edit_event(request, cult_slug, event_slug):
-    cult = Cult.objects.get(slug=cult_slug)
-    event = Event.objects.get(slug=event_slug)
+def edit_event(request, group_slug, event_slug):
+    group = models.Group.objects.get(slug=group_slug)
+    event = models.Event.objects.get(slug=event_slug)
 
-    if request.user not in cult.leaders_list:
+    if request.user not in group.organizers_list:
         return HttpResponse(status=403)
 
     if request.method == "POST":
-        form = EditEventForm(request.POST, instance=event)
+        form = forms.EventChangeForm(request.POST, instance=event)
         if form.is_valid():
             form.save()
-            return redirect("main:event", cult_slug=cult.slug, event_slug=event.slug)
+            return redirect("main:event", group_slug=group.slug, event_slug=event.slug)
     else:
-        form = EditEventForm(instance=event)
+        form = forms.EventChangeForm(instance=event)
 
     return render(
-        request,
-        "main/edit_event.html",
-        {
-            "nav_show_cult": True,
-            "nav_show_new_event": True,
-            "cult": cult,
-            "event": event,
-            "form": form,
-        },
+        request, "main/edit_event.html", {"group": group, "event": event, "form": form}
     )
 
 
 @require_POST
 @login_required
-def membership(request, cult_slug):
-    cult = Cult.objects.get(slug=cult_slug)
-    Membership.objects.get_or_create(
-        user=request.user, cult=cult, role=Membership.MEMBER
+def membership(request, group_slug):
+    group = models.Group.objects.get(slug=group_slug)
+    models.Membership.objects.get_or_create(
+        user=request.user, group=group, role=models.Membership.MEMBER
     )
-    return redirect("main:cult", cult_slug=cult.slug)
+    return redirect("main:group", group_slug=group.slug)
 
 
 @require_POST
 @login_required
-def delete_membership(request, cult_slug):
-    cult = Cult.objects.get(slug=cult_slug)
+def delete_membership(request, group_slug):
+    group = models.Group.objects.get(slug=group_slug)
 
-    # solo cult leader cannot unjoin
-    if request.user in cult.leaders_list and cult.leaders_count == 1:
+    # solo group organizer cannot unjoin
+    if request.user in group.organizers_list and group.organizers_count == 1:
         return HttpResponse(status=403)
 
-    Membership.objects.get(user=request.user, cult=cult).delete()
-    return redirect("main:cult", cult_slug=cult.slug)
+    models.Membership.objects.get(user=request.user, group=group).delete()
+    return redirect("main:group", group_slug=group.slug)
 
 
 @require_POST
 @login_required
-def attendance(request, cult_slug, event_slug):
-    event = Event.objects.get(slug=event_slug)
+def attendance(request, group_slug, event_slug):
+    event = models.Event.objects.get(slug=event_slug)
 
     # attendance cannot change on past events
     now = timezone.now()
     if event.date < now.date():
         return HttpResponse(status=403)
 
-    Attendance.objects.get_or_create(user=request.user, event=event)
-    return redirect("main:event", cult_slug=cult_slug, event_slug=event.slug)
+    models.Attendance.objects.get_or_create(user=request.user, event=event)
+    return redirect("main:event", group_slug=group_slug, event_slug=event.slug)
 
 
 @require_POST
 @login_required
-def delete_attendance(request, cult_slug, event_slug):
-    event = Event.objects.get(slug=event_slug)
+def delete_attendance(request, group_slug, event_slug):
+    event = models.Event.objects.get(slug=event_slug)
 
     # attendance cannot change on past events
     now = timezone.now()
     if event.date < now.date():
         return HttpResponse(status=403)
 
-    Attendance.objects.get(user=request.user, event=event).delete()
-    return redirect("main:event", cult_slug=cult_slug, event_slug=event.slug)
+    models.Attendance.objects.get(user=request.user, event=event).delete()
+    return redirect("main:event", group_slug=group_slug, event_slug=event.slug)
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
-def cult_leader(request, cult_slug):
-    cult = Cult.objects.get(slug=cult_slug)
+def group_organizer(request, group_slug):
+    group = models.Group.objects.get(slug=group_slug)
 
-    if request.user not in cult.leaders_list:
+    if request.user not in group.organizers_list:
         return HttpResponse(status=403)
 
     if request.method == "POST":
-        form = AddCultLeaderForm(request.POST)
+        form = forms.AddGroupOrganizerForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get("username")
             try:
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
+                user = models.CustomUser.objects.get(username=username)
+            except models.CustomUser.DoesNotExist:
                 messages.error(request, 'User "' + username + '" does not exist.')
-                return redirect("main:cult_leader", cult.slug)
-            membership, created = Membership.objects.get_or_create(
-                user=user, cult=cult, role=Membership.LEADER
+                return redirect("main:group_organizer", group.slug)
+            membership, created = models.Membership.objects.get_or_create(
+                user=user, group=group, role=models.Membership.ORGANIZER
             )
             if created:
                 messages.success(
                     request,
-                    username + " has been added as leader at " + cult.name + ".",
+                    username + " has been added as organizer at " + group.name + ".",
                 )
             else:
                 messages.success(
-                    request, username + " is already leader at " + cult.name + "."
+                    request, username + " is already organizer at " + group.name + "."
                 )
-            return redirect("main:cult", cult_slug=cult.slug)
+            return redirect("main:group", group_slug=group.slug)
     else:
-        form = AddCultLeaderForm()
+        form = forms.AddGroupOrganizerForm()
 
-    return render(
-        request,
-        "main/cult_leader.html",
-        {"nav_show_cult": True, "nav_show_edit_cult": True, "cult": cult, "form": form},
-    )
+    return render(request, "main/group_organizer.html", {"group": group, "form": form})
 
 
 @require_http_methods(["POST"])
 @login_required
-def comment(request, cult_slug, event_slug):
-    form = CommentForm(request.POST)
+def comment(request, group_slug, event_slug):
+    form = forms.CommentCreationForm(request.POST)
     if form.is_valid():
         body = form.cleaned_data.get("body")
-        event = Event.objects.get(slug=event_slug)
-        Comment.objects.create(event=event, author=request.user, body=body)
-        return redirect("main:event", cult_slug=event.cult.slug, event_slug=event.slug)
+        event = models.Event.objects.get(slug=event_slug)
+        models.Comment.objects.create(event=event, author=request.user, body=body)
+        return redirect(
+            "main:event", group_slug=event.group.slug, event_slug=event.slug
+        )
 
 
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
-def cult_announcement(request, cult_slug):
-    cult = Cult.objects.get(slug=cult_slug)
+def group_announcement(request, group_slug):
+    group = models.Group.objects.get(slug=group_slug)
 
-    if request.user not in cult.leaders_list:
+    if request.user not in group.organizers_list:
         return HttpResponse(status=403)
 
     if request.method == "POST":
-        form = CultAnnouncementForm(request.POST)
+        form = forms.GroupAnnouncementForm(request.POST)
         if form.is_valid():
-
             # send email announcement to members
-            for member in cult.members.all():
-                data = {
-                    "domain": get_current_site(request).domain,
-                    "member_email": member.email,
-                    "cult_name": cult.name,
-                    "message": form.cleaned_data.get("message"),
-                }
-                email_members.delay(data)
-
+            for member in group.members.all():
+                tasks.email_async(
+                    "Announcement from " + group.name,
+                    render_to_string(
+                        "main/group_announcement_email.txt",
+                        {
+                            "group_name": group.name,
+                            "message": form.cleaned_data.get("message"),
+                        },
+                    ),
+                    settings.DEFAULT_FROM_EMAIL,
+                    [member.email],
+                )
             messages.success(request, "The announcement has been emailed.")
-            return redirect("main:cult", cult_slug=cult.slug)
+            return redirect("main:group", group_slug=group.slug)
     else:
-        form = CultAnnouncementForm()
+        form = forms.GroupAnnouncementForm()
 
     return render(
-        request,
-        "main/cult_announcement.html",
-        {"nav_show_cult": True, "cult": cult, "form": form},
+        request, "main/group_announcement.html", {"group": group, "form": form}
     )

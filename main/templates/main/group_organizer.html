@@ -1,0 +1,23 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Add group organizer{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Add group organizer</h1>
+
+    <form action="{% url 'main:group_organizer' group.slug %}" method="post">
+        {{ form.non_field_errors }}
+
+        <label for="id_username">Username:</label>
+        {% if form.username.errors %}
+            {% for error in form.username.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="username" maxlength="150" required id="id_username">
+        {% csrf_token %}
+        <input type="submit" value="add">
+    </form>
+</section>
+{% endblock %}

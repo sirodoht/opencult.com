@@ -3,31 +3,31 @@
 {% block title %}Open Cult API Docs{% endblock %}
 
 {% block content %}
-    <div class="section">
-        <div class="section-title">API</div>
+<section>
+    <h1>API</h1>
 
-        <div class="section-label">cults#list</div>
-        <div class="section-body">
-            <code>GET</code> on <code>/api/cults/</code>
-            <br>
-            <code>GET</code> on <code>/api/cults/?city={city-name}</code>
-        </div>
-
-        <div class="section-label">cults#read</div>
-        <div class="section-body">
-            <code>GET</code> on <code>/api/cults/{cult-slug}</code>
-        </div>
-
-        <div class="section-label">events#list</div>
-        <div class="section-body">
-            <code>GET</code> on <code>/api/events/</code>
-            <br>
-            <code>GET</code> on <code>/api/events/?city={city-name}</code>
-        </div>
-
-        <div class="section-label">events#read</div>
-        <div class="section-body">
-            <code>GET</code> on <code>/api/events/{event-slug}</code>
-        </div>
+    <div class="section-label">groups#list</div>
+    <div class="section-body">
+        <code>GET</code> on <code>/api/groups/</code>
+        <br>
+        <code>GET</code> on <code>/api/groups/?city={city-name}</code>
     </div>
+
+    <div class="section-label">groups#read</div>
+    <div class="section-body">
+        <code>GET</code> on <code>/api/groups/{group-slug}</code>
+    </div>
+
+    <div class="section-label">events#list</div>
+    <div class="section-body">
+        <code>GET</code> on <code>/api/events/</code>
+        <br>
+        <code>GET</code> on <code>/api/events/?city={city-name}</code>
+    </div>
+
+    <div class="section-label">events#read</div>
+    <div class="section-body">
+        <code>GET</code> on <code>/api/events/{event-slug}</code>
+    </div>
+</section>
 {% endblock %}

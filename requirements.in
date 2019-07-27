@@ -1,14 +1,12 @@
 django
 isort
-pytest
-pytest-django
 shortuuid
 psycopg2-binary
 dj-database-url
 whitenoise
 uwsgi
 flake8
-celery[redis,gevent]
 python-dotenv
 raven
 black
+django-background-tasks

@@ -31,10 +31,9 @@ You need to create a new file named `.env` in the root of this project once you 
 `.env` should contain the following env variables:
 ```sh
 DATABASE_URL="postgres://username:password@localhost:5432/db_name"
-REDIS_URL="redis://@localhost:6379"  # used for celery worker, see below
 SECRET_KEY="thisisthesecretkey"
-EMAIL_HOST_USER="usernamehere"  # optional, only for email functionality
-EMAIL_HOST_PASSWORD="passwordhere"  # optional, only for email functionality
+EMAIL_HOST_USER="usernamehere"  # for email functionality (optional for dev)
+EMAIL_HOST_PASSWORD="passwordhere"  # for email functionality (optional for dev)
 ```
 
 ### Database
@@ -62,28 +61,14 @@ uwsgi --ini=uwsgi.ini -H venv/
 
 > Note: The `uwsgi` method does not read the `.env` file, so in this case you need to set the env vars in your shell.
 
-### Worker
-
-[Celery](http://www.celeryproject.org/) is used as a task queue, with Redis as a broker. 
-See the [environment variables section](#environment-variables) above on how to configure it using the `.env` file.
-
-To run:
-```sh
-celery -A opencult worker -P gevent -l debug
-```
-
-## Testing
-
-Run tests:
-```sh
-pytest
-```
+## Code formatting
 
 Format, lint, sort imports for Python code:
+
 ```sh
 black . && isort -y && flake8
 ```
 
 ## License
 
-MIT
+[MIT](LICENSE)

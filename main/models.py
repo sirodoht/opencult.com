@@ -1,56 +1,42 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils import timezone
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+class CustomUser(AbstractUser):
     about = models.TextField(blank=True, null=True)
 
     @property
-    def leader_of_list(self):
-        return self.user.cult_set.filter(membership__role=Membership.LEADER)
+    def organizer_of_list(self):
+        return self.group_set.filter(membership__role=Membership.ORGANIZER)
 
     @property
     def member_of_count(self):
-        return self.user.cult_set.filter(membership__role=Membership.MEMBER).count()
+        return self.group_set.filter(membership__role=Membership.MEMBER).count()
 
     @property
     def member_of_list(self):
-        return self.user.cult_set.filter(membership__role=Membership.MEMBER)
+        return self.group_set.filter(membership__role=Membership.MEMBER)
 
     def __str__(self):
-        return self.user.username
+        return self.username
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
-
-class Cult(models.Model):
-    members = models.ManyToManyField(User, through="Membership")
+class Group(models.Model):
+    members = models.ManyToManyField(CustomUser, through="Membership")
     name = models.CharField(max_length=100)
     date_created = models.DateTimeField(default=timezone.now)
     slug = models.CharField(max_length=100, unique=True, db_index=True)
-    doctrine = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100)
 
     @property
-    def leaders_count(self):
-        return self.members.filter(membership__role=Membership.LEADER).count()
+    def organizers_count(self):
+        return self.members.filter(membership__role=Membership.ORGANIZER).count()
 
     @property
-    def leaders_list(self):
-        return self.members.filter(membership__role=Membership.LEADER)
+    def organizers_list(self):
+        return self.members.filter(membership__role=Membership.ORGANIZER)
 
     @property
     def members_count(self):
@@ -65,8 +51,8 @@ class Cult(models.Model):
 
 
 class Event(models.Model):
-    cult = models.ForeignKey(Cult, on_delete=models.CASCADE)
-    attendees = models.ManyToManyField(User, through="Attendance")
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    attendees = models.ManyToManyField(CustomUser, through="Attendance")
     title = models.CharField(max_length=100)
     slug = models.CharField(max_length=100, unique=True, db_index=True)
     details = models.TextField(blank=True, null=True)
@@ -89,22 +75,22 @@ class Event(models.Model):
 
 
 class Membership(models.Model):
-    cult = models.ForeignKey(Cult, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     date_joined = models.DateTimeField(default=timezone.now)
 
-    LEADER = "leader"
+    ORGANIZER = "organizer"
     MEMBER = "member"
-    ROLE_CHOICES = ((LEADER, "Leader"), (MEMBER, "Member"))
+    ROLE_CHOICES = ((ORGANIZER, "Organizer"), (MEMBER, "Member"))
     role = models.CharField(choices=ROLE_CHOICES, max_length=50, default=MEMBER)
 
     def __str__(self):
-        return self.cult.name + " :: " + self.user.username
+        return self.group.name + " :: " + self.user.username
 
 
 class Attendance(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     date_rsvped = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -113,7 +99,7 @@ class Attendance(models.Model):
 
 class Comment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     date_posted = models.DateTimeField(default=timezone.now)
     body = models.TextField()
 

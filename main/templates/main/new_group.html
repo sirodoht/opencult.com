@@ -1,0 +1,39 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Create group{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Create group</h1>
+
+    <form action="{% url 'main:new_group' %}" method="post">
+        {{ form.non_field_errors }}
+
+        <label for="id_name">Name</label>
+        {% if form.name.errors %}
+            {% for error in form.name.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="name" maxlength="100" required id="id_name">
+
+        <label for="id_description">Description</label>
+        {% if form.description.errors %}
+            {% for error in form.description.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <textarea name="description" rows="6" id="id_description"></textarea>
+
+        <label for="id_city">City</label>
+        {% if form.city.errors %}
+            {% for error in form.city.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="city" maxlength="100" required id="id_city">
+        {% csrf_token %}
+        <input type="submit" value="Save">
+    </form>
+</section>
+{% endblock %}

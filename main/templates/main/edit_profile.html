@@ -1,42 +1,41 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}Edit {{ user.username }} profile - Open Cult{% endblock %}
+{% block title %}Edit {{ user.username }} profile{% endblock %}
 
 {% block content %}
-    <div class="section">
-        <div class="section-title">Edit {{ user.username }} profile</div>
+<section>
+    <h1>Edit {{ user.username }} profile</h1>
 
-        <form action="{% url 'main:edit_profile' request.user.username %}" method="post">
-            {{ form.non_field_errors }}
+    <form action="{% url 'main:edit_profile' request.user.username %}" method="post">
+        {{ form.non_field_errors }}
 
-            <label for="id_username" class="section-label">Username</label>
-            {% if form.username.errors %}
-                {% for error in form.username.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="text" name="username" value="{{ form.username.value }}" maxlength="150" id="id_username">
+        <label for="id_username"">Username</label>
+        {% if form.username.errors %}
+            {% for error in form.username.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="username" value="{{ form.username.value }}" maxlength="150" id="id_username">
 
-            <!-- <label for="id_email" class="section-label">Email</label>
-            {% if form.email.errors %}
-                {% for error in form.email.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="email" name="email" value="{{ form.email.value }}" maxlength="254" id="id_email"> -->
+        <label for="id_email"">Email</label>
+        {% if form.email.errors %}
+            {% for error in form.email.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="email" name="email" value="{{ form.email.value }}" maxlength="254" id="id_email">
 
-            <label for="id_about" class="section-label">About</label>
-            {% if form.about.errors %}
-                {% for error in form.about.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <textarea name="about" rows="6" id="id_about">{{ form.about.value|default:"" }}</textarea>
+        <label for="id_about"">About</label>
+        {% if form.about.errors %}
+            {% for error in form.about.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <textarea name="about" rows="6" id="id_about">{{ form.about.value|default:"" }}</textarea>
 
-            {% csrf_token %}
+        {% csrf_token %}
 
-            <input type="submit" value="update">
-        </form>
-
-    </div>
+        <input type="submit" value="update">
+    </form>
+</section>
 {% endblock %}

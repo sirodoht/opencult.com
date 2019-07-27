@@ -1,74 +1,73 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}Create event for {{ cult.name }} - Open Cult{% endblock %}
+{% block title %}Create event for {{ group.name }}{% endblock %}
 
 {% block content %}
-    <div class="section">
-        <div class="section-title">Create event for <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a></div>
+<section>
+    <h1>Create event for <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a></h1>
 
-        <form action="{% url 'main:new_event' cult.slug %}" method="post">
-            {{ form.non_field_errors }}
+    <form action="{% url 'main:new_event' group.slug %}" method="post">
+        {{ form.non_field_errors }}
 
-            <label for="id_title" class="section-label">Title</label>
-            {% if form.title.errors %}
-                {% for error in form.title.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="text" name="title" maxlength="100" required id="id_title">
+        <label for="id_title">Title</label>
+        {% if form.title.errors %}
+            {% for error in form.title.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="title" maxlength="100" required id="id_title">
 
-            <label for="id_details" class="section-label">Details</label>
-            {% if form.details.errors %}
-                {% for error in form.details.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <textarea name="details" rows="6" id="id_details"></textarea>
+        <label for="id_details">Details</label>
+        {% if form.details.errors %}
+            {% for error in form.details.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <textarea name="details" rows="6" id="id_details"></textarea>
 
-            <label for="id_date" class="section-label">Date</label>
-            {% if form.date.errors %}
-                {% for error in form.date.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="date" name="date" required id="id_date">
+        <label for="id_date">Date</label>
+        {% if form.date.errors %}
+            {% for error in form.date.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="date" name="date" required id="id_date">
 
-            <label for="id_time" class="section-label">Time</label>
-            {% if form.time.errors %}
-                {% for error in form.time.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="time" name="time" value="19:00" required id="id_time">
+        <label for="id_time">Time</label>
+        {% if form.time.errors %}
+            {% for error in form.time.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="time" name="time" value="19:00" required id="id_time">
 
-            <label for="id_venue" class="section-label">Venue</label>
-            {% if form.venue.errors %}
-                {% for error in form.venue.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="text" name="venue" maxlength="100" id="id_venue">
+        <label for="id_venue">Venue</label>
+        {% if form.venue.errors %}
+            {% for error in form.venue.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="venue" maxlength="100" id="id_venue">
 
-            <label for="id_address" class="section-label">Address</label>
-            {% if form.address.errors %}
-                {% for error in form.address.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="text" name="address" placeholder="eg. 37 Sunshine Avenue, 542 31" maxlength="100" id="id_address">
+        <label for="id_address">Address</label>
+        {% if form.address.errors %}
+            {% for error in form.address.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="text" name="address" placeholder="eg. 37 Sunshine Avenue, 542 31" maxlength="100" id="id_address">
 
-            <label for="id_maps_url" class="section-label">Maps url</label>
-            {% if form.maps.errors %}
-                {% for error in form.maps.errors %}
-                    <div class="form-error">{{ error|escape }}</div>
-                {% endfor %}
-            {% endif %}
-            <input type="url" name="maps_url" placeholder="eg. https://goo.gl/maps/rhMbTatoPCP2" maxlength="200" id="id_maps_url">
+        <label for="id_maps_url">Maps url</label>
+        {% if form.maps.errors %}
+            {% for error in form.maps.errors %}
+                <div class="form-error">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <input type="url" name="maps_url" placeholder="eg. https://goo.gl/maps/rhMbTatoPCP2" maxlength="200" id="id_maps_url">
 
-            {% csrf_token %}
+        {% csrf_token %}
 
-            <input type="submit" value="create">
-        </form>
-
-    </div>
+        <input type="submit" value="create">
+    </form>
+</section>
 {% endblock %}

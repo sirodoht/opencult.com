@@ -1,24 +1,19 @@
-Announcing new event for {{ data.cult_name|safe }}: {{ data.event_title|safe }}
+Announcing new event for {{ data.group_name|safe }}: {{ data.event_title|safe }}
 
 It will take place on {{ data.event_date }} at {{ data.event_time }}.
 
 {% if data.event_details %}Details:
-
 {{ data.event_details|safe }}{% endif %}
 
 {% if data.event_venue or data.event_address %}Location:
-{% if data.event_venue and data.event_address %}{{ data.event_venue|safe }} - {{ data.event_address|safe }}, {{ data.cult_city|safe }}{% elif data.event_venue %}{{ data.event_venue|safe }} in {{ data.cult_city }}{% elif data.event_address %}{{ data.event_address|safe }}, {{ data.cult_city|safe }}{% endif %}{% endif %}
+{% if data.event_venue and data.event_address %}{{ data.event_venue|safe }} - {{ data.event_address|safe }}, {{ data.group_city|safe }}{% elif data.event_venue %}{{ data.event_venue|safe }} in {{ data.group_city }}{% elif data.event_address %}{{ data.event_address|safe }}, {{ data.group_city|safe }}{% endif %}{% endif %}
 
 {% if data.event_maps_url %}Maps:
-{{ data.event_maps_url }}
-{% endif %}
+{{ data.event_maps_url }}{% endif %}
 
-RSVP here:{% if 'localhost' in data.domain %}
-http://{{ data.domain }}{% url 'main:event' data.cult_slug data.event_slug %}
-{% else %}
-https://{{ data.domain }}{% url 'main:event' data.cult_slug data.event_slug %}
-{% endif %}
+RSVP here:
+{{ data.protocol }}://{{ data.domain }}{% url 'main:event' data.group_slug data.event_slug %}
 
 <3,
 The Open Cult Team
-On behalf of {{ data.cult_name|safe }}
+On behalf of {{ data.group_name|safe }}

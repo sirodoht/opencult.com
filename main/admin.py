@@ -1,48 +1,41 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 
-from .models import Attendance, Comment, Cult, Event, Membership, Profile
-
-
-# User
-class OpCuAdmin(UserAdmin):
-    list_display = ("username", "email", "date_joined", "last_login", "id")
+from main.forms import CustomUserChangeForm, CustomUserCreationForm
+from main.models import Attendance, Comment, CustomUser, Event, Group, Membership
 
 
-admin.site.unregister(User)
-admin.site.register(User, OpCuAdmin)
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
+    list_display = ["email", "username", "about"]
 
 
-# Profile
-admin.site.register(Profile)
+admin.site.register(CustomUser, CustomUserAdmin)
 
 
-# Cult
-class CultAdmin(admin.ModelAdmin):
+class GroupAdmin(admin.ModelAdmin):
     list_display = ("name", "city")
 
 
-admin.site.register(Cult, CultAdmin)
+admin.site.register(Group, GroupAdmin)
 
 
-# Event
 class EventAdmin(admin.ModelAdmin):
-    list_display = ("title", "cult", "date", "time", "venue")
+    list_display = ("title", "group", "date", "time", "venue")
 
 
 admin.site.register(Event, EventAdmin)
 
 
-# Membership
 class MembershipAdmin(admin.ModelAdmin):
-    list_display = ("cult", "user", "role", "date_joined")
+    list_display = ("group", "user", "role", "date_joined")
 
 
 admin.site.register(Membership, MembershipAdmin)
 
 
-# Attendance
 class AttendanceAdmin(admin.ModelAdmin):
     list_display = ("event", "user", "date_rsvped")
 
@@ -50,7 +43,6 @@ class AttendanceAdmin(admin.ModelAdmin):
 admin.site.register(Attendance, AttendanceAdmin)
 
 
-# Comment
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("date_posted", "body", "author", "event")
 

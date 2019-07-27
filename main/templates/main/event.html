@@ -1,74 +1,87 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}{{ event.title }} event - Open Cult{% endblock %}
+{% block title %}{{ event.title }} event{% endblock %}
 
 {% block content %}
-    <div class="section">
-        <div class="section-title">
-            {{ event.title }} &lt;
-            <a href="{% url 'main:cult' event.cult.slug %}">{{ event.cult.name }}</a>
-        </div>
-
-        {% if event.details %}
-            <div class="section-label">Details</div>
-            <div class="section-body">
-                {{ event.details|linebreaks }}
-            </div>
-        {% endif %}
-
-        <div class="section-label">Date & Time</div>
-        <div class="section-body">{{ event.date|date:"l, N j, Y" }} at {{ event.time|time:"H:i" }} local time.</div>
-
-        {% if event.venue or event.address or event.maps_url %}
-        <div class="section-label">Venue</div>
-        <div class="section-body">
-            {% if event.venue and event.address and event.maps_url %}
-            {{ event.venue }} - <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.cult.city }}
-            {% elif event.venue and event.address %}
-            {{ event.venue }} - {{ event.address }}, {{ event.cult.city }}
-            {% elif event.venue and event.maps_url %}
-            <a href="{{ event.maps_url }}">{{ event.venue }}</a>, {{ event.cult.city }}
-            {% elif event.address and event.maps_url %}
-            <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.cult.city }}
-            {% elif event.venue %}
-            {{ event.venue }}, {{ event.cult.city }}
-            {% elif event.address %}
-            {{ event.address }}, {{ event.cult.city }}
-            {% elif event.maps_url %}
-            <a href="{{ event.maps_url }}">At this lat/long</a> in {{ event.cult.city }}
+<section>
+    <h1>
+        Event:
+        {{ event.title }}
+        by <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a>
+        {% if nav_show_rsvp_event and event.date >= now.date %}
+            {% if attendance %}
+                <form action="{% url 'main:delete_attendance' event.group.slug event.slug %}" method="post" class="inline">
+                    {% csrf_token %}
+                    <input type="submit" value="un-rsvp">
+                </form>
+            {% else %}
+                <form action="{% url 'main:attendance' event.group.slug event.slug %}" method="post" class="inline">
+                    {% csrf_token %}
+                    <input type="submit" value="rsvp">
+                </form>
             {% endif %}
-        </div>
         {% endif %}
+    </h1>
 
-        <div class="section-label" id="attendees">Comments ({{ event.comment_set.count }})</div>
-        <div class="section-body">
-            {% for comment in event.comment_set.all %}
-                <a href="{% url 'main:profile' comment.author.username %}" class="section-body-comment"
-                    title="Posted at {{ comment.date_posted }}">{{ comment.author.username }}</a>: {{ comment.body|linebreaksbr }}<br>
-            {% empty %}
-                No comments. Post one!
-            {% endfor %}
-            <form action="{% url 'main:comment' event.cult.slug event.slug %}" method="post">
-                {{ form.non_field_errors }}
-                {% if form.body.errors %}
-                    {% for error in form.body.errors %}
-                        <div class="form-error">{{ error|escape }}</div>
-                    {% endfor %}
-                {% endif %}
-                <textarea name="body" rows="6" required></textarea>
-                {% csrf_token %}
-                <input type="submit" value="post comment">
-            </form>
-        </div>
-
-        <div class="section-label" id="attendees">Attendees ({{ event.attendees_count }})</div>
-        <div class="section-body">
-            {% for person in event.attendees_list %}
-                <a href="{% url 'main:profile' person.username %}">{{ person.username }}</a><br>
-            {% empty %}
-                No one is attending yet.
-            {% endfor %}
-        </div>
-
+    {% if event.details %}
+    <div class="section-label">Details</div>
+    <div class="section-body">
+        {{ event.details|linebreaks }}
     </div>
+    {% endif %}
+
+    <div class="section-label">Date & Time</div>
+    <div class="section-body">{{ event.date|date:"l, N j, Y" }} at {{ event.time|time:"H:i" }} local time.</div>
+
+    {% if event.venue or event.address or event.maps_url %}
+    <div class="section-label">Venue</div>
+    <div class="section-body">
+        {% if event.venue and event.address and event.maps_url %}
+        {{ event.venue }} - <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.group.city }}
+        {% elif event.venue and event.address %}
+        {{ event.venue }} - {{ event.address }}, {{ event.group.city }}
+        {% elif event.venue and event.maps_url %}
+        <a href="{{ event.maps_url }}">{{ event.venue }}</a>, {{ event.group.city }}
+        {% elif event.address and event.maps_url %}
+        <a href="{{ event.maps_url }}">{{ event.address }}</a>, {{ event.group.city }}
+        {% elif event.venue %}
+        {{ event.venue }}, {{ event.group.city }}
+        {% elif event.address %}
+        {{ event.address }}, {{ event.group.city }}
+        {% elif event.maps_url %}
+        <a href="{{ event.maps_url }}">At this lat/long</a> in {{ event.group.city }}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="section-label" id="attendees">Comments ({{ event.comment_set.count }})</div>
+    <div class="section-body">
+        {% for comment in event.comment_set.all %}
+            <a href="{% url 'main:profile' comment.author.username %}" class="section-body-comment"
+                title="Posted at {{ comment.date_posted }}">{{ comment.author.username }}</a>: {{ comment.body|linebreaksbr }}<br>
+        {% empty %}
+            No comments. Post one!
+        {% endfor %}
+        <form action="{% url 'main:comment' event.group.slug event.slug %}" method="post">
+            {{ form.non_field_errors }}
+            {% if form.body.errors %}
+                {% for error in form.body.errors %}
+                    <div class="form-error">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            <textarea name="body" rows="6" required></textarea>
+            {% csrf_token %}
+            <input type="submit" value="post comment">
+        </form>
+    </div>
+
+    <div class="section-label" id="attendees">Attendees ({{ event.attendees_count }})</div>
+    <div class="section-body">
+        {% for person in event.attendees_list %}
+            <a href="{% url 'main:profile' person.username %}">{{ person.username }}</a><br>
+        {% empty %}
+            No one is attending yet.
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}

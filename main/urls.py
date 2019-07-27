@@ -1,68 +1,89 @@
 from django.contrib import admin
-from django.urls import path
+from django.contrib.auth import views as auth_views
+from django.urls import path, re_path, reverse_lazy
+from django.views.generic.base import RedirectView
 
 from . import views
 
 admin.site.site_header = "Open Cult administration"
 app_name = "main"
 
+favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
+
 urlpatterns = [
-    # /
     path("", views.index, name="index"),
-    # /login/
-    path("login/", views.login, name="login"),
-    # /auth/
-    path("auth/", views.token_post, name="auth"),
-    # /logout/
-    path("logout/", views.logout, name="logout"),
-    # /about/
-    path("about/", views.about, name="about"),
-    # /new/
-    path("new/", views.new_cult, name="new_cult"),
-    # e.g. /@some-username/edit/
-    path("@<username>/edit/", views.edit_profile, name="edit_profile"),
-    # e.g. /@some-username/
-    path("@<username>/", views.profile, name="profile"),
-    # e.g. /membership/some-cult-slug/delete/
+    path("login/", auth_views.LoginView.as_view(), name="login"),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path(
-        "membership/<slug:cult_slug>/delete/",
+        "password_change/",
+        auth_views.PasswordChangeView.as_view(
+            success_url=reverse_lazy("main:password_change_done")
+        ),
+        name="password_change",
+    ),
+    path(
+        "password_change/done/",
+        auth_views.PasswordChangeDoneView.as_view(),
+        name="password_change_done",
+    ),
+    path(
+        "password_reset/",
+        auth_views.PasswordResetView.as_view(
+            success_url=reverse_lazy("main:password_reset_done")
+        ),
+        name="password_reset",
+    ),
+    path(
+        "password_reset/done/",
+        auth_views.PasswordResetDoneView.as_view(),
+        name="password_reset_done",
+    ),
+    path(
+        "reset/<uidb64>/<token>/",
+        auth_views.PasswordResetConfirmView.as_view(
+            success_url=reverse_lazy("main:password_reset_complete")
+        ),
+        name="password_reset_confirm",
+    ),
+    path(
+        "reset/done/",
+        auth_views.PasswordResetCompleteView.as_view(),
+        name="password_reset_complete",
+    ),
+    path("signup/", views.SignUp.as_view(), name="signup"),
+    path("about/", views.about, name="about"),
+    path("new/", views.new_group, name="new_group"),
+    path("@<username>/edit/", views.edit_profile, name="edit_profile"),
+    path("@<username>/", views.profile, name="profile"),
+    path(
+        "membership/<slug:group_slug>/delete/",
         views.delete_membership,
         name="delete_membership",
     ),
-    # e.g. /membership/some-cult-slug/
-    path("membership/<slug:cult_slug>/", views.membership, name="membership"),
-    # e.g. /attendance/some-cult-slug/some-event-slug/delete/
+    path("membership/<slug:group_slug>/", views.membership, name="membership"),
     path(
-        "attendance/<slug:cult_slug>/<slug:event_slug>/delete/",
+        "attendance/<slug:group_slug>/<slug:event_slug>/delete/",
         views.delete_attendance,
         name="delete_attendance",
     ),
-    # e.g. /attendance/some-cult-slug/some-event-slug/
     path(
-        "attendance/<slug:cult_slug>/<slug:event_slug>/",
+        "attendance/<slug:group_slug>/<slug:event_slug>/",
         views.attendance,
         name="attendance",
     ),
-    # e.g. /some-cult-slug/new/
-    path("<slug:cult_slug>/new/", views.new_event, name="new_event"),
-    # e.g. /some-cult-slug/edit/
-    path("<slug:cult_slug>/edit/", views.edit_cult, name="edit_cult"),
-    # e.g. /some-cult-slug/leader/
-    path("<slug:cult_slug>/leader/", views.cult_leader, name="cult_leader"),
-    # e.g. /some-cult-slug/announcement/
+    path("<slug:group_slug>/new/", views.new_event, name="new_event"),
+    path("<slug:group_slug>/edit/", views.edit_group, name="edit_group"),
+    path("<slug:group_slug>/organizer/", views.group_organizer, name="group_organizer"),
     path(
-        "<slug:cult_slug>/announcement/",
-        views.cult_announcement,
-        name="cult_announcement",
+        "<slug:group_slug>/announcement/",
+        views.group_announcement,
+        name="group_announcement",
     ),
-    # e.g. /some-cult-slug/some-event-slug/edit/
     path(
-        "<slug:cult_slug>/<slug:event_slug>/edit/", views.edit_event, name="edit_event"
+        "<slug:group_slug>/<slug:event_slug>/edit/", views.edit_event, name="edit_event"
     ),
-    # e.g. /some-cult-slug/some-event-slug/comment/
-    path("<slug:cult_slug>/<slug:event_slug>/comment/", views.comment, name="comment"),
-    # e.g. /some-cult-slug/some-event-slug/
-    path("<slug:cult_slug>/<slug:event_slug>/", views.event, name="event"),
-    # e.g. /some-cult-slug/
-    path("<slug:cult_slug>/", views.cult, name="cult"),
+    path("<slug:group_slug>/<slug:event_slug>/comment/", views.comment, name="comment"),
+    path("<slug:group_slug>/<slug:event_slug>/", views.event, name="event"),
+    path("<slug:group_slug>/", views.group, name="group"),
+    re_path(r"^favicon\.ico$", favicon_view),
 ]

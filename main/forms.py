@@ -1,34 +1,42 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from .models import Comment, Cult, Event
-
-
-class EmailForm(forms.Form):
-    email = forms.EmailField(label="Your email address")
+from main import models
 
 
-class CultForm(forms.ModelForm):
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm):
+        model = models.CustomUser
+        fields = ["username", "email"]
+
+
+class CustomUserChangeForm(UserChangeForm):
     class Meta:
-        model = Cult
-        fields = ["name", "doctrine", "city"]
+        model = models.CustomUser
+        fields = ["username", "email", "about"]
 
 
-class EditCultForm(forms.ModelForm):
+class GroupCreationForm(forms.ModelForm):
     class Meta:
-        model = Cult
-        fields = ["name", "slug", "doctrine", "city"]
+        model = models.Group
+        fields = ["name", "description", "city"]
 
 
-class EventForm(forms.ModelForm):
+class GroupChangeForm(forms.ModelForm):
     class Meta:
-        model = Event
+        model = models.Group
+        fields = ["name", "slug", "description", "city"]
+
+
+class EventCreationForm(forms.ModelForm):
+    class Meta:
+        model = models.Event
         fields = ["title", "details", "date", "time", "venue", "address", "maps_url"]
 
 
-class EditEventForm(forms.ModelForm):
+class EventChangeForm(forms.ModelForm):
     class Meta:
-        model = Event
+        model = models.Event
         fields = [
             "title",
             "slug",
@@ -41,23 +49,15 @@ class EditEventForm(forms.ModelForm):
         ]
 
 
-class UserForm(forms.ModelForm):
-    about = forms.CharField(widget=forms.Textarea, required=False)
-
-    class Meta:
-        model = User
-        fields = ["username"]
-
-
-class AddCultLeaderForm(forms.Form):
+class AddGroupOrganizerForm(forms.Form):
     username = forms.CharField()
 
 
-class CommentForm(forms.ModelForm):
+class CommentCreationForm(forms.ModelForm):
     class Meta:
-        model = Comment
+        model = models.Comment
         fields = ["body"]
 
 
-class CultAnnouncementForm(forms.Form):
+class GroupAnnouncementForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)

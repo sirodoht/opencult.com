@@ -1,29 +1,37 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}{{ user.username }} - Open Cult{% endblock %}
+{% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
-    <div class="section">
-        <div class="section-title">{{ user.username }}</div>
+<section>
+    <h1>
+        User:
+        {{ user.username }}
+    </h1>
 
-        <div class="section-label">About</div>
-        <div class="section-body">
-            {{ user.profile.about|default:""|linebreaks }}
-        </div>
-
-        <div class="section-label">Leader of</div>
-        <div class="section-body">
-            {% for cult in user.profile.leader_of_list %}
-                <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a><br>
-            {% endfor %}
-        </div>
-
-        <div class="section-label">Member of ({{ user.profile.member_of_count }})</div>
-        <div class="section-body">
-            {% for cult in user.profile.member_of_list %}
-                <a href="{% url 'main:cult' cult.slug %}">{{ cult.name }}</a><br>
-            {% endfor %}
-        </div>
-
+    {% if user.about %}
+    <div class="section-label">About</div>
+    <div class="section-body">
+        {{ user.about|default:""|linebreaks }}
     </div>
+    {% endif %}
+
+    {% if user.organizer_of_list %}
+    <div class="section-label">Organizer of</div>
+    <div class="section-body">
+        {% for group in user.organizer_of_list %}
+        <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if user.member_of_count %}
+    <div class="section-label">Member of ({{ user.member_of_count }})</div>
+    <div class="section-body">
+        {% for group in user.member_of_list %}
+        <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a><br>
+        {% endfor %}
+    </div>
+    {% endif %}
+</section>
 {% endblock %}

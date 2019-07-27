@@ -209,7 +209,7 @@ a.header-brand {
     text-decoration: none;
 }
 
-.header-user {
+.header-right {
     float: right;
 }
 
@@ -251,7 +251,10 @@ form.inline {
 }
 
 .inline > input[type="submit"] {
-    margin: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 4px;
+    margin-right: 4px;
 }
 
 .form-error {
@@ -293,7 +296,7 @@ section {
 }
 
 .home-alert {
-    margin-top: 24px;
+    margin-top: 8px;
 }
 
 .home-alert a {
@@ -343,7 +346,7 @@ section {
 h1 {
     font-size: 14px;
     font-weight: bold;
-    margin-top: 24px;
+    margin-top: 8px;
     margin-bottom: 8px;
 }
 

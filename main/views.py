@@ -210,11 +210,28 @@ def edit_profile(request, username):
 @require_http_methods(["HEAD", "GET", "POST"])
 @login_required
 def new_group(request):
+    INVALID_GROUP_NAMES = [
+        "api",
+        "group",
+        "about",
+        "signup",
+        "logout",
+        "login",
+        "reset",
+        "membership",
+        "attendance",
+        "password_reset",
+        "password_change",
+    ]
+
     if request.method == "POST":
         form = forms.GroupCreationForm(request.POST)
         if form.is_valid():
             new_group = form.save(commit=False)
             new_group.slug = slugify(new_group.name)
+            if len(new_group.slug) < 3 or new_group.slug in INVALID_GROUP_NAMES:
+                messages.error(request, "Group name is invalid. Please choose another.")
+                return redirect("main:new_group")
             new_group.save()
             models.Membership.objects.create(
                 group=new_group, user=request.user, role=models.Membership.ORGANIZER

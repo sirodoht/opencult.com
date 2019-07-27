@@ -39,9 +39,9 @@
                 <a href="{% url 'main:group_organizer' group.slug %}">add group organizer</a>
             {% endif %}
             {% if messages %}
-                | <span class="alert">
+                <span class="alert">
                     {% for message in messages %}
-                        {{ message }}
+                        > {{ message }}
                     {% endfor %}
                 </span>
             {% endif %}

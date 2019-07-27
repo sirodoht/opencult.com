@@ -13,65 +13,30 @@
 </head>
 <body>
     <header>
-        <a href="{% url 'main:index' %}" class="header-brand">Open Cult</a>
+        <a href="{% url 'main:index' %}" class="header-brand">OPENCULT</a>
         <nav>
-            <a href="{% url 'main:new_group' %}">new group</a>
-            {% if request.user.is_authenticated %}
-                | <a href="{% url 'main:profile' request.user.username %}">my groups</a>
-            {% endif %}
-            {% if nav_show_own_groups %}
+            {% if request.user.is_authenticated and nav_show_own_groups and own_groups %}
+                <a href="{% url 'main:profile' request.user.username %}">my groups</a>:
                 {% for group in own_groups %}
-                    | <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a>
+                    {%if not forloop.first%}
+                    |
+                    {%endif%}
+                    <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a>
                 {% endfor %}
             {% endif %}
-            {% if nav_show_group %}
-                | <a href="{% url 'main:group' group.slug %}">{{ group.name }}</a>
-            {% endif %}
-            {% if nav_show_organizer_add and request.user in group.organizers_list %}
-                | <a href="{% url 'main:group_organizer' group.slug %}">add group organizer</a>
-            {% endif %}
-            {% if nav_show_edit_group and request.user in group.organizers_list %}
+            {% if nav_show_group_admin and request.user in group.organizers_list %}
+                <a href="{% url 'main:new_event' group.slug %}">new event</a>
+                | <a href="{% url 'main:group_announcement' group.slug %}">email members</a>
                 | <a href="{% url 'main:edit_group' group.slug %}">edit group</a>
             {% endif %}
-            {% if nav_show_new_event and request.user in group.organizers_list %}
-                | <a href="{% url 'main:new_event' group.slug %}">new event</a>
-            {% endif %}
-            {% if nav_show_group_announcement and request.user in group.organizers_list %}
-                | <a href="{% url 'main:group_announcement' group.slug %}">email members</a>
-            {% endif %}
             {% if nav_show_edit_event and request.user in event.group.organizers_list %}
-                | <a href="{% url 'main:edit_event' event.group.slug event.slug %}">edit event</a>
+                <a href="{% url 'main:edit_event' event.group.slug event.slug %}">edit event</a>
             {% endif %}
             {% if nav_show_logout %}
-                | <a href="{% url 'main:logout' %}">logout</a>
+                <a href="{% url 'main:logout' %}">logout</a>
             {% endif %}
-            {% if nav_show_join_group %}
-                {% if request.user not in group.organizers_list or group.organizers_count != 1 %}
-                    {% if membership %}
-                        <form action="{% url 'main:delete_membership' group.slug %}" method="post" class="inline">
-                            {% csrf_token %}
-                            | <input type="submit" value="leave group">
-                        </form>
-                    {% else %}
-                        <form action="{% url 'main:membership' group.slug %}" method="post" class="inline">
-                            {% csrf_token %}
-                            | <input type="submit" value="join">
-                        </form>
-                    {% endif %}
-                {% endif %}
-            {% endif %}
-            {% if nav_show_rsvp_event and event.date >= now.date %}
-                {% if attendance %}
-                    <form action="{% url 'main:delete_attendance' event.group.slug event.slug %}" method="post" class="inline">
-                        {% csrf_token %}
-                        | <input type="submit" value="un-rsvp">
-                    </form>
-                {% else %}
-                    <form action="{% url 'main:attendance' event.group.slug event.slug %}" method="post" class="inline">
-                        {% csrf_token %}
-                        | <input type="submit" value="rsvp">
-                    </form>
-                {% endif %}
+            {% if nav_show_organizer_add and request.user in group.organizers_list %}
+                <a href="{% url 'main:group_organizer' group.slug %}">add group organizer</a>
             {% endif %}
             {% if messages %}
                 | <span class="alert">
@@ -81,11 +46,14 @@
                 </span>
             {% endif %}
         </nav>
-        {% if request.user.is_authenticated %}
-        <a href="{% url 'main:edit_profile' request.user.username %}" class="header-user">{{ request.user.username }}</a>
-        {% else %}
-        <a href="{% url 'main:login' %}" class="header-user">login</a>
-        {% endif %}
+        <div class="header-right">
+            <a href="{% url 'main:new_group' %}">new group</a>
+            {% if request.user.is_authenticated %}
+            | <a href="{% url 'main:edit_profile' request.user.username %}">{{ request.user.username }}</a>
+            {% else %}
+            | <a href="{% url 'main:login' %}">login</a>
+            {% endif %}
+        </div>
     </header>
 
     {% block content %}

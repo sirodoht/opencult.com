@@ -5,7 +5,22 @@
 {% block content %}
 <section>
     <h1>
-        <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a> > {{ event.title }}
+        Event:
+        {{ event.title }}
+        by <a href="{% url 'main:group' event.group.slug %}">{{ event.group.name }}</a>
+        {% if nav_show_rsvp_event and event.date >= now.date %}
+            {% if attendance %}
+                <form action="{% url 'main:delete_attendance' event.group.slug event.slug %}" method="post" class="inline">
+                    {% csrf_token %}
+                    <input type="submit" value="un-rsvp">
+                </form>
+            {% else %}
+                <form action="{% url 'main:attendance' event.group.slug event.slug %}" method="post" class="inline">
+                    {% csrf_token %}
+                    <input type="submit" value="rsvp">
+                </form>
+            {% endif %}
+        {% endif %}
     </h1>
 
     {% if event.details %}

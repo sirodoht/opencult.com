@@ -113,10 +113,8 @@ def group(request, group_slug):
         request,
         "main/group.html",
         {
-            "nav_show_edit_group": True,
-            "nav_show_new_event": True,
+            "nav_show_group_admin": True,
             "nav_show_join_group": True,
-            "nav_show_group_announcement": True,
             "ld_group": True,
             "group": group,
             "membership": membership,
@@ -148,7 +146,6 @@ def event(request, group_slug, event_slug):
         request,
         "main/event.html",
         {
-            "nav_show_group": True,
             "nav_show_edit_event": True,
             "nav_show_rsvp_event": True,
             "ld_event": True,
@@ -289,8 +286,6 @@ def new_event(request, group_slug):
         "main/new_event.html",
         {
             "nav_show_own_groups": True,
-            "nav_show_group": True,
-            "nav_show_new_event": True,
             "group": group,
             "form": form,
         },
@@ -320,7 +315,6 @@ def edit_group(request, group_slug):
         request,
         "main/edit_group.html",
         {
-            "nav_show_group": True,
             "nav_show_organizer_add": True,
             "group": group,
             "form": form,
@@ -349,8 +343,6 @@ def edit_event(request, group_slug, event_slug):
         request,
         "main/edit_event.html",
         {
-            "nav_show_group": True,
-            "nav_show_new_event": True,
             "group": group,
             "event": event,
             "form": form,
@@ -446,8 +438,6 @@ def group_organizer(request, group_slug):
         request,
         "main/group_organizer.html",
         {
-            "nav_show_group": True,
-            "nav_show_edit_group": True,
             "group": group,
             "form": form,
         },
@@ -500,5 +490,5 @@ def group_announcement(request, group_slug):
     return render(
         request,
         "main/group_announcement.html",
-        {"nav_show_group": True, "group": group, "form": form},
+        {"group": group, "form": form},
     )

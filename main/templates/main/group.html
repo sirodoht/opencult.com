@@ -4,7 +4,24 @@
 
 {% block content %}
 <section>
-    <h1>{{ group.name }}</h1>
+    <h1>
+        Group: {{ group.name }}
+        {% if nav_show_join_group %}
+            {% if request.user not in group.organizers_list or group.organizers_count != 1 %}
+                {% if membership %}
+                    <form action="{% url 'main:delete_membership' group.slug %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <input type="submit" value="leave group">
+                    </form>
+                {% else %}
+                    <form action="{% url 'main:membership' group.slug %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <input type="submit" value="join">
+                    </form>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </h1>
 
     <div class="section-label">Upcoming events</div>
     {% for event in upcoming_events_list %}

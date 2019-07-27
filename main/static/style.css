@@ -195,6 +195,12 @@ a:hover {
     text-decoration: underline;
 }
 
+.helptext {
+    font-weight: 400;
+    font-size: 12px;
+    opacity: 0.4;
+}
+
 header {
     font-size: 14px;
     padding: 16px;
@@ -222,6 +228,8 @@ nav {
 label {
     display: block;
     color: #828282;
+    font-weight: 400;
+    font-size: 12px;
     width: 360px;
     margin-top: 16px;
     margin-bottom: 4px;

@@ -4,7 +4,10 @@
 
 {% block content %}
 <section>
-    <h1>Edit {{ user.username }} profile</h1>
+    <h1>
+        Edit user:
+        {{ user.username }}
+    </h1>
 
     <form action="{% url 'main:edit_profile' request.user.username %}" method="post">
         {{ form.non_field_errors }}

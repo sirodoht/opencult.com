@@ -4,7 +4,7 @@
 
 {% block content %}
 <section>
-    <h1>Edit {{ event.title }} event</h1>
+    <h1>Edit event: {{ event.title }}</h1>
 
     <form action="{% url 'main:edit_event' event.group.slug event.slug %}" method="post">
         {{ form.non_field_errors }}

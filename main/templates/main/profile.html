@@ -4,7 +4,10 @@
 
 {% block content %}
 <section>
-    <h1>{{ user.username }}</h1>
+    <h1>
+        User:
+        {{ user.username }}
+    </h1>
 
     {% if user.about %}
     <div class="section-label">About</div>

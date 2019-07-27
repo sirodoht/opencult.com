@@ -373,6 +373,10 @@ h1 {
     width: 360px;
 }
 
+.section-body p {
+    margin-top: 0;
+}
+
 .section-body a {
     text-decoration: underline;
 }

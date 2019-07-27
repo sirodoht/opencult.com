@@ -284,11 +284,7 @@ def new_event(request, group_slug):
     return render(
         request,
         "main/new_event.html",
-        {
-            "nav_show_own_groups": True,
-            "group": group,
-            "form": form,
-        },
+        {"nav_show_own_groups": True, "group": group, "form": form},
     )
 
 
@@ -314,11 +310,7 @@ def edit_group(request, group_slug):
     return render(
         request,
         "main/edit_group.html",
-        {
-            "nav_show_organizer_add": True,
-            "group": group,
-            "form": form,
-        },
+        {"nav_show_organizer_add": True, "group": group, "form": form},
     )
 
 
@@ -340,13 +332,7 @@ def edit_event(request, group_slug, event_slug):
         form = forms.EventChangeForm(instance=event)
 
     return render(
-        request,
-        "main/edit_event.html",
-        {
-            "group": group,
-            "event": event,
-            "form": form,
-        },
+        request, "main/edit_event.html", {"group": group, "event": event, "form": form}
     )
 
 
@@ -434,14 +420,7 @@ def group_organizer(request, group_slug):
     else:
         form = forms.AddGroupOrganizerForm()
 
-    return render(
-        request,
-        "main/group_organizer.html",
-        {
-            "group": group,
-            "form": form,
-        },
-    )
+    return render(request, "main/group_organizer.html", {"group": group, "form": form})
 
 
 @require_http_methods(["POST"])
@@ -488,7 +467,5 @@ def group_announcement(request, group_slug):
         form = forms.GroupAnnouncementForm()
 
     return render(
-        request,
-        "main/group_announcement.html",
-        {"group": group, "form": form},
+        request, "main/group_announcement.html", {"group": group, "form": form}
     )

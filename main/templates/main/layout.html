@@ -110,9 +110,17 @@
             "@context": "http://schema.org",
             "@type": "Event",
             "name": "{{ event.title }}",
-            "startDate": "{{ event.date|date:"Y-m-d" }}T{{ event.time|time:"H:i" }}",
-            "location": "{{ event.venue }} {{ event.address }}",{% if event.details %},
-            "description": "{{ event.details }}"{% endif %}
+            "startDate": "{{ event.date|date:"Y-m-d" }}T{{ event.time|time:"H:i" }}"
+            {% if event.venue and event.details %}
+            ,"location": "{{ event.venue }} {{ event.details }}"
+            {% elif event.venue %}
+            ,"location": "{{ event.venue }}"
+            {% elif event.details %}
+            ,"location": "{{ event.details }}"
+            {% endif %}
+            {% if event.details %}
+            ,"description": "{{ event.details }}"
+            {% endif %}
         }
     </script>
     {% endif %}
